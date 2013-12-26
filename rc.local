@@ -1,0 +1,33 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+HOSTNAME=$(hostname 2>/dev/null)
+
+if [ ! -z "$HOSTNAME" ]
+then
+	grep "^127.0.0.1  $HOSTNAME" /etc/hosts >/dev/null 2>&1 || sed -i '2i 127.0.0.1  '$HOSTNAME'' /etc/hosts > /dev/null 2>&1
+fi
+
+# ifconfig eth1 promisc up
+# ifconfig eth2 promisc up
+
+LOCALRC="/home/ubuntu/devstack/localrc"
+
+if [ -e "$LOCALRC" ]
+then
+	MYIP=$(/sbin/ifconfig eth0 2>/dev/null| grep "inet addr:" 2>/dev/null| sed 's/.*inet addr://g;s/ .*//g' 2>/dev/null)
+	[ -z "$MYIP" ] && exit 1
+	sed -i 's/^HOST_IP=.*/HOST_IP='$MYIP'/g' "$LOCALRC"
+fi
+
+exit 0
