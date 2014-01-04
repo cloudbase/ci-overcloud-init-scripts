@@ -1,0 +1,2 @@
+nova network-create --fixed-cidr=10.0.2.0/24 --project-id=admin --fixed-range-v4=10.0.2.0/24 --bridge=br100 --bridge-interface=eth1 --multi-host=T external
+nova network-create --fixed-cidr=10.0.1.0/24 --project-id=admin --fixed-range-v4=10.0.1.0/24 --bridge=br100 --bridge-interface=eth1 --multi-host=T data
