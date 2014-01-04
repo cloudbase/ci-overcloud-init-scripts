@@ -1,0 +1,7 @@
+DEVICE=br100
+TYPE=Bridge
+BOOTPROTO=static
+PROMISC=yes
+USERCTL=no
+PEERDNS=no
+ONBOOT=yes
