@@ -1,12 +1,42 @@
 #!/bin/bash -e
 
-GERRIT_SITE=$1
-ZUUL_SITE=$2
-GIT_ORIGIN=$3
-ZUUL_NEWREV=$4
-ZUUL_REF=$5
-ZUUL_CHANGE=$6
-ZUUL_PROJECT=$7
+function usage() {
+    echo "$0 --zuul-site ZUUL_SITE --gerrit-site GERRIT_SITE --zuul-ref ZUUL_REF --zuul-change ZUUL_CHANGE --zuul-project ZUUL_PROJECT [--git-origin GIT_ORIGIN] [--zuul-newrev ZUUL_NEWREV]"
+}
+
+while [ $# -gt 0 ];
+do
+    case $1 in
+        --zuul-site)
+            ZUUL_SITE=$2
+            shift;;
+        --gerrit-site)
+            GERRIT_SITE=$2
+            shift;;
+        --git-origin)
+            GIT_ORIGIN=$2
+            shift;;
+        --zuul-newrev)
+            ZUUL_NEWREV=$2
+            shift;;
+        --zuul-ref)
+            ZUUL_REF=$2
+            shift;;
+        --zuul-change)
+            ZUUL_CHANGE=$2
+            shift;;
+        --zuul-project)
+            ZUUL_PROJECT=$2
+            shift;;
+    esac
+    shift
+done
+
+if [ -z "$ZUUL_REF" ] || [ -z "$ZUUL_CHANGE" ] || [ -z "$ZUUL_PROJECT" ]
+then
+    echo "ZUUL_REF ZUUL_CHANGE ZUUL_PROJECT are mandatory"
+    exit 1
+fi
 
 BUILD_DIR="c:/OpenStack/build/"
 PROJECT_DIR="$BUILD_DIR/$ZUUL_PROJECT"
