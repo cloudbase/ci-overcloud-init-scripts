@@ -1,0 +1,4 @@
+[Neutron]
+vendor = Fedora Project
+product = OpenStack Neutron
+package = 1.el6
