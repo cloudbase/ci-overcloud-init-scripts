@@ -1,11 +1,11 @@
 $ErrorActionPreference = "Stop"
 
-function InstallOpenSSL(){
+function InstallOpenSSL() {
     $filename="Win32OpenSSL_Light-1_0_1e.exe"
-    $dst  = $env:TMP\$filename
-    Invoke-WebRequest -Uri "http://slproweb.com/download/$filename" -OutFile $dst
+    $dst = "$env:TMP\$filename"
+    Invoke-WebRequest -Uri "http://slproweb.com/download/$filename" -OutFile "$dst"
     Start-Process -Wait -FilePath $dst -ArgumentList "/silent /verysilent /sp- /suppressmsgboxes"
-    del $dst
+    del "$dst"
 }
     
 function SetAdminOnlyACL($path) {
@@ -32,7 +32,7 @@ function SetAdminOnlyACL($path) {
     Set-ACL $path $acl
 }
 
-InstallOpenSSL()
+InstallOpenSSL
 $base_dir="C:\OpenSSL-Win32\"
 $ca_dir="$base_dir\CA"
 
