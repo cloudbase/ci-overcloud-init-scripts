@@ -33,6 +33,8 @@ disable_service n-cpu
 # Uncomment if you need tempest
 #enable_service tempest
 
+Q_PLUGIN=ml2
+Q_ML2_PLUGIN_MECHANISM_DRIVERS=openvswitch,hyperv
 ENABLE_TENANT_VLANS=True
 TENANT_VLAN_RANGE=2000:3000
 PHYSICAL_NETWORK=physnet1
