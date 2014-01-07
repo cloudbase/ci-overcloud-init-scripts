@@ -1,0 +1,62 @@
+# Network
+# eth0: management
+# eth1: guest data
+# eth2: public
+#
+# After ./stack.sh, make sure that eth1 and eth2 are properly setup in OVS:
+# sudo ovs-vsctl add-br br-eth1
+# sudo ovs-vsctl add-port br-eth1 eth1
+# sudo ovs-vsctl add-port br-ex eth2
+
+# Set this to your management IP
+HOST_IP=10.0.1.2
+
+disable_service n-net
+#enable_service n-cpu
+enable_service rabbit
+enable_service q-svc
+enable_service q-agt
+enable_service q-dhcp
+enable_service q-l3
+enable_service q-meta
+enable_service q-lbaas
+enable_service neutron
+# Uncomment to disable Horizon
+disable_service horizon
+
+enable_service ceilometer-acompute ceilometer-acentral ceilometer-collector ceilometer-api
+#enable_service ceilometer-alarm-notifier ceilometer-alarm-evaluator
+
+disable_service n-net
+disable_service n-cpu
+
+# Uncomment if you need tempest
+#enable_service tempest
+
+ENABLE_TENANT_VLANS=True
+TENANT_VLAN_RANGE=2000:3000
+PHYSICAL_NETWORK=physnet1
+OVS_ENABLE_TUNNELING=False
+OVS_BRIDGE_MAPPINGS=physnet1:br-eth1
+OVS_PHYSICAL_BRIDGE=br-eth1
+PUBLIC_INTERFACE_DEFAULT=eth2
+GUEST_INTERFACE_DEFAULT=eth1
+
+VOLUME_BACKING_FILE_SIZE=50000M
+
+LIBVIRT_TYPE=kvm
+
+SCREEN_LOGDIR=$DEST/logs/screen
+
+DATABASE_PASSWORD=Passw0rd
+RABBIT_PASSWORD=Passw0rd
+SERVICE_TOKEN=Passw0rd
+SERVICE_PASSWORD=Passw0rd
+ADMIN_PASSWORD=Passw0rd
+
+VERBOSE=True
+
+API_RATE_LIMIT=False
+
+#RECLONE=yes
+
