@@ -8,6 +8,8 @@ then
     exit 1
 fi
 
+pushd $BASEDIR
+
 # Update all repositories except nova
 for i in `ls -A`
 do
@@ -22,3 +24,4 @@ do
 	fi
 done
 
+popd
