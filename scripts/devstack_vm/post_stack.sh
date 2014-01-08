@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source /home/ubuntu/.bashrc
+
 set -x
 
 TEMPEST_CONF="/opt/stack/tempest/etc/tempest.conf"
