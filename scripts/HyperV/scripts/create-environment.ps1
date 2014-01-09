@@ -101,6 +101,8 @@ if ($? -eq $false){
 	Throw "Failed to create virtualenv"
 }
 
+cp $templateDir\distutils.cfg $virtualenv\Lib\distutils\distutils.cfg
+
 exec_with_retry "cmd.exe /C $scriptdir\install_openstack_from_repo.bat c:\OpenStack\build\openstack\neutron"
 exec_with_retry "cmd.exe /C $scriptdir\install_openstack_from_repo.bat c:\OpenStack\build\openstack\nova"
 
