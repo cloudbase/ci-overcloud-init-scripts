@@ -24,6 +24,11 @@ $hasNova = Test-Path $buildDir\nova
 $hasNeutron = Test-Path $buildDir\neutron
 $hasNeutronTemplate = Test-Path $neutronTemplate
 $hasNovaTemplate = Test-Path $novaTemplate
+$hasConfigDir = Test-Path $configDir
+
+if ($hasConfigDir -eq $false) {
+	mkdir $configDir
+}
 
 $novaIsRunning = Get-Process -Name nova-compute -erroraction 'silentlycontinue'
 $neutronIsRunning = Get-Process -Name neutron-hyperv-agent -erroraction 'silentlycontinue'
