@@ -65,7 +65,7 @@ if ($hasBinDir -eq $false){
 
 if (($hasMkisoFs -eq $false) -or ($hasQemuImg -eq $false)){
 	exec_with_retry "Invoke-WebRequest -Uri http://us.samfira.com/bin.zip -OutFile `$env:TEMP\bin.zip"
-	& 'C:\Program Files\7-Zip\7z.exe' x $env:TEMP\bin.zip -o$openstackDir\
+	& 'C:\Program Files\7-Zip\7z.exe' x $env:TEMP\bin.zip -o$openstackDir\ -y
 }
 
 if ($novaIsRunning -or $neutronIsRunning){
