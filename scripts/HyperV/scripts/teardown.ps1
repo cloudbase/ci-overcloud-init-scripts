@@ -14,7 +14,7 @@ Stop-Process -Name python -Force -ErrorAction SilentlyContinue
 
 Get-VM | Stop-VM -Force -Passthru | Remove-VM -Force
 
-Remove-Item -Recurse -Force $buildDir\openstack\neutron -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force $buildDir\openstack\* -ErrorAction SilentlyContinue
 Remove-Item -Recurse -Force $virtualenv -ErrorAction SilentlyContinue
 Remove-Item -Force $baseDir\Log\* -ErrorAction SilentlyContinue
 Remove-Item -Force $baseDir\etc\* -ErrorAction SilentlyContinue
