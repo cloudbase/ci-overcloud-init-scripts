@@ -20,6 +20,10 @@ $binDir = "$openstackDir\bin"
 $novaTemplate = "$templateDir\nova.conf"
 $neutronTemplate = "$templateDir\neutron_hyperv_agent.conf"
 $hostname = hostname
+$mngmtIPOctet = (Get-NetIPAddress -AddressFamily IPv4| where {$_.IPAddress -match "10.21.7.*"}).IPAddress.split('.')[-1]
+$dataIP = "10.0.2.$mngmtIPOctet"
+$curDataIP = (Get-NetIPAddress | where {$_.InterfaceAlias -match "br100"}).IPAddress.ToString()
+
 
 $hasVirtualenv = Test-Path $virtualenv
 $hasNova = Test-Path $buildDir\nova
@@ -33,6 +37,11 @@ $hasQemuImg = Test-Path $binDir\qemu-img.exe
 
 if ($hasConfigDir -eq $false) {
 	mkdir $configDir
+}
+
+if ($mngmtIPOctet -and ($dataIP -ne $curDataIP)){
+	Get-NetAdapter -Name "*br100*" | Remove-NetIPAddress -Confirm:$false
+	Get-NetAdapter -Name "*br100*" | New-NetIpAddress -IPAddress "10.0.2.$mngmtIPOctet" -PrefixLength 23
 }
 
 $novaIsRunning = Get-Process -Name nova-compute -erroraction 'silentlycontinue'
@@ -65,7 +74,7 @@ if ($hasBinDir -eq $false){
 
 if (($hasMkisoFs -eq $false) -or ($hasQemuImg -eq $false)){
 	exec_with_retry "Invoke-WebRequest -Uri http://us.samfira.com/bin.zip -OutFile `$env:TEMP\bin.zip"
-	& 'C:\Program Files\7-Zip\7z.exe' x $env:TEMP\bin.zip -o$openstackDir\ -y
+	& 'C:\Program Files\7-Zip\7z.exe' x $env:TEMP\bin.zip -o"$openstackDir\" -y
 }
 
 if ($novaIsRunning -or $neutronIsRunning){
