@@ -10,11 +10,13 @@ Param(
 #################################################################
 
 $virtualenv = "c:\OpenStack\virtualenv"
-$baseDir = "C:\OpenStack\devstack"
+$openstackDir = "C:\OpenStack"
+$baseDir = "$openstackDir\devstack"
 $scriptdir = "$baseDir\scripts"
 $configDir = "C:\OpenStack\etc"
 $templateDir = "$baseDir\templates"
 $buildDir = "c:\OpenStack\build\openstack"
+$binDir = "$openstackDir\bin"
 $novaTemplate = "$templateDir\nova.conf"
 $neutronTemplate = "$templateDir\neutron_hyperv_agent.conf"
 $hostname = hostname
@@ -24,6 +26,14 @@ $hasNova = Test-Path $buildDir\nova
 $hasNeutron = Test-Path $buildDir\neutron
 $hasNeutronTemplate = Test-Path $neutronTemplate
 $hasNovaTemplate = Test-Path $novaTemplate
+$hasConfigDir = Test-Path $configDir
+$hasBinDir = Test-Path $binDir
+$hasMkisoFs = Test-Path $binDir\mkisofs.exe
+$hasQemuImg = Test-Path $binDir\qemu-img.exe
+
+if ($hasConfigDir -eq $false) {
+	mkdir $configDir
+}
 
 $novaIsRunning = Get-Process -Name nova-compute -erroraction 'silentlycontinue'
 $neutronIsRunning = Get-Process -Name neutron-hyperv-agent -erroraction 'silentlycontinue'
@@ -47,6 +57,15 @@ function exec_with_retry([string]$cmd, [int]$retry, [int]$interval=0){
 	if ($success -eq $false){
 		Throw $error[0]
 	}
+}
+
+if ($hasBinDir -eq $false){
+	mkdir $binDir
+}
+
+if (($hasMkisoFs -eq $false) -or ($hasQemuImg -eq $false)){
+	exec_with_retry "Invoke-WebRequest -Uri http://us.samfira.com/bin.zip -OutFile `$env:TEMP\bin.zip"
+	& 'C:\Program Files\7-Zip\7z.exe' x $env:TEMP\bin.zip -o$openstackDir\ -y
 }
 
 if ($novaIsRunning -or $neutronIsRunning){
@@ -126,5 +145,3 @@ cp "$templateDir\interfaces.template" "$configDir\"
 # Start-Job -Name "neutron" {cmd.exe /C C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe C:\Openstack\etc\neutron_hyperv_agent.conf} > $null
 Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\nova-compute.exe C:\Openstack\etc\nova.conf"
 Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe C:\Openstack\etc\neutron_hyperv_agent.conf"
-
-
