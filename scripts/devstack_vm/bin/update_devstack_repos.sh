@@ -8,14 +8,14 @@ then
     exit 1
 fi
 
-pushd $BASEDIR
+pushd "$BASEDIR"
 
 # Update all repositories except nova
 for i in `ls -A`
 do
 	if [ "$i" != "nova" ]
 	then
-		pushd $i
+		pushd "$i"
         if [ -d ".git" ]
         then
     		git pull
@@ -25,4 +25,3 @@ do
 done
 
 popd
-

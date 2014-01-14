@@ -5,6 +5,10 @@ set -x
 sudo ifconfig eth1 promisc up
 sudo ifconfig eth2 promisc up
 
+HOSTNAME=$(hostname)
+
+sudo sed -i '2i127.0.0.1  '$HOSTNAME'' /etc/hosts
+
 DEVSTACK_LOGS="/opt/stack/logs/screen"
 LOCALRC="/home/ubuntu/devstack/localrc"
 
