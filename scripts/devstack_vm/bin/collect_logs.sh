@@ -18,8 +18,11 @@ function emit_error() {
 function archive_devstack() {
     for i in `ls -A $DEVSTACK_LOGS`
     do
-        REAL=$(readlink $DEVSTACK_LOGS/$i)
-        $GZIP "$REAL" -c > "$LOG_DST/$i.gz" || emit_error "Failed to archive devstack logs"
+        if [ -h "$DEVSTACK_LOGS/$i" ]
+        then
+                REAL=$(readlink "$DEVSTACK_LOGS/$i")
+                $GZIP "$REAL" -c > "$LOG_DST/$i.gz" || emit_error "Failed to archive devstack logs"
+        fi
     done
 }
 
@@ -33,7 +36,7 @@ function archive_tempest_files() {
     do
         $GZIP "$TEMPEST_LOGS/$i" -c > "$LOG_DST/$i.gz" || emit_error "Failed to archive tempest logs"
     done
-    $GZIP /home/ubuntu/exclude-tests.txt -c "$LOG_DST/exclude-tests.txt.gz" || emit_error "Failed to archive excluded tests"
+    $GZIP /home/ubuntu/exclude-tests.txt -c > "$LOG_DST/exclude-tests.txt.gz" || emit_error "Failed to archive excluded tests"
 }
 
 # Clean

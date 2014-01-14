@@ -20,9 +20,9 @@ $binDir = "$openstackDir\bin"
 $novaTemplate = "$templateDir\nova.conf"
 $neutronTemplate = "$templateDir\neutron_hyperv_agent.conf"
 $hostname = hostname
-$mngmtIPOctet = (Get-NetIPAddress -AddressFamily IPv4| where {$_.IPAddress -match "10.21.7.*"}).IPAddress.split('.')[-1]
-$dataIP = "10.0.2.$mngmtIPOctet"
-$curDataIP = (Get-NetIPAddress | where {$_.InterfaceAlias -match "br100"}).IPAddress.ToString()
+#$mngmtIPOctet = (Get-NetIPAddress -AddressFamily IPv4| where {$_.IPAddress -match "10.21.7.*"}).IPAddress.split('.')[-1]
+#$dataIP = "10.0.2.$mngmtIPOctet"
+#$curDataIP = (Get-NetIPAddress | where {$_.InterfaceAlias -match "br100"}).IPAddress.ToString()
 
 
 $hasVirtualenv = Test-Path $virtualenv
@@ -39,10 +39,10 @@ if ($hasConfigDir -eq $false) {
 	mkdir $configDir
 }
 
-if ($mngmtIPOctet -and ($dataIP -ne $curDataIP)){
-	Get-NetAdapter -Name "*br100*" | Remove-NetIPAddress -Confirm:$false
-	Get-NetAdapter -Name "*br100*" | New-NetIpAddress -IPAddress "10.0.2.$mngmtIPOctet" -PrefixLength 23
-}
+#if ($mngmtIPOctet -and ($dataIP -ne $curDataIP)){
+#	Get-NetAdapter -Name "*br100*" | Remove-NetIPAddress -Confirm:$false
+#	Get-NetAdapter -Name "*br100*" | New-NetIpAddress -IPAddress "10.0.2.$mngmtIPOctet" -PrefixLength 23
+#}
 
 $novaIsRunning = Get-Process -Name nova-compute -erroraction 'silentlycontinue'
 $neutronIsRunning = Get-Process -Name neutron-hyperv-agent -erroraction 'silentlycontinue'
