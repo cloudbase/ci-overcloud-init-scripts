@@ -1,14 +1,12 @@
 #!/bin/bash
 
-source /home/ubuntu/.bashrc
-
 set -x
 
 TEMPEST_CONF="/opt/stack/tempest/etc/tempest.conf"
 
 # Clean all images
 IMAGE_UUIDS=$(nova image-list | grep '[0-9az]*-[0-9az]*'|awk '{print $2}'|sed '/^$/d')
-for i in "$IMAGE_UUIDS"
+for i in $IMAGE_UUIDS
 do
     nova image-delete $i
 done
@@ -62,6 +60,5 @@ nova flavor-delete m1.nano
 nova flavor-delete m1.micro
 nova flavor-create --ephemeral 0 --rxtx-factor 1.0 --is-public True m1.nano 42 64 1 1
 nova flavor-create --ephemeral 0 --rxtx-factor 1.0 --is-public True m1.micro 84 128 1 1
-
 nova quota-class-update --instances 50 --cores 100 --ram $((51200*4)) --floating-ips 50 --security-groups 50 --security-group-rules 100 default
 cinder quota-class-update --snapshots 50 --volumes 50 --gigabytes 2000 default

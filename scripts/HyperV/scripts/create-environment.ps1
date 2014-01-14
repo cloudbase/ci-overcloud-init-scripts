@@ -104,13 +104,6 @@ if ($hasNeutron -eq $false){
 	popd
 }
 
-# !!!!!!!REMOVE THIS WHEN FIX FOR SYMLINK MERGED!!!!!!!!
-pushd $buildDir\neutron
-exec_with_retry "git fetch https://review.openstack.org/openstack/neutron refs/changes/50/65250/2" -retry 5 -interval 5
-git checkout FETCH_HEAD -b symlink_fix
-popd
-################################
-
 # Mount devstack samba. Used for log storage
 exec_with_retry "New-SmbMapping -RemotePath \\$devstackIP\openstack -LocalPath u:"  -retry 5 -interval 5
 
