@@ -5,7 +5,11 @@ set -x
 sudo ifconfig eth1 promisc up
 sudo ifconfig eth2 promisc up
 
+DEVSTACK_LOGS="/opt/stack/logs/screen"
 LOCALRC="/home/ubuntu/devstack/localrc"
+
+# Clean devstack logs
+rm -f "$DEVSTACK_LOGS/*"
 
 if [ -e "$LOCALRC" ]
 then
