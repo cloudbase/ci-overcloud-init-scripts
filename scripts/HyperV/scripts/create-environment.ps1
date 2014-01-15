@@ -100,7 +100,7 @@ if ($hasNeutron -eq $false){
 	}
 }else{
 	pushd $buildDir\neutron
-	exec_with_retry -cmd "git pull origin master" -retry 5 -interval 5 -discardOutput
+	exec_with_retry -cmd "git pull" -retry 5 -interval 5 -discardOutput
 	popd
 }
 
