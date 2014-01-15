@@ -11,8 +11,13 @@ TEMPEST_LOGS="/home/ubuntu/tempest"
 LOG_DST="/home/ubuntu/aggregate"
 
 function emit_error() {
-    echo $1
+    echo "ERROR: $1"
     exit 1
+}
+
+function emit_warning() {
+    echo "WARNING: $1"
+    return 0
 }
 
 function archive_devstack() {
@@ -21,13 +26,15 @@ function archive_devstack() {
         if [ -h "$DEVSTACK_LOGS/$i" ]
         then
                 REAL=$(readlink "$DEVSTACK_LOGS/$i")
-                $GZIP "$REAL" -c > "$LOG_DST/$i.gz" || emit_error "Failed to archive devstack logs"
+                $GZIP "$REAL" -c > "$LOG_DST/$i.gz" || emit_warning "Failed to archive devstack logs"
         fi
     done
 }
 
 function archive_hyperv_logs() {
-    $TAR -czf "$LOG_DST/HyperV-compute-logs.tar.gz" "$HYPERV_LOGS" || emit_error "Failed to archive hyperv logs"
+    pushd "$HYPERV_LOGS"
+    $TAR -czf "$LOG_DST/HyperV-compute-logs.tar.gz" . || emit_error "Failed to archive hyperv logs"
+    popd
 }
 
 
@@ -47,6 +54,8 @@ archive_devstack
 archive_hyperv_logs
 archive_tempest_files
 
-$TAR -czf "$LOG_DST.tar.gz"  "$LOG_DST" || emit_error "Failed to archive aggregate logs"
+pushd "$LOG_DST"
+$TAR -czf "$LOG_DST.tar.gz" . || emit_error "Failed to archive aggregate logs"
+popd
 
 exit 0
