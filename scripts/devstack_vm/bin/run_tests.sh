@@ -5,7 +5,7 @@ cd /opt/stack/tempest/tempest
 mkdir -p /home/ubuntu/tempest
 sudo pip install -U nose nose-exclude
 
-nosetests -sv --exclude-test-file=/home/ubuntu/exclude-tests.txt --with-xunit --xunit-file=/home/ubuntu/tempest/result1.xml --detailed-errors tempest.api.compute > /home/ubuntu/tempest/tempest-output.log 2>&1
+nosetests -sv --exclude-test-file=/home/ubuntu/exclude-tests.txt --with-xunit --xunit-file=/home/ubuntu/tempest/results.xml --detailed-errors tempest.api.compute > /home/ubuntu/tempest/tempest-output.log 2>&1
 
 #nosetests -sv --exclude-test-file=/home/ubuntu/exclude-tests.txt --with-xunit --xunit-file=/home/ubuntu/tempest/result1.xml --detailed-errors tempest.api.compute.admin.test_aggregates.AggregatesAdminTestJSON > /home/ubuntu/tempest/tempest-output.log 2>&1
 
