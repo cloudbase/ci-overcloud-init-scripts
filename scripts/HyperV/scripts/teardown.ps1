@@ -18,4 +18,5 @@ Remove-Item -Recurse -Force $buildDir\openstack\* -ErrorAction SilentlyContinue
 Remove-Item -Recurse -Force $virtualenv -ErrorAction SilentlyContinue
 Remove-Item -Force $baseDir\Log\* -ErrorAction SilentlyContinue
 Remove-Item -Force $baseDir\etc\* -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force $baseDir\Instances\* -ErrorAction SilentlyContinue
 net use u: /delete
