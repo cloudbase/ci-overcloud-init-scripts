@@ -23,5 +23,6 @@ then
 fi
 
 cd /home/ubuntu/devstack
+git pull
 ./unstack.sh
 ./stack.sh
