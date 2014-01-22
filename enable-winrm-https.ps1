@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
 
 function InstallOpenSSL() {
-    $filename="Win32OpenSSL_Light-1_0_1e.exe"
+    $filename="Win32OpenSSL_Light-1_0_1f.exe"
     $dst = "$env:TMP\$filename"
     Invoke-WebRequest -Uri "http://slproweb.com/download/$filename" -OutFile "$dst"
     Start-Process -Wait -FilePath $dst -ArgumentList "/silent /verysilent /sp- /suppressmsgboxes"

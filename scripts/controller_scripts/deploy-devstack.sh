@@ -11,7 +11,7 @@ FLOATING_IP=$(nova floating-ip-list| grep "None.*None.*ext_net" | awk '{print $2
 
 if [ -z "$FLOATING_IP" ]
 then
-	FLOATING_IP=$(nova floating-ip-create ext_net | awk '{print $2}'|sed '/^$/d' | tail -n 1) || echo "Failed to alocate floating IP" && exit 1
+	FLOATING_IP=$(nova floating-ip-create ext_net | awk '{print $2}'|sed '/^$/d' | tail -n 1) || echo "Failed to alocate floating IP" 
 fi
 
 NAME="devstack-$RANDOM"

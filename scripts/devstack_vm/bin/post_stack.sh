@@ -43,7 +43,11 @@ EXTNETID1=`neutron  net-create public --router:external=True | awk '{if (NR == 6
 SUBNETID1=`neutron  subnet-create private 10.0.0.0/24 --dns_nameservers list=true 8.8.8.8 | awk '{if (NR == 11) {print $4}}'`
 SUBNETID2=`neutron  subnet-create public --allocation-pool start=172.24.4.2,end=172.24.4.254 --gateway 172.24.4.1 172.24.4.0/24 --enable_dhcp=False | awk '{if (NR == 11) {print $4}}'`
 neutron router-interface-add router1 $SUBNETID1 > /dev/null 2>&1
-neutron router-gateway-set router1 $SUBNETID2 > /dev/null 2>&1
+neutron router-gateway-set router1 $EXTNETID1 > /dev/null 2>&1
+
+NETID1=`neutron --os-username=demo --os-tenant-name=demo net-create demo_private | awk '{if (NR == 6) {print $4}}'`
+SUBNETID1=`neutron  --os-username=demo --os-tenant-name=demo subnet-create demo_private 10.0.5.0/24 --dns_nameservers list=true 8.8.8.8 | awk '{if (NR == 11) {print $4}}'`
+neutron --os-username=demo --os-tenant-name=demo router-interface-add router1 $SUBNETID1 > /dev/null 2>&1
 
 
 if [ ! -e "$TEMPEST_CONF" ]
@@ -54,7 +58,7 @@ fi
 sed -i 's/^image_ref_alt =.*/image_ref_alt = '$CIRROS_UUID'/g' "$TEMPEST_CONF"
 sed -i 's/^image_ref =.*/image_ref = '$CIRROS_UUID'/g' "$TEMPEST_CONF"
 sed -i 's/^public_network_id =.*/public_network_id = '$EXTNETID1'/g' "$TEMPEST_CONF"
-
+sed -i 's/^allow_tenant_isolation =.*/allow_tenant_isolation = True/g' "$TEMPEST_CONF"
 
 nova flavor-delete m1.nano
 nova flavor-delete m1.micro

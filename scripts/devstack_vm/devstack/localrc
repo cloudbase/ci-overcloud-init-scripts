@@ -24,14 +24,14 @@ enable_service neutron
 # Uncomment to disable Horizon
 disable_service horizon
 
-#enable_service ceilometer-acompute ceilometer-acentral ceilometer-collector ceilometer-api
+enable_service ceilometer-acompute ceilometer-acentral ceilometer-collector ceilometer-api
 #enable_service ceilometer-alarm-notifier ceilometer-alarm-evaluator
 
 disable_service n-net
 disable_service n-cpu
 
 # Uncomment if you need tempest
-#enable_service tempest
+enable_service tempest
 
 Q_PLUGIN=ml2
 Q_ML2_PLUGIN_MECHANISM_DRIVERS=openvswitch,hyperv
