@@ -43,7 +43,7 @@ EXTNETID1=`neutron  net-create public --router:external=True | awk '{if (NR == 6
 SUBNETID1=`neutron  subnet-create private 10.0.0.0/24 --dns_nameservers list=true 8.8.8.8 | awk '{if (NR == 11) {print $4}}'`
 SUBNETID2=`neutron  subnet-create public --allocation-pool start=172.24.4.2,end=172.24.4.254 --gateway 172.24.4.1 172.24.4.0/24 --enable_dhcp=False | awk '{if (NR == 11) {print $4}}'`
 neutron router-interface-add router1 $SUBNETID1 > /dev/null 2>&1
-neutron router-gateway-set router1 $SUBNETID2 > /dev/null 2>&1
+neutron router-gateway-set router1 $EXTNETID1 > /dev/null 2>&1
 
 
 if [ ! -e "$TEMPEST_CONF" ]
