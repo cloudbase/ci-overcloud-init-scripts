@@ -24,7 +24,7 @@ enable_service neutron
 # Uncomment to disable Horizon
 disable_service horizon
 
-#enable_service ceilometer-acompute ceilometer-acentral ceilometer-collector ceilometer-api
+enable_service ceilometer-acompute ceilometer-acentral ceilometer-collector ceilometer-api
 #enable_service ceilometer-alarm-notifier ceilometer-alarm-evaluator
 
 disable_service n-net
