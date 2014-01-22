@@ -45,6 +45,10 @@ SUBNETID2=`neutron  subnet-create public --allocation-pool start=172.24.4.2,end=
 neutron router-interface-add router1 $SUBNETID1 > /dev/null 2>&1
 neutron router-gateway-set router1 $EXTNETID1 > /dev/null 2>&1
 
+NETID1=`neutron --os-username=demo --os-tenant-name=demo net-create demo_private | awk '{if (NR == 6) {print $4}}'`
+SUBNETID1=`neutron  --os-username=demo --os-tenant-name=demo subnet-create demo_private 10.0.5.0/24 --dns_nameservers list=true 8.8.8.8 | awk '{if (NR == 11) {print $4}}'`
+neutron --os-username=demo --os-tenant-name=demo router-interface-add router1 $SUBNETID1 > /dev/null 2>&1
+
 
 if [ ! -e "$TEMPEST_CONF" ]
 then
