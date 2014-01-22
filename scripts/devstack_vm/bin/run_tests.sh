@@ -11,6 +11,7 @@ testr list-tests tempest.api.compute | grep -v "rescue\|_uptime\|_console_\|Atta
 
 testr run --parallel --subunit  --load-list=/home/ubuntu/testr.list |  subunit-2to1  > /home/ubuntu/tempest/subunit-output.log 2>&1
 RET=$?
+echo "testr exited with status: $RET"
 cat /home/ubuntu/tempest/subunit-output.log | /opt/stack/tempest/tools/colorizer.py > /home/ubuntu/tempest/tempest-output.log 2>&1
 cd /home/ubuntu/tempest/
 python /home/ubuntu/bin/subunit2html.py /home/ubuntu/tempest/subunit-output.log
