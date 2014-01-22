@@ -58,7 +58,7 @@ fi
 sed -i 's/^image_ref_alt =.*/image_ref_alt = '$CIRROS_UUID'/g' "$TEMPEST_CONF"
 sed -i 's/^image_ref =.*/image_ref = '$CIRROS_UUID'/g' "$TEMPEST_CONF"
 sed -i 's/^public_network_id =.*/public_network_id = '$EXTNETID1'/g' "$TEMPEST_CONF"
-
+sed -i 's/^allow_tenant_isolation =.*/allow_tenant_isolation = True/g' "$TEMPEST_CONF"
 
 nova flavor-delete m1.nano
 nova flavor-delete m1.micro
