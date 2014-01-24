@@ -10,7 +10,7 @@ TEMPEST_LOGS="/home/ubuntu/tempest"
 
 LOG_DST="/home/ubuntu/aggregate"
 LOG_DST_DEVSTACK="$LOG_DST/devstack_logs"
-LOG_DST_HV="$LOG_DST/HyperV"
+LOG_DST_HV="$LOG_DST/Hyper-V"
 
 function emit_error() {
     echo "ERROR: $1"
