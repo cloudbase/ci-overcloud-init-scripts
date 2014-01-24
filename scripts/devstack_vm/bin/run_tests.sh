@@ -6,6 +6,9 @@ testr init
 
 mkdir -p /home/ubuntu/tempest
 
+# make a list of excluded tests
+testr list-tests tempest.api.compute | grep "rescue\|_uptime\|_console_\|AttachInterfaces" > /home/ubuntu/tempest/excluded_tests.txt || echo "failed to generate exclude list"
+
 #exclude unsupported tests
 testr list-tests tempest.api.compute | grep -v "rescue\|_uptime\|_console_\|AttachInterfaces" > /home/ubuntu/testr.list
 
