@@ -1,13 +1,14 @@
 Param(
 	[Parameter(Mandatory=$true)]
-	[string]$devstackIP
+	[string]$devstackIP,
+    [string]$branchName
 )
 
-#################################################################
-#  virtualenv and pip install must be run via cmd. There is a bug in the           ##
-#  activate.ps1 that actually installs packages in the system site package    ##
-#  folder                                                                                                   ##
-#################################################################
+############################################################################
+#  virtualenv and pip install must be run via cmd. There is a bug in the   #
+#  activate.ps1 that actually installs packages in the system site package #
+#  folder                                                                  #
+############################################################################
 
 $virtualenv = "c:\OpenStack\virtualenv"
 $openstackDir = "C:\OpenStack"
@@ -95,6 +96,11 @@ if ($hasNovaTemplate -eq $false){
 
 if ($hasNeutron -eq $false){
 	exec_with_retry -cmd "git clone https://github.com/openstack/neutron.git $buildDir\neutron" -retry 5 -interval 5
+    if ($branchName){
+        pushd $buildDir\neutron
+        git checkout "$branchName"
+        popd
+    }
 	if ($? -eq $false){
 		Throw "Failed to clone neutron repo"
 	}

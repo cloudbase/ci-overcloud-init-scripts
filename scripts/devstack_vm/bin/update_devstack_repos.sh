@@ -1,6 +1,8 @@
 #!/bin/bash
 
 BASEDIR="/opt/stack"
+BRANCH="$1"
+
 
 if [ ! -d "$BASEDIR" ]
 then
@@ -18,6 +20,9 @@ do
 		pushd "$i"
         if [ -d ".git" ]
         then
+            if [ ! -z "$BRANCH" ]
+                git checkout "$BRANCH" || echo "Failed to switch branch"
+            fi
     		git pull
         fi
 		popd
