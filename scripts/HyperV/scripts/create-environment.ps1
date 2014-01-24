@@ -107,6 +107,7 @@ if ($hasNeutron -eq $false){
 }else{
 	pushd $buildDir\neutron
     if ($branchName){
+        git fetch
         git checkout "$branchName"
     }
 	exec_with_retry -cmd "git pull" -retry 5 -interval 5 -discardOutput

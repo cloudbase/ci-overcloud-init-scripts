@@ -20,6 +20,7 @@ do
 		pushd "$i"
         if [ -d ".git" ]
         then
+            git fetch
             if [ ! -z "$BRANCH" ]
                 git checkout "$BRANCH" || echo "Failed to switch branch"
             fi
