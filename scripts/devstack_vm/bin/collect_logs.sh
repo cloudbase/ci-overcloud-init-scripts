@@ -10,6 +10,7 @@ TEMPEST_LOGS="/home/ubuntu/tempest"
 
 LOG_DST="/home/ubuntu/aggregate"
 LOG_DST_DEVSTACK="$LOG_DST/devstack_logs"
+LOG_DST_HV="$LOG_DST/HyperV"
 
 function emit_error() {
     echo "ERROR: $1"
@@ -32,15 +33,24 @@ function archive_devstack() {
         if [ -h "$DEVSTACK_LOGS/$i" ]
         then
                 REAL=$(readlink "$DEVSTACK_LOGS/$i")
-                $GZIP "$REAL" -c > "$LOG_DST_DEVSTACK/$i.gz" || emit_warning "Failed to archive devstack logs"
+                $GZIP -c "$REAL" > "$LOG_DST_DEVSTACK/$i.gz" || emit_warning "Failed to archive devstack logs"
         fi
     done
 }
 
 function archive_hyperv_logs() {
-    pushd "$HYPERV_LOGS"
-    $TAR -czf "$LOG_DST/HyperV-compute-logs.tar.gz" . || emit_error "Failed to archive hyperv logs"
-    popd
+    if [ ! -d "$LOG_DST_HV" ]
+    then
+        mkdir -p "$LOG_DST_HV"
+    fi
+    for i in `ls -A "$HYPERV_LOGS"`
+    do
+        mkdir -p "$LOG_DST_HV/$i"
+        for j in `ls -A "$HYPERV_LOGS/$i"`;
+        do
+            $GZIP -c "$HYPERV_LOGS/$i/$j" > "$LOG_DST_HV/$i/$j.gz" || emit_warning "Failed to archive devstack logs"
+        done
+    done
 }
 
 
