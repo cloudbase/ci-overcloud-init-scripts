@@ -1,0 +1,34 @@
+includes:
+  - python-file: openstack_functions.py
+
+pipelines:
+  - name: check
+    description: This pipeline is used for silently testing new jobs.
+    manager: IndependentPipelineManager
+    trigger:
+      gerrit:
+        - event: patchset-created
+        - event: change-restored
+        - event: comment-added
+          comment_filter: (?i)^\s*recheck(( (?:bug|lp)[\s#:]*(\d+))|( no bug))\s*$
+    success:
+      gerrit:
+        force-message: true
+    failure:
+      gerrit:
+        force-message: true
+
+jobs:
+  - name: ^.*$
+    parameter-function: set_log_url
+  - name: 01_Reserve_Hyper-V_Node_01
+    voting: false
+    success-pattern: http://64.119.130.115/{build.parameters[ZUUL_CHANGE]}/{build.parameters[ZUUL_PATCHSET]}/
+    failure-pattern: http://64.119.130.115/{build.parameters[ZUUL_CHANGE]}/{build.parameters[ZUUL_PATCHSET]}/
+    success-message: Looks good to me
+    failure-message: Test run failed
+
+projects:
+  - name: openstack/nova
+    check:
+      - 01_Reserve_Hyper-V_Node_01
