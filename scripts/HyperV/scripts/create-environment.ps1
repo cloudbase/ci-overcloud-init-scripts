@@ -10,6 +10,10 @@ Param(
 #  folder                                                                  #
 ############################################################################
 
+# Do teardown
+& 'C:\OpenStack\devstack\scripts\teardown.ps1'
+
+
 $virtualenv = "c:\OpenStack\virtualenv"
 $openstackDir = "C:\OpenStack"
 $baseDir = "$openstackDir\devstack"
