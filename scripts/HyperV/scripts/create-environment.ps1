@@ -1,13 +1,14 @@
 Param(
 	[Parameter(Mandatory=$true)]
-	[string]$devstackIP
+	[string]$devstackIP,
+	[string]$branchName
 )
 
-#################################################################
-#  virtualenv and pip install must be run via cmd. There is a bug in the           ##
-#  activate.ps1 that actually installs packages in the system site package    ##
-#  folder                                                                                                   ##
-#################################################################
+############################################################################
+#  virtualenv and pip install must be run via cmd. There is a bug in the   #
+#  activate.ps1 that actually installs packages in the system site package #
+#  folder                                                                  #
+############################################################################
 
 $virtualenv = "c:\OpenStack\virtualenv"
 $openstackDir = "C:\OpenStack"
@@ -95,11 +96,20 @@ if ($hasNovaTemplate -eq $false){
 
 if ($hasNeutron -eq $false){
 	exec_with_retry -cmd "git clone https://github.com/openstack/neutron.git $buildDir\neutron" -retry 5 -interval 5
+    if ($branchName){
+        pushd $buildDir\neutron
+        git checkout "$branchName"
+        popd
+    }
 	if ($? -eq $false){
 		Throw "Failed to clone neutron repo"
 	}
 }else{
 	pushd $buildDir\neutron
+    if ($branchName){
+        git fetch
+        git checkout "$branchName"
+    }
 	exec_with_retry -cmd "git pull" -retry 5 -interval 5 -discardOutput
 	popd
 }
@@ -145,5 +155,5 @@ cp "$templateDir\interfaces.template" "$configDir\"
 
 # Start-Job -Name "nova" {cmd.exe /C C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\nova-compute.exe C:\Openstack\etc\nova.conf} > $null
 # Start-Job -Name "neutron" {cmd.exe /C C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe C:\Openstack\etc\neutron_hyperv_agent.conf} > $null
-Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\nova-compute.exe C:\Openstack\etc\nova.conf"
-Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe C:\Openstack\etc\neutron_hyperv_agent.conf"
+Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\nova-compute.exe C:\Openstack\etc\nova.conf U:\$hostname\nova-console.log"
+Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe C:\Openstack\etc\neutron_hyperv_agent.conf U:\$hostname\neutron-hyperv-agent-console.log"
