@@ -4,15 +4,15 @@ cd /opt/stack/tempest
 
 testr init
 
-mkdir -p /home/ubuntu/tempest
+TEMPEST_DIR="/home/ubuntu/tempest"
+EXCLUDED_TESTS="$TEMPEST_DIR/excluded_tests.txt"
+
+mkdir -p "$TEMPEST_DIR"
 
 # make a list of excluded tests
-testr list-tests tempest.api.compute | grep "rescue\|_uptime\|_console_\|AttachInterfaces" > /home/ubuntu/tempest/excluded_tests.txt || echo "failed to generate exclude list"
+testr list-tests tempest.api.compute | grep "rescue\|_uptime\|_console_\|AttachInterfaces" > "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
 
-#exclude unsupported tests
-testr list-tests tempest.api.compute | grep -v "rescue\|_uptime\|_console_\|AttachInterfaces" > /home/ubuntu/testr.list
-
-testr run --parallel --subunit  --load-list=/home/ubuntu/testr.list |  subunit-2to1  > /home/ubuntu/tempest/subunit-output.log 2>&1
+testr run --parallel --subunit  --load-list=$EXCLUDED_TESTS |  subunit-2to1  > /home/ubuntu/tempest/subunit-output.log 2>&1
 cat /home/ubuntu/tempest/subunit-output.log | /opt/stack/tempest/tools/colorizer.py > /home/ubuntu/tempest/tempest-output.log 2>&1
 # testr exits with status 0. colorizer.py actually sets correct exit status
 RET=$?
