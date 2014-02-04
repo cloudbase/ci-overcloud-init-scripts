@@ -43,14 +43,18 @@ function archive_hyperv_logs() {
     then
         mkdir -p "$LOG_DST_HV"
     fi
+    COUNT=1
     for i in `ls -A "$HYPERV_LOGS"`
     do
         if [ -d "$HYPERV_LOGS/$i" ]
         then
-            mkdir -p "$LOG_DST_HV/$i"
+            NAME=`echo $i | sed 's/^hv-compute\([0-9]*\)/hv-compute'$COUNT'/g'`
+            mkdir -p "$LOG_DST_HV/$NAME"
+            COUNT=$(($COUNT + 1))
+
             for j in `ls -A "$HYPERV_LOGS/$i"`;
             do
-                $GZIP -c "$HYPERV_LOGS/$i/$j" > "$LOG_DST_HV/$i/$j.gz" || emit_warning "Failed to archive $HYPERV_LOGS/$i/$j"
+                $GZIP -c "$HYPERV_LOGS/$i/$j" > "$LOG_DST_HV/$NAME/$j.gz" || emit_warning "Failed to archive $HYPERV_LOGS/$i/$j"
             done
         else
             $GZIP -c "$HYPERV_LOGS/$i" > "$LOG_DST_HV/$i.gz" || emit_warning "Failed to archive $HYPERV_LOGS/$i"
