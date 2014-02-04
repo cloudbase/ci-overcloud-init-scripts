@@ -155,5 +155,5 @@ cp "$templateDir\interfaces.template" "$configDir\"
 
 # Start-Job -Name "nova" {cmd.exe /C C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\nova-compute.exe C:\Openstack\etc\nova.conf} > $null
 # Start-Job -Name "neutron" {cmd.exe /C C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe C:\Openstack\etc\neutron_hyperv_agent.conf} > $null
-Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\nova-compute.exe C:\Openstack\etc\nova.conf"
-Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe C:\Openstack\etc\neutron_hyperv_agent.conf"
+Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\nova-compute.exe C:\Openstack\etc\nova.conf U:\$hostname\nova-console.log"
+Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe C:\Openstack\etc\neutron_hyperv_agent.conf U:\$hostname\neutron-hyperv-agent-console.log"
