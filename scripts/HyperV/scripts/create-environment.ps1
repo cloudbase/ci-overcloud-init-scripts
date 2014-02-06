@@ -10,10 +10,6 @@ Param(
 #  folder                                                                  #
 ############################################################################
 
-# Do teardown
-& 'C:\OpenStack\devstack\scripts\teardown.ps1'
-
-
 $virtualenv = "c:\OpenStack\virtualenv"
 $openstackDir = "C:\OpenStack"
 $baseDir = "$openstackDir\devstack"
@@ -39,6 +35,12 @@ $hasConfigDir = Test-Path $configDir
 $hasBinDir = Test-Path $binDir
 $hasMkisoFs = Test-Path $binDir\mkisofs.exe
 $hasQemuImg = Test-Path $binDir\qemu-img.exe
+
+# Do a selective teardown
+Stop-Process -Name nova-compute -Force -ErrorAction SilentlyContinue
+Stop-Process -Name neutron-hyperv-agent -Force -ErrorAction SilentlyContinue
+Stop-Process -Name python -Force -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force $virtualenv -ErrorAction SilentlyContinue
 
 if ($hasConfigDir -eq $false) {
 	mkdir $configDir
