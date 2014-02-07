@@ -15,10 +15,14 @@ done
 PROJECT_NAME=$(basename $PROJECT)
 
 test_for_nova (){
-    # make a list of excluded tests. Informative
-    testr list-tests tempest.api.compute | grep "rescue\|_uptime\|_console_\|AttachInterfaces" > "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
+    # make a list of excluded tests.
+    # Unimplemented
+    echo '# Unimplemented' >> "$EXCLUDED_TESTS"
+    testr list-tests tempest | grep "rescue\|_uptime\|_console_\|AttachInterfaces" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
+    echo '# AMI images not supported' >> "$EXCLUDED_TESTS"
+    testr list-tests tempest | grep "TestMinimumBasicScenario" > "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
     # Run tests list
-    testr list-tests tempest.api.compute | grep -v "rescue\|_uptime\|_console_\|AttachInterfaces" > "$RUN_TESTS_LIST" || echo "failed to generate exclude list"    
+    testr list-tests tempest.api.compute | grep -v "TestMinimumBasicScenario\|rescue\|_uptime\|_console_\|AttachInterfaces" > "$RUN_TESTS_LIST" || echo "failed to generate exclude list"    
 }
 
 test_for_neutron () {
