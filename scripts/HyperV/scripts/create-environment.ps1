@@ -123,9 +123,9 @@ if ($hasNeutronTemplate -eq $false){
     Throw "Neutron template not found"
 }
 
-if ($buildFor == "openstack/nova"){
+if ($buildFor -eq "openstack/nova"){
     fech_master_repo neutron
-}elif ($buildFor == "openstack/neutron" -or $buildFor == "openstack/quantum"){
+}elif ($buildFor -eq "openstack/neutron" -or $buildFor -eq "openstack/quantum"){
     fech_master_repo nova
 }else{
     Throw "Cannot build for project: $buildFor"
