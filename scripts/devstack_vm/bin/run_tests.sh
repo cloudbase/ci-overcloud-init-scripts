@@ -22,7 +22,7 @@ test_for_nova (){
     echo '# AMI images not supported' >> "$EXCLUDED_TESTS"
     testr list-tests tempest | grep "TestMinimumBasicScenario" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
     # Run tests list
-    testr list-tests tempest.api.compute | grep -v "TestMinimumBasicScenario\|rescue\|_uptime\|_console_\|AttachInterfaces" > "$RUN_TESTS_LIST" || echo "failed to generate exclude list"    
+    testr list-tests tempest | grep -v "TestMinimumBasicScenario\|rescue\|_uptime\|_console_\|AttachInterfaces" > "$RUN_TESTS_LIST" || echo "failed to generate exclude list"    
 }
 
 test_for_neutron () {
