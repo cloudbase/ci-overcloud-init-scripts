@@ -17,7 +17,7 @@ PROJECT_NAME=$(basename $PROJECT)
 test_for_nova (){
     # make a list of excluded tests.
     # Unimplemented
-    echo '# Unimplemented' >> "$EXCLUDED_TESTS"
+    echo '# Not implemented' >> "$EXCLUDED_TESTS"
     testr list-tests tempest | grep "rescue\|_uptime\|_console_\|AttachInterfaces" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
     echo '# AMI images not supported' >> "$EXCLUDED_TESTS"
     testr list-tests tempest | grep "TestMinimumBasicScenario" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
