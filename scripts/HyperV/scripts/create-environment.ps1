@@ -125,7 +125,7 @@ if ($hasNeutronTemplate -eq $false){
 
 if ($buildFor -eq "openstack/nova"){
     fech_master_repo neutron
-}elif ($buildFor -eq "openstack/neutron" -or $buildFor -eq "openstack/quantum"){
+}elseif ($buildFor -eq "openstack/neutron" -or $buildFor -eq "openstack/quantum"){
     fech_master_repo nova
 }else{
     Throw "Cannot build for project: $buildFor"
@@ -167,14 +167,15 @@ if ($? -eq $false){
 cp "$templateDir\policy.json" "$configDir\"
 cp "$templateDir\interfaces.template" "$configDir\"
 
-if (Test-Path c:\OpenStack\virtualenv\Scripts\nova-compute.exe -eq $false){
+$hasNovaExec = Test-Path c:\OpenStack\virtualenv\Scripts\nova-compute.exe
+if ($hasNovaExec -eq $false){
     $novaExec = "C:\Python27\python.exe c:\OpenStack\virtualenv\Scripts\nova-compute-script.py"
 }else{
     $novaExec = "c:\OpenStack\virtualenv\Scripts\nova-compute.exe"
 }
 
-$hasNeutronExec = Test-Path c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe
-$hasQuantumExec = Test-Path c:\OpenStack\virtualenv\Scripts\quantum-hyperv-agent.exe
+$hasNeutronExec = Test-Path "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
+$hasQuantumExec = Test-Path "c:\OpenStack\virtualenv\Scripts\quantum-hyperv-agent.exe"
 if ($hasNeutronExec -eq $false){
     if ($hasQuantumExec -eq $false){
         Throw "No neutron exe found"
