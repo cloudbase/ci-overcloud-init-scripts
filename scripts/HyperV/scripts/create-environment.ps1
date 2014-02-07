@@ -1,7 +1,7 @@
 Param(
     [Parameter(Mandatory=$true)][string]$devstackIP,
     [string]$branchName='master',
-    [string]$buildFor='openstack/nova',
+    [string]$buildFor='openstack/nova'
 )
 
 ############################################################################
