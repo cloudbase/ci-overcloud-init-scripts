@@ -13,7 +13,7 @@ done
 
 # Upload Cirros VHD
 
-CIRROS_UUID=$(glance image-create --property hypervisor_type=hyperv --name "cirros" --container-format bare --disk-format vhd --is-public True --file /home/ubuntu/cirros-0.3.0-x86_64-disk.vhd  | grep "id " | awk '{print $4}')
+CIRROS_UUID=$(glance image-create --property hypervisor_type=hyperv --name "cirros" --container-format bare --disk-format vhd --is-public True --file /home/ubuntu/cirros.vhd  | grep "id " | awk '{print $4}')
 
 if [ $? -ne 0 ]
 then
@@ -38,16 +38,16 @@ do
 done
 
 
-NETID1=`neutron net-create private | awk '{if (NR == 6) {print $4}}'`
-EXTNETID1=`neutron  net-create public --router:external=True | awk '{if (NR == 6) {print $4}}'`
+NETID1=`neutron net-create private --provider:physical_network physnet1 --provider:network_type vlan --provider:segmentation_id=500 | awk '{if (NR == 6) {print $4}}'`
+EXTNETID1=`neutron  net-create public --provider:physical_network physnet1 --provider:network_type vlan --provider:segmentation_id=501 --router:external=True | awk '{if (NR == 6) {print $4}}'`
 SUBNETID1=`neutron  subnet-create private 10.0.0.0/24 --dns_nameservers list=true 8.8.8.8 | awk '{if (NR == 11) {print $4}}'`
 SUBNETID2=`neutron  subnet-create public --allocation-pool start=172.24.4.2,end=172.24.4.254 --gateway 172.24.4.1 172.24.4.0/24 --enable_dhcp=False | awk '{if (NR == 11) {print $4}}'`
-neutron router-interface-add router1 $SUBNETID1 > /dev/null 2>&1
-neutron router-gateway-set router1 $EXTNETID1 > /dev/null 2>&1
+neutron router-interface-add router1 $SUBNETID1 
+neutron router-gateway-set router1 $EXTNETID1 
 
-NETID1=`neutron --os-username=demo --os-tenant-name=demo net-create demo_private | awk '{if (NR == 6) {print $4}}'`
+NETID1=`neutron --os-username=demo --os-tenant-name=demo net-create demo_private --provider:physical_network physnet1 --provider:network_type vlan --provider:segmentation_id=502 | awk '{if (NR == 6) {print $4}}'`
 SUBNETID1=`neutron  --os-username=demo --os-tenant-name=demo subnet-create demo_private 10.0.5.0/24 --dns_nameservers list=true 8.8.8.8 | awk '{if (NR == 11) {print $4}}'`
-neutron --os-username=demo --os-tenant-name=demo router-interface-add router1 $SUBNETID1 > /dev/null 2>&1
+neutron --os-username=demo --os-tenant-name=demo router-interface-add router1 $SUBNETID1 
 
 
 if [ ! -e "$TEMPEST_CONF" ]
@@ -66,3 +66,10 @@ nova flavor-create --ephemeral 0 --rxtx-factor 1.0 --is-public True m1.nano 42 6
 nova flavor-create --ephemeral 0 --rxtx-factor 1.0 --is-public True m1.micro 84 128 1 1
 nova quota-class-update --instances 50 --cores 100 --ram $((51200*4)) --floating-ips 50 --security-groups 50 --security-group-rules 100 default
 cinder quota-class-update --snapshots 50 --volumes 50 --gigabytes 2000 default
+
+
+#NAT
+sudo /sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+sudo /sbin/iptables -A FORWARD -i eth0 -o br-eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo /sbin/iptables -A FORWARD -i br-eth1 -o eth0 -j ACCEPT
+
