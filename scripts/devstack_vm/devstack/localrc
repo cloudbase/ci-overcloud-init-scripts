@@ -21,6 +21,7 @@ enable_service q-l3
 enable_service q-meta
 enable_service q-lbaas
 enable_service neutron
+enable_service q-vpn
 # Uncomment to disable Horizon
 disable_service horizon
 
@@ -36,7 +37,7 @@ enable_service tempest
 Q_PLUGIN=ml2
 Q_ML2_PLUGIN_MECHANISM_DRIVERS=openvswitch,hyperv
 ENABLE_TENANT_VLANS=True
-TENANT_VLAN_RANGE=2000:3000
+TENANT_VLAN_RANGE=500:1000
 PHYSICAL_NETWORK=physnet1
 OVS_ENABLE_TUNNELING=False
 OVS_BRIDGE_MAPPINGS=physnet1:br-eth1
@@ -63,3 +64,4 @@ API_RATE_LIMIT=False
 #RECLONE=yes
 
 CINDER_SECURE_DELETE=False
+LOG_COLOR=False
