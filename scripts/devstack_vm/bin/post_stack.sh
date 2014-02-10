@@ -38,14 +38,14 @@ do
 done
 
 
-NETID1=`neutron net-create private --provider:physical_network physnet1 --provider:network_type vlan --provider:segmentation_id=500 | awk '{if (NR == 6) {print $4}}'`
-EXTNETID1=`neutron  net-create public --provider:physical_network physnet1 --provider:network_type vlan --provider:segmentation_id=501 --router:external=True | awk '{if (NR == 6) {print $4}}'`
+NETID1=`neutron net-create private  | awk '{if (NR == 6) {print $4}}'`
+EXTNETID1=`neutron  net-create public --router:external=True | awk '{if (NR == 6) {print $4}}'`
 SUBNETID1=`neutron  subnet-create private 10.0.0.0/24 --dns_nameservers list=true 8.8.8.8 | awk '{if (NR == 11) {print $4}}'`
 SUBNETID2=`neutron  subnet-create public --allocation-pool start=172.24.4.2,end=172.24.4.254 --gateway 172.24.4.1 172.24.4.0/24 --enable_dhcp=False | awk '{if (NR == 11) {print $4}}'`
 neutron router-interface-add router1 $SUBNETID1 
 neutron router-gateway-set router1 $EXTNETID1 
 
-NETID1=`neutron --os-username=demo --os-tenant-name=demo net-create demo_private --provider:physical_network physnet1 --provider:network_type vlan --provider:segmentation_id=502 | awk '{if (NR == 6) {print $4}}'`
+NETID1=`neutron --os-username=demo --os-tenant-name=demo net-create demo_private | awk '{if (NR == 6) {print $4}}'`
 SUBNETID1=`neutron  --os-username=demo --os-tenant-name=demo subnet-create demo_private 10.0.5.0/24 --dns_nameservers list=true 8.8.8.8 | awk '{if (NR == 11) {print $4}}'`
 neutron --os-username=demo --os-tenant-name=demo router-interface-add router1 $SUBNETID1 
 
