@@ -17,14 +17,15 @@ PROJECT_NAME=$(basename $PROJECT)
 test_for_nova (){
     # make a list of excluded tests.
     echo '# Under investigation' >> "$EXCLUDED_TESTS"
-    testr list-tests tempest | grep "TestVolumeBootPattern\|TestAggregatesBasicOps" >> "$EXCLUDED_TESTS"
+#    testr list-tests tempest | grep "TestVolumeBootPattern\|TestAggregatesBasicOps" >> "$EXCLUDED_TESTS"
+    testr list-tests tempest | grep "scenario" >> "$EXCLUDED_TESTS"
     # Unimplemented
     echo '# Not implemented' >> "$EXCLUDED_TESTS"
     testr list-tests tempest | grep "rescue\|_uptime\|_console_\|AttachInterfaces" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
-    echo '# AMI images not supported' >> "$EXCLUDED_TESTS"
-    testr list-tests tempest | grep "TestMinimumBasicScenario" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
+#    echo '# AMI images not supported' >> "$EXCLUDED_TESTS"
+#    testr list-tests tempest | grep "TestMinimumBasicScenario" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
     # Run tests list
-    testr list-tests tempest | grep -v "TestVolumeBootPattern\|TestAggregatesBasicOps\|TestMinimumBasicScenario\|rescue\|_uptime\|_console_\|AttachInterfaces" > "$RUN_TESTS_LIST" || echo "failed to generate exclude list"    
+    testr list-tests tempest | grep -v "scenario\|rescue\|_uptime\|_console_\|AttachInterfaces" > "$RUN_TESTS_LIST" || echo "failed to generate exclude list"    
 }
 
 test_for_neutron () {
@@ -47,7 +48,7 @@ then
 elif [ "$PROJECT_NAME" == "neutron" -o "$PROJECT_NAME" == "quantum" ]
 then
     test_for_neutron
-else:
+else
     echo "ERROR: Cannot test for project $PROJECT_NAME"
     exit 1
 fi
