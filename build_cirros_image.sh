@@ -1,5 +1,12 @@
 #!/bin/bash
 
+LSB_RELEASE=$(lsb_release -rs)
+
+if [ "$LSB_RELEASE" != "12.04" ]
+then
+    echo "WARNING: This script was tested only on Ubuntu 12.04"
+fi
+
 if [ $# -ne 2 ]; then
     echo "Usage: $0 <architecture> <buildroot version>"
     exit 1
