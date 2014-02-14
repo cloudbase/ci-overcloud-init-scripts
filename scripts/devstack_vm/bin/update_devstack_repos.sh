@@ -27,7 +27,8 @@ then
 fi
 
 pushd "$BASEDIR"
-
+#clean any .pyc files
+find . -name *pyc | xargs rm
 # Update all repositories except nova
 for i in `ls -A`
 do
@@ -36,9 +37,10 @@ do
 		pushd "$i"
         if [ -d ".git" ]
         then
-            git fetch
+            git reset --hard
+            git clean -f -d
+            git pull
             git checkout "$BRANCH" || echo "Failed to switch branch"
-    		git pull
         fi
 		popd
 	fi
