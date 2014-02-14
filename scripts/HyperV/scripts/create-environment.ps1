@@ -85,11 +85,13 @@ function fech_master_repo($project="nova"){
         }
     }else{
         pushd $buildDir\$project
+        get-childitem . -include *.pyc -recurse | foreach ($_) {remove-item $_.fullname}
+        git reset --hard
+        git clean -f -d
+        exec_with_retry -cmd "git pull" -retry 5 -interval 5 -discardOutput
         if ($branchName){
-            git fetch
             git checkout "$branchName"
         }
-        exec_with_retry -cmd "git pull" -retry 5 -interval 5 -discardOutput
         popd
     }
 }
