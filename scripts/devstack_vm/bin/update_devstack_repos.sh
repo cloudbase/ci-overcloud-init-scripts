@@ -28,7 +28,7 @@ fi
 
 pushd "$BASEDIR"
 #clean any .pyc files
-find . -name *pyc | xargs rm
+find . -name *pyc -print0 | xargs -0 rm -f
 # Update all repositories except nova
 for i in `ls -A`
 do
