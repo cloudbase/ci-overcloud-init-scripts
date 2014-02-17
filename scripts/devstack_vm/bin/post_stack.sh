@@ -13,7 +13,7 @@ done
 
 # Upload Cirros VHD
 
-CIRROS_UUID=$(glance image-create --property hypervisor_type=hyperv --name "cirros" --container-format bare --disk-format vhd --is-public True --file /home/ubuntu/cirros.vhd  | grep "id " | awk '{print $4}')
+CIRROS_UUID=$(glance image-create --property hypervisor_type=hyperv --name "cirros" --container-format bare --disk-format vhd --is-public True --file /home/ubuntu/cirros.vhdx  | grep "id " | awk '{print $4}')
 
 if [ $? -ne 0 ]
 then
@@ -59,7 +59,7 @@ sed -i 's/^image_ref_alt =.*/image_ref_alt = '$CIRROS_UUID'/g' "$TEMPEST_CONF"
 sed -i 's/^image_ref =.*/image_ref = '$CIRROS_UUID'/g' "$TEMPEST_CONF"
 sed -i 's/^public_network_id =.*/public_network_id = '$EXTNETID1'/g' "$TEMPEST_CONF"
 sed -i 's/^allow_tenant_isolation =.*/allow_tenant_isolation = True/g' "$TEMPEST_CONF"
-sed -ri 's/^(#){0,1}live_migration=.*/live_migration=true/g' "$TEMPEST_CONF"
+#sed -ri 's/^(#){0,1}live_migration=.*/live_migration=true/g' "$TEMPEST_CONF"
 
 nova flavor-delete m1.nano
 nova flavor-delete m1.micro
