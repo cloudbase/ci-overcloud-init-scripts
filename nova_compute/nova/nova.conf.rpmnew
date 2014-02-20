@@ -1,6 +1,4 @@
 [DEFAULT]
-notification_driver=ceilometer.compute.nova_notifier
-notification_driver=nova.openstack.common.notifier.rpc_notifier
 
 #
 # Options defined in nova.availability_zones
@@ -100,7 +98,6 @@ notification_driver=nova.openstack.common.notifier.rpc_notifier
 # Top-level directory for maintaining nova's state (string
 # value)
 #state_path=/var/lib/nova
-state_path=/var/lib/nova
 
 
 #
@@ -245,7 +242,6 @@ state_path=/var/lib/nova
 # maximum time since last check-in for up service (integer
 # value)
 #service_down_time=60
-service_down_time=60
 
 
 #
@@ -272,12 +268,10 @@ service_down_time=60
 # time period to generate instance usages for.  Time period
 # must be hour, day, month or year (string value)
 #instance_usage_audit_period=month
-instance_usage_audit_period=hour
 
 # Path to the rootwrap configuration file to use for running
 # commands as root (string value)
 #rootwrap_config=/etc/nova/rootwrap.conf
-rootwrap_config=/etc/nova/rootwrap.conf
 
 # Explicitly specify the temporary working directory (string
 # value)
@@ -324,7 +318,6 @@ rootwrap_config=/etc/nova/rootwrap.conf
 # The strategy to use for auth: noauth or keystone. (string
 # value)
 #auth_strategy=noauth
-auth_strategy=keystone
 
 # Treat X-Forwarded-For as the canonical remote address. Only
 # enable this if you have a sanitizing proxy. (boolean value)
@@ -475,7 +468,6 @@ auth_strategy=keystone
 # Default tenant id when creating neutron networks (string
 # value)
 #neutron_default_tenant_id=default
-neutron_default_tenant_id=default
 
 
 #
@@ -678,7 +670,6 @@ neutron_default_tenant_id=default
 # Generate periodic compute.instance.exists notifications
 # (boolean value)
 #instance_usage_audit=false
-instance_usage_audit=True
 
 # Number of 1 second retries needed in live_migration (integer
 # value)
@@ -928,7 +919,6 @@ instance_usage_audit=True
 # with https:// for ssl-based glance api servers.
 # ([hostname|ip]:port) (list value)
 #glance_api_servers=$glance_host:$glance_port
-glance_api_servers=10.21.7.41:9292
 
 # Allow to perform insecure SSL (https) requests to glance
 # (boolean value)
@@ -988,7 +978,6 @@ glance_api_servers=10.21.7.41:9292
 # The full class name of the network API class to use (string
 # value)
 #network_api_class=nova.network.api.API
-network_api_class=nova.network.neutronv2.api.API
 
 
 #
@@ -1132,7 +1121,6 @@ network_api_class=nova.network.neutronv2.api.API
 
 # the ip for the metadata api server (string value)
 #metadata_host=$my_ip
-metadata_host=10.21.7.41
 
 # the port for the metadata api port (integer value)
 #metadata_port=8775
@@ -1251,37 +1239,30 @@ metadata_host=10.21.7.41
 
 # URL for connecting to neutron (string value)
 #neutron_url=http://127.0.0.1:9696
-neutron_url=http://10.21.7.41:9696
 
 # timeout value for connecting to neutron in seconds (integer
 # value)
 #neutron_url_timeout=30
-neutron_url_timeout=30
 
 # username for connecting to neutron in admin context (string
 # value)
 #neutron_admin_username=<None>
-neutron_admin_username=neutron
 
 # password for connecting to neutron in admin context (string
 # value)
 #neutron_admin_password=<None>
-neutron_admin_password=5d1683bac37841fa
 
 # tenant name for connecting to neutron in admin context
 # (string value)
 #neutron_admin_tenant_name=<None>
-neutron_admin_tenant_name=services
 
 # region name for connecting to neutron in admin context
 # (string value)
 #neutron_region_name=<None>
-neutron_region_name=RegionOne
 
 # auth url for connecting to neutron in admin context (string
 # value)
 #neutron_admin_auth_url=http://localhost:5000/v2.0
-neutron_admin_auth_url=http://10.21.7.41:35357/v2.0
 
 # if set, ignore any SSL validation issues (boolean value)
 #neutron_api_insecure=false
@@ -1289,17 +1270,14 @@ neutron_admin_auth_url=http://10.21.7.41:35357/v2.0
 # auth strategy for connecting to neutron in admin context
 # (string value)
 #neutron_auth_strategy=keystone
-neutron_auth_strategy=keystone
 
 # Name of Integration Bridge used by Open vSwitch (string
 # value)
 #neutron_ovs_bridge=br-int
-neutron_ovs_bridge=br-int
 
 # Number of seconds before querying neutron for extensions
 # (integer value)
 #neutron_extension_sync_interval=600
-neutron_extension_sync_interval=600
 
 # Location of ca certificates file to use for neutron client
 # requests. (string value)
@@ -1328,7 +1306,6 @@ neutron_extension_sync_interval=600
 
 # The full class name of the security API class (string value)
 #security_group_api=nova
-security_group_api=neutron
 
 
 #
@@ -1380,7 +1357,6 @@ security_group_api=neutron
 
 # Directory to use for lock files. (string value)
 #lock_path=/var/lib/nova/tmp
-lock_path=/var/lib/nova/tmp
 
 
 #
@@ -1390,12 +1366,10 @@ lock_path=/var/lib/nova/tmp
 # Print debugging output (set logging level to DEBUG instead
 # of default WARNING level). (boolean value)
 #debug=false
-debug=True
 
 # Print more verbose output (set logging level to INFO instead
 # of default WARNING level). (boolean value)
 #verbose=false
-verbose=True
 
 # Log output to standard error (boolean value)
 #use_stderr=true
@@ -1461,7 +1435,6 @@ verbose=True
 
 # Use syslog for logging. (boolean value)
 #use_syslog=false
-use_syslog=False
 
 # syslog facility to receive log lines (string value)
 #syslog_log_facility=LOG_USER
@@ -1516,7 +1489,6 @@ use_syslog=False
 # The messaging module to use, defaults to kombu. (string
 # value)
 #rpc_backend=nova.openstack.common.rpc.impl_qpid
-rpc_backend=nova.openstack.common.rpc.impl_qpid
 
 # Size of RPC thread pool (integer value)
 #rpc_thread_pool_size=64
@@ -1622,22 +1594,18 @@ rpc_backend=nova.openstack.common.rpc.impl_qpid
 
 # Qpid broker hostname (string value)
 #qpid_hostname=localhost
-qpid_hostname=10.21.7.41
 
 # Qpid broker port (integer value)
 #qpid_port=5672
-qpid_port=5672
 
 # Qpid HA cluster host:port pairs (list value)
 #qpid_hosts=$qpid_hostname:$qpid_port
 
 # Username for qpid connection (string value)
 #qpid_username=
-qpid_username=guest
 
 # Password for qpid connection (string value)
 #qpid_password=
-qpid_password=guest
 
 # Space separated list of SASL mechanisms to use for auth
 # (string value)
@@ -1646,15 +1614,12 @@ qpid_password=guest
 # Seconds between connection keepalive heartbeats (integer
 # value)
 #qpid_heartbeat=60
-qpid_heartbeat=60
 
 # Transport to use, either 'tcp' or 'ssl' (string value)
 #qpid_protocol=tcp
-qpid_protocol=tcp
 
 # Disable Nagle algorithm (boolean value)
 #qpid_tcp_nodelay=true
-qpid_tcp_nodelay=True
 
 # The qpid topology version to use.  Version 1 is what was
 # originally used by impl_qpid.  Version 2 includes some
@@ -1952,7 +1917,6 @@ qpid_tcp_nodelay=True
 # vmwareapi.VMwareESXDriver, vmwareapi.VMwareVCDriver (string
 # value)
 #compute_driver=libvirt.LibvirtDriver
-compute_driver=libvirt.LibvirtDriver
 
 # The default format an ephemeral_volume will be formatted
 # with on creation. (string value)
@@ -1974,7 +1938,6 @@ compute_driver=libvirt.LibvirtDriver
 # Firewall driver (defaults to hypervisor specific iptables
 # driver) (string value)
 #firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
-firewall_driver=nova.virt.firewall.NoopFirewallDriver
 
 # Whether to allow network traffic from same network (boolean
 # value)
@@ -2005,7 +1968,6 @@ firewall_driver=nova.virt.firewall.NoopFirewallDriver
 # Libvirt domain type (valid options are: kvm, lxc, qemu, uml,
 # xen) (string value)
 #libvirt_type=kvm
-libvirt_type=kvm
 
 # Override the default libvirt URI (which is dependent on
 # libvirt_type) (string value)
@@ -2022,7 +1984,6 @@ libvirt_type=kvm
 # (libguestfs only), 0 => not partitioned, >0 => partition
 # number (integer value)
 #libvirt_inject_partition=-1
-libvirt_inject_partition=-1
 
 # Sync virtual and real mouse cursors in Windows VMs (boolean
 # value)
@@ -2047,8 +2008,7 @@ libvirt_inject_partition=-1
 #snapshot_image_format=<None>
 
 # The libvirt VIF driver to configure the VIFs. (string value)
-libvirt_vif_driver=nova.virt.libvirt.vif.LibvirtGenericVIFDriver
-# libvirt_vif_driver=nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
+#libvirt_vif_driver=nova.virt.libvirt.vif.LibvirtGenericVIFDriver
 
 # Libvirt handlers for remote volumes. (list value)
 #libvirt_volume_drivers=iscsi=nova.virt.libvirt.volume.LibvirtISCSIVolumeDriver,iser=nova.virt.libvirt.volume.LibvirtISERVolumeDriver,local=nova.virt.libvirt.volume.LibvirtVolumeDriver,fake=nova.virt.libvirt.volume.LibvirtFakeVolumeDriver,rbd=nova.virt.libvirt.volume.LibvirtNetVolumeDriver,sheepdog=nova.virt.libvirt.volume.LibvirtNetVolumeDriver,nfs=nova.virt.libvirt.volume.LibvirtNFSVolumeDriver,aoe=nova.virt.libvirt.volume.LibvirtAOEVolumeDriver,glusterfs=nova.virt.libvirt.volume.LibvirtGlusterfsVolumeDriver,fibre_channel=nova.virt.libvirt.volume.LibvirtFibreChannelVolumeDriver,scality=nova.virt.libvirt.volume.LibvirtScalityVolumeDriver
@@ -2075,7 +2035,6 @@ libvirt_vif_driver=nova.virt.libvirt.vif.LibvirtGenericVIFDriver
 # "host-model", otherwise it will default to "none" (string
 # value)
 #libvirt_cpu_mode=<None>
-libvirt_cpu_mode=host-passthrough
 
 # Set to a named libvirt CPU model (see names listed in
 # /usr/share/libvirt/cpu_map.xml). Only has effect if
@@ -2186,7 +2145,6 @@ libvirt_cpu_mode=host-passthrough
 # Use virtio for bridge interfaces with KVM/QEMU (boolean
 # value)
 #libvirt_use_virtio_for_bridges=true
-libvirt_use_virtio_for_bridges=True
 
 
 #
@@ -2499,7 +2457,6 @@ libvirt_use_virtio_for_bridges=True
 # location of vnc console proxy, in the form
 # "http://127.0.0.1:6080/vnc_auto.html" (string value)
 #novncproxy_base_url=http://127.0.0.1:6080/vnc_auto.html
-novncproxy_base_url=http://10.21.7.41:6080/vnc_auto.html
 
 # location of nova xvp vnc console proxy, in the form
 # "http://127.0.0.1:6081/console" (string value)
@@ -2508,16 +2465,13 @@ novncproxy_base_url=http://10.21.7.41:6080/vnc_auto.html
 # IP address on which instance vncservers should listen
 # (string value)
 #vncserver_listen=127.0.0.1
-vncserver_listen=10.21.7.31
 
 # the address to which proxy clients (like nova-xvpvncproxy)
 # should connect (string value)
 #vncserver_proxyclient_address=127.0.0.1
-vncserver_proxyclient_address=10.21.7.31
 
 # enable vnc related features (boolean value)
 #vnc_enabled=true
-vnc_enabled=True
 
 # keymap for vnc (string value)
 #vnc_keymap=en-us
@@ -2541,7 +2495,6 @@ vnc_enabled=True
 # The full class name of the volume API class to use (string
 # value)
 #volume_api_class=nova.volume.cinder.API
-volume_api_class=nova.volume.cinder.API
 
 
 #
@@ -2576,16 +2529,6 @@ volume_api_class=nova.volume.cinder.API
 # Allow attach between instance and volume in different
 # availability zones. (boolean value)
 #cinder_cross_az_attach=true
-qpid_reconnect_interval=0
-qpid_reconnect_interval_min=0
-qpid_reconnect=True
-sql_connection=mysql://nova:80cc98c2a7064068@10.21.7.41/nova
-qpid_reconnect_timeout=0
-image_service=nova.image.glance.GlanceImageService
-logdir=/var/log/nova
-qpid_reconnect_interval_max=0
-qpid_reconnect_limit=0
-connection_type=libvirt
 
 
 [hyperv]
@@ -3238,8 +3181,10 @@ connection_type=libvirt
 # Options defined in nova.compute.rpcapi
 #
 
-# Set a version cap for messages sent to compute services
-# (string value)
+# Set a version cap for messages sent to compute services. If
+# you plan to do a live upgrade from havana to icehouse, you
+# should set this option to "icehouse-compat" before beginning
+# the live upgrade procedure. (string value)
 #compute=<None>
 
 
