@@ -22,12 +22,12 @@ test_for_nova (){
     testr list-tests tempest | grep "scenario\|test_metering_extensions" >> "$EXCLUDED_TESTS"
     # Unimplemented
     echo '# Not implemented' >> "$EXCLUDED_TESTS"
-    testr list-tests tempest | grep "rescue\|_uptime\|_console_\|AttachInterfaces" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
+    testr list-tests tempest | grep "rescue\|_uptime\|_console_\|AttachInterfaces\|VolumesBackupsTest" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
 #    echo '# AMI images not supported' >> "$EXCLUDED_TESTS"
 #    testr list-tests tempest | grep "TestMinimumBasicScenario" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
     # Run tests list
     #testr list-tests tempest | grep -v "scenario\|rescue\|_uptime\|_console_\|AttachInterfaces\|test_metering_extensions\|test_neutron_meter_label" > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
-    testr list-tests tempest | grep -v "scenario\|rescue\|_uptime\|_console_\|AttachInterfaces\|test_metering_extensions" > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
+    testr list-tests tempest | grep -v "scenario\|rescue\|_uptime\|_console_\|AttachInterfaces\|test_metering_extensions\|VolumesBackupsTest" > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
 }
 
 test_for_neutron () {
