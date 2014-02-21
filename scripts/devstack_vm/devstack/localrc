@@ -25,6 +25,8 @@ enable_service neutron
 enable_service q-vpn
 # Uncomment to disable Horizon
 disable_service horizon
+# Enable cinder-backup
+enable_service c-bak
 
 enable_service ceilometer-acompute ceilometer-acentral ceilometer-collector ceilometer-api
 #enable_service ceilometer-alarm-notifier ceilometer-alarm-evaluator
