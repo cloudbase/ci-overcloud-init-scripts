@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 TAR=$(which tar)
 GZIP=$(which gzip)
 
@@ -10,7 +9,9 @@ TEMPEST_LOGS="/home/ubuntu/tempest"
 
 LOG_DST="/home/ubuntu/aggregate"
 LOG_DST_DEVSTACK="$LOG_DST/devstack_logs"
-LOG_DST_HV="$LOG_DST/Hyper-V"
+LOG_DST_HV="$LOG_DST/Hyper-V_logs"
+CONFIG_DST_DEVSTACK="$LOG_DST/devstack_config"
+CONFIG_DST_HV="$LOG_DST/Hyper-V_config"
 
 function emit_error() {
     echo "ERROR: $1"
@@ -36,6 +37,28 @@ function archive_devstack() {
                 $GZIP -c "$REAL" > "$LOG_DST_DEVSTACK/$i.gz" || emit_warning "Failed to archive devstack logs"
         fi
     done
+    for i in ceilometer cinder glance keystone neutron nova openvswitch openvswitch-switch
+    do
+        mkdir -p $CONFIG_DST_DEVSTACK/$i
+        for j in `ls -A /etc/$i`
+        do
+            if [ -d /etc/$i/$j ]
+            then
+                $TAR cvzf "$CONFIG_DST_DEVSTACK/$i/$j.tar.gz" "/etc/$i/$j"
+            else
+                $GZIP -c "/etc/$i/$j" > "$CONFIG_DST_DEVSTACK/$i/$j.gz"
+            fi
+        done
+    done
+    $GZIP -c /home/ubuntu/devstack/localrc > "$CONFIG_DST_DEVSTACK/localrc.txt.gz"
+    df -h > "$CONFIG_DST_DEVSTACK/df.txt" 2>&1 && $GZIP "$CONFIG_DST_DEVSTACK/df.txt"
+    iptables-save > "$CONFIG_DST_DEVSTACK/iptables.txt" 2>&1 && $GZIP "$CONFIG_DST_DEVSTACK/iptables.txt"
+    dpkg-query -l > "$CONFIG_DST_DEVSTACK/dpkg-l.txt" 2>&1 && $GZIP "$CONFIG_DST_DEVSTACK/dpkg-l.txt"
+    pip freeze > "$CONFIG_DST_DEVSTACK/pip-freeze.txt" 2>&1 && $GZIP "$CONFIG_DST_DEVSTACK/pip-freeze.txt"
+    ps axwu > "$CONFIG_DST_DEVSTACK/pidstat.txt" 2>&1 && $GZIP "$CONFIG_DST_DEVSTACK/pidstat.txt"
+    #/var/log/kern.log
+    #/var/log/rabbitmq/
+    #/var/log/syslog
 }
 
 function archive_hyperv_logs() {
@@ -62,6 +85,10 @@ function archive_hyperv_logs() {
     done
 }
 
+#To archive Hyper-V config files after the run,
+# from C:\OpenStack\etc\
+#Also save logs locally and copy them over in the end,
+#together with the config files
 
 function archive_tempest_files() {
     for i in `ls -A $TEMPEST_LOGS`
