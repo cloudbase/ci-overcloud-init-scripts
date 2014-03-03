@@ -12,7 +12,8 @@ Stop-Process -Name nova-compute -Force -ErrorAction SilentlyContinue
 Stop-Process -Name neutron-hyperv-agent -Force -ErrorAction SilentlyContinue
 Stop-Process -Name python -Force -ErrorAction SilentlyContinue
 
-Get-VM | Stop-VM -Force -Passthru | Remove-VM -Force
+Get-VM | where {$_.State -eq 'Running' -or $_.State -eq 'Paused'} | Stop-Vm -Force
+Remove-VM * -Force
 
 Remove-Item -Recurse -Force $buildDir\openstack\* -ErrorAction SilentlyContinue
 Remove-Item -Recurse -Force $virtualenv -ErrorAction SilentlyContinue
