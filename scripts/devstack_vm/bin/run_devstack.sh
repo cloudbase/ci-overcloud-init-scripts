@@ -11,6 +11,7 @@ sudo sed -i '2i127.0.0.1  '$HOSTNAME'' /etc/hosts
 
 DEVSTACK_LOGS="/opt/stack/logs/screen"
 LOCALRC="/home/ubuntu/devstack/localrc"
+LOCALCONF="/home/ubuntu/devstack/local.conf"
 
 # Clean devstack logs
 rm -f "$DEVSTACK_LOGS/*"
@@ -20,6 +21,7 @@ then
         MYIP=$(/sbin/ifconfig eth0 2>/dev/null| grep "inet addr:" 2>/dev/null| sed 's/.*inet addr://g;s/ .*//g' 2>/dev/null)
         [ -z "$MYIP" ] && exit 1
         sed -i 's/^HOST_IP=.*/HOST_IP='$MYIP'/g' "$LOCALRC"
+        sed -i 's/^HOST_IP=.*/HOST_IP='$MYIP'/g' "$LOCALCONF"
 fi
 
 cd /home/ubuntu/devstack
