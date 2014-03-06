@@ -142,7 +142,7 @@ if ($hasLogDir -eq $false){
     mkdir U:\$hostname
 }
 
-cmd.exe /C virtualenv --system-site-packages $virtualenv > $null
+cmd.exe /C virtualenv --system-site-packages $virtualenv
 
 if ($? -eq $false){
     Throw "Failed to create virtualenv"
