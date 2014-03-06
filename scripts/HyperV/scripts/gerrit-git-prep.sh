@@ -90,12 +90,8 @@ fi
 
 cd "$PROJECT_DIR" || exit_error "Failed to enter project build dir"
 
-if [[ ! -e .git ]]
-then
-    ls -a
-    rm -fr .[^.]* *
-    git clone $GIT_ORIGIN/$ZUUL_PROJECT .
-fi
+rm -rf "$PROJECT_DIR/*"
+git clone $GIT_ORIGIN/$ZUUL_PROJECT .
 git remote set-url origin $GIT_ORIGIN/$ZUUL_PROJECT
 
 # attempt to work around bugs 925790 and 1229352
