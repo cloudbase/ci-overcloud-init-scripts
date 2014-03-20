@@ -8,16 +8,16 @@ $buildDir = "$baseDir\build"
 #Remove-Job -Name nova
 #Remove-Job -Name neutron
 
-Stop-Process -Name nova-compute -Force -ErrorAction SilentlyContinue
-Stop-Process -Name neutron-hyperv-agent -Force -ErrorAction SilentlyContinue
-Stop-Process -Name python -Force -ErrorAction SilentlyContinue
+Stop-Process -Name nova-compute -Force -ErrorAction Continue
+Stop-Process -Name neutron-hyperv-agent -Force -ErrorAction Continue
+Stop-Process -Name python -Force -ErrorAction Continue
 
 Get-VM | where {$_.State -eq 'Running' -or $_.State -eq 'Paused'} | Stop-Vm -Force
 Remove-VM * -Force
 
-Remove-Item -Recurse -Force $buildDir\openstack\* -ErrorAction SilentlyContinue
-Remove-Item -Recurse -Force $virtualenv -ErrorAction SilentlyContinue
-Remove-Item -Force $baseDir\Log\* -ErrorAction SilentlyContinue
-Remove-Item -Force $baseDir\etc\* -ErrorAction SilentlyContinue
-Remove-Item -Recurse -Force $baseDir\Instances\* -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force $buildDir\openstack\* -ErrorAction Continue
+Remove-Item -Recurse -Force $virtualenv -ErrorAction Continue
+Remove-Item -Force $baseDir\Log\* -ErrorAction Continue
+Remove-Item -Force $baseDir\etc\* -ErrorAction Continue
+Remove-Item -Recurse -Force $baseDir\Instances\* -ErrorAction Continue
 net use u: /delete
