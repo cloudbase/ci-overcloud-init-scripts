@@ -36,19 +36,19 @@ $hasMkisoFs = Test-Path $binDir\mkisofs.exe
 $hasQemuImg = Test-Path $binDir\qemu-img.exe
 
 # Do a selective teardown
-Stop-Process -Name nova-compute -Force -ErrorAction SilentlyContinue
-Stop-Process -Name neutron-hyperv-agent -Force -ErrorAction SilentlyContinue
-Stop-Process -Name quantum-hyperv-agent -Force -ErrorAction SilentlyContinue
-Stop-Process -Name python -Force -ErrorAction SilentlyContinue
-Remove-Item -Recurse -Force $virtualenv -ErrorAction SilentlyContinue
+Stop-Process -Name nova-compute -Force -ErrorAction Continue
+Stop-Process -Name neutron-hyperv-agent -Force -ErrorAction Continue
+Stop-Process -Name quantum-hyperv-agent -Force -ErrorAction Continue
+Stop-Process -Name python -Force -ErrorAction Continue
+Remove-Item -Recurse -Force $virtualenv -ErrorAction Continue
 
 if ($hasConfigDir -eq $false) {
     mkdir $configDir
 }
 
-$novaIsRunning = Get-Process -Name nova-compute -erroraction 'silentlycontinue'
-$neutronIsRunning = Get-Process -Name neutron-hyperv-agent -erroraction 'silentlycontinue'
-$quantumIsRunning = Get-Process -Name quantum-hyperv-agent -erroraction 'silentlycontinue'
+$novaIsRunning = Get-Process -Name nova-compute -ErrorAction Continue
+$neutronIsRunning = Get-Process -Name neutron-hyperv-agent -ErrorAction Continue
+$quantumIsRunning = Get-Process -Name quantum-hyperv-agent -ErrorAction Continue
 
 function exec_with_retry([string]$cmd, [int]$retry, [int]$interval=0){
     $c = 0
@@ -105,8 +105,7 @@ if ($hasBinDir -eq $false){
 }
 
 if (($hasMkisoFs -eq $false) -or ($hasQemuImg -eq $false)){
-    exec_with_retry "Invoke-WebRequest -Uri http://us.samfira.com/bin.zip -OutFile `$env:TEMP\bin.zip"
-    & 'C:\Program Files\7-Zip\7z.exe' x $env:TEMP\bin.zip -o"$openstackDir\" -y
+    Throw "Required binary files (mkisofs, qemuimg etc.)  are missing"
 }
 
 if ($novaIsRunning -or $neutronIsRunning -or $quantumIsRunning){
