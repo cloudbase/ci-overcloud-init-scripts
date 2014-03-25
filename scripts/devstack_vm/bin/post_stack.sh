@@ -13,7 +13,7 @@ done
 
 # Upload Cirros VHD
 
-CIRROS_UUID=$(glance image-create --property hypervisor_type=hyperv --name "cirros" --container-format bare --disk-format vhd --is-public True --file /home/ubuntu/cirros.vhdx  | grep "id " | awk '{print $4}')
+CIRROS_UUID=$(glance image-create --property hypervisor_type=hyperv --name "cirros" --container-format bare --disk-format vhd --is-public True --file /home/ubuntu/cirros.vhd  | grep "id " | awk '{print $4}')
 
 if [ $? -ne 0 ]
 then
