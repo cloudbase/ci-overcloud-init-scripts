@@ -19,7 +19,7 @@ test_for_nova (){
     echo '# Under investigation' >> "$EXCLUDED_TESTS"
 #    testr list-tests tempest | grep "TestVolumeBootPattern\|TestAggregatesBasicOps" >> "$EXCLUDED_TESTS"
 #    testr list-tests tempest | grep "scenario\|test_metering_extensions\|test_neutron_meter_label" >> "$EXCLUDED_TESTS"
-    testr list-tests tempest | grep "scenario\|test_metering_extensions\|tempest.thirdparty.boto.test_ec2_instance_run" >> "$EXCLUDED_TESTS"
+    testr list-tests tempest | grep "scenario\|test_metering_extensions\|tempest.thirdparty.boto.test_ec2_instance_run\|test_live_block_migration" >> "$EXCLUDED_TESTS"
     # Unimplemented
     echo '# Not implemented' >> "$EXCLUDED_TESTS"
     testr list-tests tempest | grep "rescue\|_uptime\|_console_\|AttachInterfaces\|VolumesBackupsTest" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
@@ -27,7 +27,7 @@ test_for_nova (){
 #    testr list-tests tempest | grep "TestMinimumBasicScenario" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
     # Run tests list
     #testr list-tests tempest | grep -v "scenario\|rescue\|_uptime\|_console_\|AttachInterfaces\|test_metering_extensions\|test_neutron_meter_label" > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
-    testr list-tests tempest | grep -v "scenario\|rescue\|_uptime\|_console_\|AttachInterfaces\|test_metering_extensions\|VolumesBackupsTest\|tempest.thirdparty.boto.test_ec2_instance_run" > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
+    testr list-tests tempest | grep -v "scenario\|rescue\|_uptime\|_console_\|AttachInterfaces\|test_metering_extensions\|VolumesBackupsTest\|tempest.thirdparty.boto.test_ec2_instance_run\|test_live_block_migration" > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
 }
 
 test_for_neutron () {
