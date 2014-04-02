@@ -12,9 +12,10 @@ sudo sed -i '2i127.0.0.1  '$HOSTNAME'' /etc/hosts
 DEVSTACK_LOGS="/opt/stack/logs/screen"
 LOCALRC="/home/ubuntu/devstack/localrc"
 LOCALCONF="/home/ubuntu/devstack/local.conf"
-
+PBR_LOC="/opt/stack/pbr"
 # Clean devstack logs
 rm -f "$DEVSTACK_LOGS/*"
+rm -rf "$PBR_LOC/*"
 
 if [ -e "$LOCALRC" ]
 then
