@@ -15,7 +15,7 @@ LOCALCONF="/home/ubuntu/devstack/local.conf"
 PBR_LOC="/opt/stack/pbr"
 # Clean devstack logs
 rm -f "$DEVSTACK_LOGS/*"
-rm -rf "$PBR_LOC/*"
+rm -rf "$PBR_LOC"
 
 if [ -e "$LOCALRC" ]
 then
