@@ -1,9 +1,3 @@
-#WINDOWS_USER="administrator"
-#WINDOWS_PASSWORD="H@rd24G3t"
-#DEVSTACK_SSH_KEY="/home/jenkins-slave/admin-msft.pem"
-#LOGS_SSH_KEY="/home/jenkins-slave/norman.pem"
-#source /home/jenkins-slave/keystonerc_admin
-
 set +e
 
 echo "Detaching and cleaning Hyper-V node 1"
