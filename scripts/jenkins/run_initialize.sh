@@ -8,6 +8,7 @@ echo FLOATING_IP=$FLOATING_IP > devstack_params.txt
 UUID=$(python -c "import uuid; print uuid.uuid4().hex")
 export NAME="devstack-$UUID"
 echo NAME=$NAME >> devstack_params.txt
+echo NAME=$NAME
 
 NET_ID=$(nova net-list | grep net1| awk '{print $2}')
 echo NET_ID=$NET_ID >> devstack_params.txt
