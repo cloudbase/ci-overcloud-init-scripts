@@ -94,6 +94,10 @@ run_ssh_cmd_with_retry ubuntu@$FLOATING_IP $DEVSTACK_SSH_KEY 'source /home/ubunt
 run_ssh_cmd_with_retry ubuntu@$FLOATING_IP $DEVSTACK_SSH_KEY "source /home/ubuntu/keystonerc && /home/ubuntu/bin/post_stack.sh" 5 
 
 # join Hyper-V servers
+echo "win_user: $WINDOWS_USER"
+echo "win_pass: $WINDOWS_PASSWORD"
+echo "node01: $hyperv01"
+echo "node02: $hyperv02"
 join_hyperv $WINDOWS_USER $WINDOWS_PASSWORD $hyperv01
 join_hyperv $WINDOWS_USER $WINDOWS_PASSWORD $hyperv02
 
