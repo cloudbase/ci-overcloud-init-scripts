@@ -34,9 +34,9 @@ test_for_nova (){
 test_for_neutron () {
     # Run tests list
     echo '# Under investigation' >> "$EXCLUDED_TESTS"
-#    testr list-tests tempest.api.network | grep "test_metering_extensions" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
-#    testr list-tests tempest.api.network | grep -v "test_metering_extensions" > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
-    testr list-tests tempest.api.network > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
+    testr list-tests tempest.api.network | grep "test_fwaas_extensions" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
+    testr list-tests tempest.api.network | grep -v "test_fwaas_extensions" > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
+#    testr list-tests tempest.api.network > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
 }
 
 cd /opt/stack/tempest
