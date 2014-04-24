@@ -1,3 +1,6 @@
+#Get required predefined functions
+source $SCRIPTS_FOLDER/scripts/jenkins/library.sh
+
 set +e
 
 echo "Detaching and cleaning Hyper-V node 1"
