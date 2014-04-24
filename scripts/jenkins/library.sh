@@ -76,18 +76,18 @@ join_hyperv (){
     set +e
     WIN_USER=$1
     WIN_PASS=$2
-    $URL=$3
+    URL=$3
 
     run_wsmancmd_with_retry $URL $WIN_USER $WIN_PASS "powershell -ExecutionPolicy RemoteSigned C:\OpenStack\devstack\scripts\teardown.ps1"
     set -e
-    run_wsmancmd_with_retry $URL $WIN_USER $WIN_PASS "bash C:\OpenStack\devstack\scripts\gerrit-git-prep.sh --zuul-site $ZUUL_SITE --gerrit-site $ZUUL_SITE --zuul-ref $ZUUL_REF --zuul-change $Z$
-    run_wsmancmd_with_retry $URL $WIN_USER $WIN_PASS "powershell -ExecutionPolicy RemoteSigned C:\OpenStack\devstack\scripts\create-environment.ps1 -devstackIP $FIXED_IP -branchName $ZUUL_BRANC$
+    run_wsmancmd_with_retry $URL $WIN_USER $WIN_PASS "bash C:\OpenStack\devstack\scripts\gerrit-git-prep.sh --zuul-site $ZUUL_SITE --gerrit-site $ZUUL_SITE --zuul-ref $ZUUL_REF --zuul-change $ZUUL_CHANGE --zuul-project $ZUUL_PROJECT"
+    run_wsmancmd_with_retry $URL $WIN_USER $WIN_PASS "powershell -ExecutionPolicy RemoteSigned C:\OpenStack\devstack\scripts\create-environment.ps1 -devstackIP $FIXED_IP -branchName $ZUUL_BRANCH -buildFor $ZUUL_PROJECT"
 }
 
 teardown_hyperv () {
     WIN_USER=$1
     WIN_PASS=$2
-    $URL=$3
+    URL=$3
 
     run_wsmancmd_with_retry $URL $WIN_USER $WIN_PASS "powershell -ExecutionPolicy RemoteSigned C:\OpenStack\devstack\scripts\teardown.ps1"
 }
