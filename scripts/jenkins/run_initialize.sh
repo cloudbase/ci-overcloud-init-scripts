@@ -1,3 +1,6 @@
+#Get required predefined functions
+source $SCRIPTS_FOLDER/scripts/jenkins/library.sh
+
 FLOATING_IP=$(nova floating-ip-create ext_net | awk '{print $2}'|sed '/^$/d' | tail -n 1) || echo "Failed to alocate floating IP" >> /home/jenkins-slave/console-$NAME.log 2>&1
 if [ -z "$FLOATING_IP" ]
 then
