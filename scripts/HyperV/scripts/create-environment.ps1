@@ -36,19 +36,19 @@ $hasMkisoFs = Test-Path $binDir\mkisofs.exe
 $hasQemuImg = Test-Path $binDir\qemu-img.exe
 
 # Do a selective teardown
-Stop-Process -Name nova-compute -Force -ErrorAction Continue
-Stop-Process -Name neutron-hyperv-agent -Force -ErrorAction Continue
-Stop-Process -Name quantum-hyperv-agent -Force -ErrorAction Continue
-Stop-Process -Name python -Force -ErrorAction Continue
-Remove-Item -Recurse -Force $virtualenv -ErrorAction Continue
+Stop-Process -Name nova-compute -Force -ErrorAction SilentlyContinue
+Stop-Process -Name neutron-hyperv-agent -Force -ErrorAction SilentlyContinue
+Stop-Process -Name quantum-hyperv-agent -Force -ErrorAction SilentlyContinue
+Stop-Process -Name python -Force -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force $virtualenv -ErrorAction SilentlyContinue
 
 if ($hasConfigDir -eq $false) {
     mkdir $configDir
 }
 
-$novaIsRunning = Get-Process -Name nova-compute -ErrorAction Continue
-$neutronIsRunning = Get-Process -Name neutron-hyperv-agent -ErrorAction Continue
-$quantumIsRunning = Get-Process -Name quantum-hyperv-agent -ErrorAction Continue
+$novaIsRunning = Get-Process -Name nova-compute -ErrorAction SilentlyContinue
+$neutronIsRunning = Get-Process -Name neutron-hyperv-agent -ErrorAction SilentlyContinue
+$quantumIsRunning = Get-Process -Name quantum-hyperv-agent -ErrorAction SilentlyContinue
 
 function exec_with_retry([string]$cmd, [int]$retry, [int]$interval=0){
     $c = 0
