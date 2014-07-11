@@ -83,21 +83,17 @@ if ($hasNeutronTemplate -eq $false){
 
 if ($buildFor -eq "openstack/nova"){
     ExecRetry {
-        # fech_master_repo neutron
         GitClonePull "$buildDir\neutron" "https://github.com/openstack/neutron.git" $branchName
     }
 }elseif ($buildFor -eq "openstack/neutron" -or $buildFor -eq "openstack/quantum"){
     ExecRetry {
-        # fech_master_repo nova
         GitClonePull "$buildDir\nova" "https://github.com/openstack/nova.git" $branchName
     }
 }else{
     Throw "Cannot build for project: $buildFor"
 }
 
-
 # Mount devstack samba. Used for log storage
-# exec_with_retry "New-SmbMapping -RemotePath \\$devstackIP\openstack -LocalPath u:"  -retry 5 -interval 5
 ExecRetry {
     New-SmbMapping -RemotePath \\$devstackIP\openstack -LocalPath u:
     if ($LastExitCode) { Throw "Failed to mount devstack samba" }
@@ -116,12 +112,11 @@ if ($? -eq $false){
 
 cp $templateDir\distutils.cfg $virtualenv\Lib\distutils\distutils.cfg
 
-# exec_with_retry "cmd.exe /C $scriptdir\install_openstack_from_repo.bat c:\OpenStack\build\openstack\neutron"
 ExecRetry {
     cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\neutron
     if ($LastExitCode) { Throw "Failed to install neutron from repo" }
 }
-# exec_with_retry "cmd.exe /C $scriptdir\install_openstack_from_repo.bat c:\OpenStack\build\openstack\nova"
+
 ExecRetry {
     cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\nova
     if ($LastExitCode) { Throw "Failed to install nova fom repo" }
@@ -160,7 +155,6 @@ if ($hasNeutronExec -eq $false){
 }else{
     $neutronExe = "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 }
-
 
 Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\nova-compute.exe C:\Openstack\etc\nova.conf U:\$hostname\nova-console.log"
 Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat $neutronExe C:\Openstack\etc\neutron_hyperv_agent.conf U:\$hostname\neutron-hyperv-agent-console.log"

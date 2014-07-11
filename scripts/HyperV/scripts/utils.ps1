@@ -52,7 +52,6 @@ function GitClonePull($path, $url, $branch="master")
 
             Get-ChildItem . -Include *.pyc -Recurse | foreach ($_) {Remove-Item $_.fullname}
 
-
             git reset --hard
             if ($LastExitCode) { throw "git reset failed" }
 
