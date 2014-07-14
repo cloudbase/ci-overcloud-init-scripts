@@ -11,6 +11,7 @@ Param(
 ############################################################################
 
 $projectName = $buildFor.split('/')[-1]
+. "$scriptdir\utils.ps1"
 
 $virtualenv = "c:\OpenStack\virtualenv"
 $openstackDir = "C:\OpenStack"
@@ -35,66 +36,22 @@ $hasBinDir = Test-Path $binDir
 $hasMkisoFs = Test-Path $binDir\mkisofs.exe
 $hasQemuImg = Test-Path $binDir\qemu-img.exe
 
+$ErrorActionPreference = "SilentlyContinue"
+
 # Do a selective teardown
-Stop-Process -Name nova-compute -Force -ErrorAction Continue
-Stop-Process -Name neutron-hyperv-agent -Force -ErrorAction Continue
-Stop-Process -Name quantum-hyperv-agent -Force -ErrorAction Continue
-Stop-Process -Name python -Force -ErrorAction Continue
-Remove-Item -Recurse -Force $virtualenv -ErrorAction Continue
+Stop-Process -Name nova-compute -Force -ErrorAction $ErrorActionPreference
+Stop-Process -Name neutron-hyperv-agent -Force -ErrorAction $ErrorActionPreference
+Stop-Process -Name quantum-hyperv-agent -Force -ErrorAction $ErrorActionPreference
+Stop-Process -Name python -Force -ErrorAction $ErrorActionPreference
+Remove-Item -Recurse -Force $virtualenv -ErrorAction $ErrorActionPreference
 
 if ($hasConfigDir -eq $false) {
     mkdir $configDir
 }
 
-$novaIsRunning = Get-Process -Name nova-compute -ErrorAction Continue
-$neutronIsRunning = Get-Process -Name neutron-hyperv-agent -ErrorAction Continue
-$quantumIsRunning = Get-Process -Name quantum-hyperv-agent -ErrorAction Continue
-
-function exec_with_retry([string]$cmd, [int]$retry, [int]$interval=0){
-    $c = 0
-    $success = $false
-    do
-    {
-        $newCmd = "$cmd; if(`$? -eq `$false){return `$false}else{return `$true}"
-        $scriptblock = $ExecutionContext.InvokeCommand.NewScriptBlock($newCmd)
-        $ret = Invoke-Command -ScriptBlock $scriptblock
-        echo $ret
-        if ($ret){
-            $success = $true
-            break
-        }
-        Start-Sleep $interval
-        $c+=1
-    } while ($c -lt $retry)
-    if ($success -eq $false){
-        Throw $error[0]
-    }
-}
-
-function fech_master_repo($project="nova"){
-    $testProjectExists = Test-Path $buildDir\$project
-    if ($testProjectExists -eq $false){
-        exec_with_retry -cmd "git clone https://github.com/openstack/$project.git $buildDir\$project" -retry 5 -interval 5
-        if ($branchName){
-            pushd $buildDir\$project
-            git checkout "$branchName"
-            popd
-        }
-        if ($? -eq $false){
-            Throw "Failed to clone $project repo"
-        }
-    }else{
-        pushd $buildDir\$project
-        get-childitem . -include *.pyc -recurse | foreach ($_) {remove-item $_.fullname}
-        git reset --hard
-        git clean -f -d
-        exec_with_retry -cmd "git pull" -retry 5 -interval 5 -discardOutput
-        if ($branchName){
-            git checkout "$branchName"
-        }
-        popd
-    }
-}
+$novaIsRunning = Get-Process -Name nova-compute -ErrorAction $ErrorActionPreference
+$neutronIsRunning = Get-Process -Name neutron-hyperv-agent -ErrorAction $ErrorActionPreference
+$quantumIsRunning = Get-Process -Name quantum-hyperv-agent -ErrorAction $ErrorActionPreference
 
 if ($hasProject -eq $false){
     Throw "$projectName repository was not found. Please run gerrit-git-pref for this project first"
@@ -125,16 +82,22 @@ if ($hasNeutronTemplate -eq $false){
 }
 
 if ($buildFor -eq "openstack/nova"){
-    fech_master_repo neutron
+    ExecRetry {
+        GitClonePull "$buildDir\neutron" "https://github.com/openstack/neutron.git" $branchName
+    }
 }elseif ($buildFor -eq "openstack/neutron" -or $buildFor -eq "openstack/quantum"){
-    fech_master_repo nova
+    ExecRetry {
+        GitClonePull "$buildDir\nova" "https://github.com/openstack/nova.git" $branchName
+    }
 }else{
     Throw "Cannot build for project: $buildFor"
 }
 
-
 # Mount devstack samba. Used for log storage
-exec_with_retry "New-SmbMapping -RemotePath \\$devstackIP\openstack -LocalPath u:"  -retry 5 -interval 5
+ExecRetry {
+    New-SmbMapping -RemotePath \\$devstackIP\openstack -LocalPath u:
+    if ($LastExitCode) { Throw "Failed to mount devstack samba" }
+}
 
 $hasLogDir = Test-Path U:\$hostname
 if ($hasLogDir -eq $false){
@@ -149,8 +112,15 @@ if ($? -eq $false){
 
 cp $templateDir\distutils.cfg $virtualenv\Lib\distutils\distutils.cfg
 
-exec_with_retry "cmd.exe /C $scriptdir\install_openstack_from_repo.bat c:\OpenStack\build\openstack\neutron"
-exec_with_retry "cmd.exe /C $scriptdir\install_openstack_from_repo.bat c:\OpenStack\build\openstack\nova"
+ExecRetry {
+    cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\neutron
+    if ($LastExitCode) { Throw "Failed to install neutron from repo" }
+}
+
+ExecRetry {
+    cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\nova
+    if ($LastExitCode) { Throw "Failed to install nova fom repo" }
+}
 
 $novaConfig = (gc "$templateDir\nova.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "U:\$hostname")
 $neutronConfig = (gc "$templateDir\neutron_hyperv_agent.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "U:\$hostname")
@@ -185,7 +155,6 @@ if ($hasNeutronExec -eq $false){
 }else{
     $neutronExe = "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 }
-
 
 Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\nova-compute.exe C:\Openstack\etc\nova.conf U:\$hostname\nova-console.log"
 Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat $neutronExe C:\Openstack\etc\neutron_hyperv_agent.conf U:\$hostname\neutron-hyperv-agent-console.log"
