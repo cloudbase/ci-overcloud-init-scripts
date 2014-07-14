@@ -11,7 +11,6 @@ Param(
 ############################################################################
 
 $projectName = $buildFor.split('/')[-1]
-. "$scriptdir\utils.ps1"
 
 $virtualenv = "c:\OpenStack\virtualenv"
 $openstackDir = "C:\OpenStack"
@@ -24,6 +23,8 @@ $binDir = "$openstackDir\bin"
 $novaTemplate = "$templateDir\nova.conf"
 $neutronTemplate = "$templateDir\neutron_hyperv_agent.conf"
 $hostname = hostname
+
+. "$scriptdir\utils.ps1"
 
 $hasProject = Test-Path $buildDir\$projectName
 $hasVirtualenv = Test-Path $virtualenv
