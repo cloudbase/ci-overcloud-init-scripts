@@ -95,7 +95,12 @@ if [[ ! -e .git ]]
 then
     ls -a
     rm -fr .[^.]* *
-    git clone $GIT_ORIGIN/$ZUUL_PROJECT .
+    if [ -d /opt/git/$ZUUL_PROJECT/.git ]
+    then
+        git clone file:///opt/git/$ZUUL_PROJECT .
+    else
+        git clone $GIT_ORIGIN/$ZUUL_PROJECT .
+    fi
 fi
 git remote set-url origin $GIT_ORIGIN/$ZUUL_PROJECT
 
@@ -113,22 +118,30 @@ if ! git clean -x -f -d -q ; then
     git clean -x -f -d -q
 fi
 
-if [ -z "$ZUUL_NEWREV" ]
+echo "Before doing git checkout:"
+echo "Git branch output:"
+git branch
+echo "Git log output:"
+git log
+
+if echo "$ZUUL_REF" | grep -q ^refs/tags/
+then
+    git fetch --tags $ZUUL_URL/$ZUUL_PROJECT
+    git checkout $ZUUL_REF
+    git reset --hard $ZUUL_REF
+elif [ -z "$ZUUL_NEWREV" ]
 then
     git fetch $ZUUL_SITE/p/$ZUUL_PROJECT $ZUUL_REF
     git checkout FETCH_HEAD
     git reset --hard FETCH_HEAD
-    if ! git clean -x -f -d -q ; then
-        sleep 1
-        git clean -x -f -d -q
-    fi
 else
     git checkout $ZUUL_NEWREV
     git reset --hard $ZUUL_NEWREV
-    if ! git clean -x -f -d -q ; then
-        sleep 1
-        git clean -x -f -d -q
-    fi
+fi
+
+if ! git clean -x -f -d -q ; then
+    sleep 1
+    git clean -x -f -d -q
 fi
 
 if [ -f .gitmodules ]
@@ -137,3 +150,8 @@ then
     git submodule sync
     git submodule update --init
 fi
+echo "Final result:"
+echo "Git branch output:"
+git branch
+echo "Git log output:"
+git log
