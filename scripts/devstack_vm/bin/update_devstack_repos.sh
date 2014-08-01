@@ -19,7 +19,9 @@ do
 done
 
 PROJECT_NAME=$(basename $PROJECT)
-
+echo "Branch: $BRANCH"
+echo "Project: $PROJECT"
+echo "Project Name: $PROJECT_NAME"
 DEVSTACK_DIR="/home/ubuntu/devstack"
 pushd "$DEVSTACK_DIR"
 find . -name *pyc -print0 | xargs -0 rm -f
@@ -27,6 +29,10 @@ git reset --hard
 git clean -f -d
 git pull
 git checkout "$BRANCH" || echo "Failed to switch branch"
+echo "Devstack final branch:"
+git branch
+echo "Devstack git log:"
+git log
 popd
 
 if [ ! -d "$BASEDIR" ]
@@ -44,15 +50,20 @@ do
 	if [ "$i" != "$PROJECT_NAME" ]
 	then
 		pushd "$i"
-        if [ -d ".git" ]
-        then
-            git reset --hard
-            git clean -f -d
-            git pull
-            git checkout "$BRANCH" || echo "Failed to switch branch"
-        fi
+	        if [ -d ".git" ]
+        	then
+        		git reset --hard
+        		git clean -f -d
+        		git pull
+        		git checkout "$BRANCH" || echo "Failed to switch branch"
+        	fi
 		popd
 	fi
+	echo "Folder: $BASEDIR/$i"
+	echo "Git branch output:"
+	git branch
+	echo "Git Log output:"
+	git log
 done
 
 popd
