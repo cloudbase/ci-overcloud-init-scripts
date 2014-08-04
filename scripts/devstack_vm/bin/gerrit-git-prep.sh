@@ -122,7 +122,7 @@ echo "Before doing git checkout:"
 echo "Git branch output:"
 git branch
 echo "Git log output:"
-git log
+git log -10 --pretty=format:"%h - %an, %ae,  %ar : %s"
 
 if echo "$ZUUL_REF" | grep -q ^refs/tags/
 then
@@ -154,4 +154,4 @@ echo "Final result:"
 echo "Git branch output:"
 git branch
 echo "Git log output:"
-git log
+git log -10 --pretty=format:"%h - %an, %ae,  %ar : %s"
