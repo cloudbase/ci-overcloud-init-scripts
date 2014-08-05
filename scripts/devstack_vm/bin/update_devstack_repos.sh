@@ -57,13 +57,13 @@ do
         		git pull
         		git checkout "$BRANCH" || echo "Failed to switch branch"
         	fi
+		echo "Folder: $BASEDIR/$i"
+		echo "Git branch output:"
+		git branch
+		echo "Git Log output:"
+		git log -10 --pretty=format:"%h - %an, %ae,  %ar : %s"
 		popd
 	fi
-	echo "Folder: $BASEDIR/$i"
-	echo "Git branch output:"
-	git branch
-	echo "Git Log output:"
-	git log -10 --pretty=format:"%h - %an, %ae,  %ar : %s"
 done
 
 popd
