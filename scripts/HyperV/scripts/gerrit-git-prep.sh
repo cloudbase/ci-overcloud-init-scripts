@@ -13,21 +13,21 @@ do
         --gerrit-site)
             GERRIT_SITE=$2
             shift;;
-    --git-origin)
-        GIT_ORIGIN=$2
-        shift;;
-    --zuul-newrev)
-        ZUUL_NEWREV=$2
-        shift;;
-    --zuul-ref)
-        ZUUL_REF=$2
-        shift;;
-    --zuul-change)
-        ZUUL_CHANGE=$2
-        shift;;
-    --zuul-project)
-        ZUUL_PROJECT=$2
-        shift;;
+        --git-origin)
+            GIT_ORIGIN=$2
+            shift;;
+        --zuul-newrev)
+            ZUUL_NEWREV=$2
+            shift;;
+        --zuul-ref)
+            ZUUL_REF=$2
+            shift;;
+        --zuul-change)
+            ZUUL_CHANGE=$2
+            shift;;
+        --zuul-project)
+            ZUUL_PROJECT=$2
+            shift;;
     esac
     shift
 done
