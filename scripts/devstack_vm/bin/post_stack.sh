@@ -61,6 +61,11 @@ sed -i 's/^public_network_id =.*/public_network_id = '$EXTNETID1'/g' "$TEMPEST_C
 sed -i 's/^allow_tenant_isolation =.*/allow_tenant_isolation = True/g' "$TEMPEST_CONF"
 #sed -ri 's/^(#){0,1}live_migration=.*/live_migration=true/g' "$TEMPEST_CONF"
 
+sed -i 's/^build_timeout =.*/build_timeout = 900/g' "$TEMPEST_CONF"
+sed -i 's/^ssh_timeout =.*/ssh_timeout = 900/g' "$TEMPEST_CONF"
+sed -i 's/^tenant_networks_reachable = false/tenant_networks_reachable = true/g' "$TEMPEST_CONF"
+sed -i 's/#image_regex=\^cirros-0.3.1-x86_64-uec\$/image_regex=\^cirros\$/g' "$TEMPEST_CONF"
+
 nova flavor-delete m1.nano
 nova flavor-delete m1.micro
 nova flavor-create --ephemeral 0 --rxtx-factor 1.0 --is-public True m1.nano 42 64 1 1
