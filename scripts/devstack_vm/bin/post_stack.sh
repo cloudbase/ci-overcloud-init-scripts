@@ -63,7 +63,6 @@ sed -i 's/^allow_tenant_isolation =.*/allow_tenant_isolation = True/g' "$TEMPEST
 
 sed -i 's/^build_timeout =.*/build_timeout = 900/g' "$TEMPEST_CONF"
 sed -i 's/^ssh_timeout =.*/ssh_timeout = 900/g' "$TEMPEST_CONF"
-sed -i 's/^tenant_networks_reachable = false/tenant_networks_reachable = true/g' "$TEMPEST_CONF"
 sed -i 's/#image_regex=\^cirros-0.3.1-x86_64-uec\$/image_regex=\^cirros\$/g' "$TEMPEST_CONF"
 
 nova flavor-delete m1.nano
