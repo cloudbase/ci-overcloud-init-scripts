@@ -30,8 +30,13 @@ then
     exit 1
 fi
 
+export VMID=`nova show $NAME | awk '{if (NR == 16) {print $4}}'`
+echo VM_ID=$VMID >> devstack_params.txt
+echo VM_ID=$VMID >> /home/jenkins-slave/console-$NAME.log 2>&1
+
 echo "Fetching devstack VM fixed IP address" >> /home/jenkins-slave/console-$NAME.log 2>&1
-export FIXED_IP=$(nova show "$NAME" | grep "net1 network" | awk '{print $5}')
+FIXED_IP=$(nova show "$NAME" | grep "net1 network" | awk '{print $5}')
+export FIXED_IP="${FIXED_IP//,}"
 
 COUNT=0
 while [ -z "$FIXED_IP" ]
@@ -44,20 +49,16 @@ do
         echo "nova console-log output:" >> /home/jenkins-slave/console-$NAME.log 2>&1
         nova console-log "$NAME" >> /home/jenkins-slave/console-$NAME.log 2>&1
         echo "neutron port-list output:" >> /home/jenkins-slave/console-$NAME.log 2>&1
-        neutron port-list -D -c device_id -c fixed_ips | grep $VM_ID >> /home/jenkins-slave/console-$NAME.log 2>&1
+        neutron port-list -D -c device_id -c fixed_ips | grep $VMID >> /home/jenkins-slave/console-$NAME.log 2>&1
         exit 1
     fi
     sleep 15
-    export FIXED_IP=$(nova show "$NAME" | grep "net1 network" | awk '{print $5}')
-    COUNT=$(($COUNT + 1))
+   FIXED_IP=$(nova show "$NAME" | grep "net1 network" | awk '{print $5}')
+   export FIXED_IP="${FIXED_IP//,}"
+   COUNT=$(($COUNT + 1))
 done
 
 echo FIXED_IP=$FIXED_IP >> devstack_params.txt
-
-export VMID=`nova show $NAME | awk '{if (NR == 16) {print $4}}'`
-
-echo VM_ID=$VMID >> devstack_params.txt
-echo VM_ID=$VMID >> /home/jenkins-slave/console-$NAME.log 2>&1
 
 exec_with_retry "nova add-floating-ip $NAME $FLOATING_IP" 15 5
 
