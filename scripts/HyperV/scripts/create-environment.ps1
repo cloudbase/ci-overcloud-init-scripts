@@ -24,6 +24,9 @@ $novaTemplate = "$templateDir\nova.conf"
 $neutronTemplate = "$templateDir\neutron_hyperv_agent.conf"
 $hostname = hostname
 
+$remoteLogs="\\"+$devstackIP+"\openstack"
+$localLogs="u:"
+
 . "$scriptdir\utils.ps1"
 
 $hasProject = Test-Path $buildDir\$projectName
@@ -96,7 +99,9 @@ if ($buildFor -eq "openstack/nova"){
 
 # Mount devstack samba. Used for log storage
 ExecRetry {
-    New-SmbMapping -RemotePath \\$devstackIP\openstack -LocalPath u:
+    Write-Host "Remote path: $remoteLogs"
+    Write-Host "Local path: $localLogs"
+    New-SmbMapping -RemotePath $remoteLogs -LocalPath $localLogs
     if ($LastExitCode) { Throw "Failed to mount devstack samba" }
 }
 
@@ -123,8 +128,8 @@ ExecRetry {
     if ($LastExitCode) { Throw "Failed to install nova fom repo" }
 }
 
-$novaConfig = (gc "$templateDir\nova.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "U:\$hostname")
-$neutronConfig = (gc "$templateDir\neutron_hyperv_agent.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "U:\$hostname")
+$novaConfig = (gc "$templateDir\nova.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($localLogs)\$($hostname)")
+$neutronConfig = (gc "$templateDir\neutron_hyperv_agent.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($localLogs)\$($hostname)")
 
 Set-Content C:\OpenStack\etc\nova.conf $novaConfig
 if ($? -eq $false){
