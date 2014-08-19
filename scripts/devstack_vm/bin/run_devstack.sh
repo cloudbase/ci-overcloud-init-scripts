@@ -9,12 +9,6 @@ HOSTNAME=$(hostname)
 
 sudo sed -i '2i127.0.0.1  '$HOSTNAME'' /etc/hosts
 
-#fix oslo.config problem
-cd /opt/stack/oslo.config/
-git pull
-sudo pip install -U setuptools
-sudo python setup.py install
-
 #Update six to latest version
 sudo pip install -U six
 
