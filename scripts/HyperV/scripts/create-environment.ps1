@@ -101,6 +101,7 @@ if ($buildFor -eq "openstack/nova"){
 ExecRetry {
     Write-Host "Remote path: $remoteLogs"
     Write-Host "Local path: $localLogs"
+    if ($(Get-SmbMapping | Select-Object LocalPath).LocalPath -eq $localLogs) {Remove-SmbMapping -LocalPath $localLogs -Force}
     New-SmbMapping -RemotePath $remoteLogs -LocalPath $localLogs
     if ($LastExitCode) { Throw "Failed to mount devstack samba" }
 }
