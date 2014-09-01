@@ -37,6 +37,8 @@ disable_service n-cpu
 # Uncomment if you need tempest
 enable_service tempest
 
+FORCE=yes
+
 Q_PLUGIN=ml2
 Q_ML2_PLUGIN_MECHANISM_DRIVERS=openvswitch,hyperv
 ENABLE_TENANT_VLANS=True
