@@ -148,7 +148,7 @@ if ($? -eq $false){
     Throw "Error writting neutron_hyperv_agent.conf"
 }
 
-cp "$templateDir\policy.json" "$configDir\"
+cp "$templateDir\policy.json" "$configDir\" 
 cp "$templateDir\interfaces.template" "$configDir\"
 
 $hasNovaExec = Test-Path c:\OpenStack\virtualenv\Scripts\nova-compute.exe
