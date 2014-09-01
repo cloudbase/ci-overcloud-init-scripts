@@ -119,6 +119,11 @@ if ($? -eq $false){
 
 cp $templateDir\distutils.cfg $virtualenv\Lib\distutils\distutils.cfg
 
+# Hack due to cicso patch problem:
+if(!(Test-Path -Path "C:\Openstack\build\openstack\neutron\etc\neutron\plugins\cisco\cisco_cfg_agent.ini")){
+    new-item -Path "C:\Openstack\build\openstack\neutron\etc\neutron\plugins\cisco\cisco_cfg_agent.ini" -Value "# CI Hack" –itemtype file
+}
+
 ExecRetry {
     cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\neutron
     if ($LastExitCode) { Throw "Failed to install neutron from repo" }
