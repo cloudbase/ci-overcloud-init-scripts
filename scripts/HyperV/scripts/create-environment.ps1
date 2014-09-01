@@ -121,7 +121,7 @@ cp $templateDir\distutils.cfg $virtualenv\Lib\distutils\distutils.cfg
 
 # Hack due to cicso patch problem:
 if(!(Test-Path -Path "C:\Openstack\build\openstack\neutron\etc\neutron\plugins\cisco\cisco_cfg_agent.ini")){
-    new-item -Path "C:\Openstack\build\openstack\neutron\etc\neutron\plugins\cisco\cisco_cfg_agent.ini" -Value "# CI Hack" –itemtype file
+    new-item -Path "C:\Openstack\build\openstack\neutron\etc\neutron\plugins\cisco\cisco_cfg_agent.ini" -Value ' ' –itemtype file
 }
 
 ExecRetry {
