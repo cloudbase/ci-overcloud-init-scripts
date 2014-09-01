@@ -120,8 +120,9 @@ if ($? -eq $false){
 cp $templateDir\distutils.cfg $virtualenv\Lib\distutils\distutils.cfg
 
 # Hack due to cicso patch problem:
-if(!(Test-Path -Path "C:\Openstack\build\openstack\neutron\etc\neutron\plugins\cisco\cisco_cfg_agent.ini")){
-    new-item -Path "C:\Openstack\build\openstack\neutron\etc\neutron\plugins\cisco\cisco_cfg_agent.ini" -Value ' ' –itemtype file
+$missingPath="C:\Openstack\build\openstack\neutron\etc\neutron\plugins\cisco\cisco_cfg_agent.ini"
+if(!(Test-Path -Path $missingPath)){
+    new-item -Path $missingPath -Value ' ' –itemtype file
 }
 
 ExecRetry {
