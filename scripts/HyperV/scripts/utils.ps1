@@ -38,16 +38,15 @@ function GitClonePull($path, $url, $branch="master")
             git clone $url $path
             if ($LastExitCode) { throw "git clone failed" }
         }
+        git checkout $branch
+        if ($LastExitCode) { throw "git checkout failed" }
     }else{
         pushd $path
         try
         {
-            if($branch)
-            {
-                ExecRetry {
-                    git checkout $branch
-                    if ($LastExitCode) { throw "git checkout failed" }
-                }
+            ExecRetry {
+                git checkout $branch
+                if ($LastExitCode) { throw "git checkout failed" }
             }
 
             Get-ChildItem . -Include *.pyc -Recurse | foreach ($_) {Remove-Item $_.fullname}
