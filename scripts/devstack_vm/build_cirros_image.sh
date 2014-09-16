@@ -66,7 +66,7 @@ echo -e "mptbase\nmptscsih\nhv_netvsc\nhv_vmbus\nhv_utils\nhv_storvsc\n" >> $WOR
 cd $WORKDIR
 sudo bash cirros/bin/bundle -v cirros/output/$ARCH/rootfs.tar download/linux-image-package.deb cirros/output/$ARCH/images
 
-image_base_path=cirros/output/$ARCH/images/cirros.
+image_base_path=cirros/output/$ARCH/images/cirros-$cirros_ver
 vhd_path="$image_base_path.vhd"
 vhdx_path="$image_base_path.vhdx"
 
