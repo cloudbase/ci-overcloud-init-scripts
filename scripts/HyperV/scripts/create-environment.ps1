@@ -98,17 +98,17 @@ if ($buildFor -eq "openstack/nova"){
 }
 
 # Mount devstack samba. Used for log storage
-ExecRetry {
-    Write-Host "Remote path: $remoteLogs"
-    Write-Host "Local path: $localLogs"
-    if ($(Get-SmbMapping | Select-Object LocalPath).LocalPath -eq $localLogs) {Remove-SmbMapping -LocalPath $localLogs -Force}
-    New-SmbMapping -RemotePath $remoteLogs -LocalPath $localLogs
-    if ($LastExitCode) { Throw "Failed to mount devstack samba" }
-}
+#ExecRetry {
+#    Write-Host "Remote path: $remoteLogs"
+#    Write-Host "Local path: $localLogs"
+#    if ($(Get-SmbMapping | Select-Object LocalPath).LocalPath -eq $localLogs) {Remove-SmbMapping -LocalPath $localLogs -Force}
+#    New-SmbMapping -RemotePath $remoteLogs -LocalPath $localLogs
+#    if ($LastExitCode) { Throw "Failed to mount devstack samba" }
+#}
 
-$hasLogDir = Test-Path U:\$hostname
+$hasLogDir = Test-Path $remoteLogs\$hostname
 if ($hasLogDir -eq $false){
-    mkdir U:\$hostname
+    mkdir $remoteLogs\$hostname
 }
 
 cmd.exe /C virtualenv --system-site-packages $virtualenv
@@ -169,6 +169,6 @@ if ($hasNeutronExec -eq $false){
     $neutronExe = "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 }
 
-Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\nova-compute.exe C:\Openstack\etc\nova.conf U:\$hostname\nova-console.log"
+Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\nova-compute.exe C:\Openstack\etc\nova.conf $remoteLogs\$hostname\nova-console.log"
 Start-Sleep -s 15
-Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat $neutronExe C:\Openstack\etc\neutron_hyperv_agent.conf U:\$hostname\neutron-hyperv-agent-console.log"
+Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat $neutronExe C:\Openstack\etc\neutron_hyperv_agent.conf $remoteLogs\$hostname\neutron-hyperv-agent-console.log"
