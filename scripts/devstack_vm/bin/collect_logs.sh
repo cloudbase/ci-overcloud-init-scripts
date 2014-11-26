@@ -37,7 +37,7 @@ function archive_devstack() {
                 $GZIP -c "$REAL" > "$LOG_DST_DEVSTACK/$i.gz" || emit_warning "Failed to archive devstack logs"
         fi
     done
-    for i in ceilometer cinder glance keystone neutron nova openvswitch openvswitch-switch
+    for i in ceilometer cinder glance keystone neutron nova swift openvswitch openvswitch-switch
     do
         mkdir -p $CONFIG_DST_DEVSTACK/$i
         for j in `ls -A /etc/$i`
@@ -51,6 +51,7 @@ function archive_devstack() {
         done
     done
     $GZIP -c /home/ubuntu/devstack/localrc > "$CONFIG_DST_DEVSTACK/localrc.txt.gz"
+    $GZIP -c /home/ubuntu/devstack/local.conf > "$CONFIG_DST_DEVSTACK/local.conf.gz"
     $GZIP -c /opt/stack/tempest/etc/tempest.conf > "$CONFIG_DST_DEVSTACK/tempest.conf.gz"
     df -h > "$CONFIG_DST_DEVSTACK/df.txt" 2>&1 && $GZIP "$CONFIG_DST_DEVSTACK/df.txt"
     iptables-save > "$CONFIG_DST_DEVSTACK/iptables.txt" 2>&1 && $GZIP "$CONFIG_DST_DEVSTACK/iptables.txt"
