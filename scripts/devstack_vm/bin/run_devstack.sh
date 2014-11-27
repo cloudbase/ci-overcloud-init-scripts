@@ -33,7 +33,7 @@ git pull
 sudo easy_install -U pip
 ./unstack.sh
 
-nohup ./stack.sh &
+nohup ./stack.sh > /opt/stack/logs/stack.sh.txt 2>&1 &
 pid=$!
 wait $pid
 echo "stack.sh finished running with status: $?."
