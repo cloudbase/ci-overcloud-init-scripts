@@ -36,7 +36,4 @@ sudo easy_install -U pip
 nohup ./stack.sh > /opt/stack/logs/stack.sh.txt 2>&1 &
 pid=$!
 wait $pid
-echo "stack.sh finished running with status: $?."
-echo "My PID is: $$"
-echo "pstree result:"
-pstree -aup
+cat /opt/stack/logs/stack.sh.txt
