@@ -36,8 +36,6 @@ sudo easy_install -U pip
 nohup ./stack.sh &
 pid=$!
 wait $pid
-cat nohup.out
-rm -rf nohup.out
 echo "stack.sh finished running with status: $?."
 echo "My PID is: $$"
 echo "pstree result:"
