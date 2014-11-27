@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -x
-
+set -e
 sudo ifconfig eth1 promisc up
 sudo ifconfig eth2 promisc up
 
@@ -33,5 +33,3 @@ git pull
 sudo easy_install -U pip
 ./unstack.sh
 ./stack.sh
-RET=$?
-exit $?
