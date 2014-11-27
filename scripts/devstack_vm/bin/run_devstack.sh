@@ -33,5 +33,13 @@ git pull
 sudo easy_install -U pip
 ./unstack.sh
 ./stack.sh
+
+nohup ./stack.sh &
+pid=$!
+wait $pid
+cat nohup.out
+rm -rf nohup.out
 echo "stack.sh finished running with status: $?."
 echo "My PID is: $$"
+echo "pstree result:"
+pstree -aup
