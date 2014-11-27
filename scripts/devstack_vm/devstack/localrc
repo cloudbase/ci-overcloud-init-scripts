@@ -68,6 +68,7 @@ SERVICE_PASSWORD=Passw0rd
 ADMIN_PASSWORD=Passw0rd
 
 SCREEN_LOGDIR=$DEST/logs/screen
+LOGFILE=$DEST/logs/stack.sh.log
 VERBOSE=True
 LOG_COLOR=False
 
