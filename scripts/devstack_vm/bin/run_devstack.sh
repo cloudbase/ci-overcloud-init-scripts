@@ -32,7 +32,6 @@ cd /home/ubuntu/devstack
 git pull
 sudo easy_install -U pip
 ./unstack.sh
-./stack.sh
 
 nohup ./stack.sh &
 pid=$!
