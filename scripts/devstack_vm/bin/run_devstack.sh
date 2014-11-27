@@ -33,3 +33,5 @@ git pull
 sudo easy_install -U pip
 ./unstack.sh
 ./stack.sh
+echo "stack.sh finished running with status: $?."
+echo "My PID is: $$"
