@@ -33,3 +33,5 @@ git pull
 sudo easy_install -U pip
 ./unstack.sh
 ./stack.sh
+RET=$?
+exit $?
