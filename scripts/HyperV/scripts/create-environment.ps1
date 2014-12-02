@@ -24,8 +24,8 @@ $novaTemplate = "$templateDir\nova.conf"
 $neutronTemplate = "$templateDir\neutron_hyperv_agent.conf"
 $hostname = hostname
 
-$remoteLogs="\\"+$devstackIP+"\openstack"
-$localLogs="u:"
+$remoteLogs="\\"+$devstackIP+"\openstack\logs"
+$remoteConfigs="\\"+$devstackIP+"\openstack\config"
 
 . "$scriptdir\utils.ps1"
 
@@ -97,18 +97,14 @@ if ($buildFor -eq "openstack/nova"){
     Throw "Cannot build for project: $buildFor"
 }
 
-# Mount devstack samba. Used for log storage
-#ExecRetry {
-#    Write-Host "Remote path: $remoteLogs"
-#    Write-Host "Local path: $localLogs"
-#    if ($(Get-SmbMapping | Select-Object LocalPath).LocalPath -eq $localLogs) {Remove-SmbMapping -LocalPath $localLogs -Force}
-#    New-SmbMapping -RemotePath $remoteLogs -LocalPath $localLogs
-#    if ($LastExitCode) { Throw "Failed to mount devstack samba" }
-#}
-
 $hasLogDir = Test-Path $remoteLogs\$hostname
 if ($hasLogDir -eq $false){
     mkdir $remoteLogs\$hostname
+}
+
+$hasConfigDir = Test-Path $remoteConfigs\$hostname
+if ($hasConfigDir -eq $false){
+    mkdir $remoteConfigs\$hostname
 }
 
 cmd.exe /C virtualenv --system-site-packages $virtualenv
@@ -168,6 +164,8 @@ if ($hasNeutronExec -eq $false){
 }else{
     $neutronExe = "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 }
+
+Copy-Item -Recurse $configDir "$remoteConfigs\$hostname"
 
 Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\nova-compute.exe C:\Openstack\etc\nova.conf $remoteLogs\$hostname\nova-console.log"
 Start-Sleep -s 15
