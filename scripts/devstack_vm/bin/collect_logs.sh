@@ -4,8 +4,9 @@ TAR=$(which tar)
 GZIP=$(which gzip)
 
 DEVSTACK_LOGS="/opt/stack/logs/screen"
-HYPERV_LOGS="/openstack"
+HYPERV_LOGS="/openstack/logs"
 TEMPEST_LOGS="/home/ubuntu/tempest"
+HYPERV_CONFIGS="/openstack/config"
 
 LOG_DST="/home/ubuntu/aggregate"
 LOG_DST_DEVSTACK="$LOG_DST/devstack_logs"
@@ -63,6 +64,45 @@ function archive_devstack() {
     #/var/log/syslog
 }
 
+function archive_hyperv_configs() {
+    if [ ! -d "$CONFIG_DST_HV" ]
+    then
+        mkdir -p "$CONFIG_DST_HV"
+    fi
+    COUNT=1
+    for i in `ls -A "$HYPERV_CONFIGS"`
+    do
+        if [ -d "$HYPERV_CONFIGS/$i" ]
+        then
+            NAME=`echo $i | sed 's/^\(hv-compute[0-9]\{2,3\}\)\|^\(c[0-9]-r[0-9]-u[0-9]\{2\}\)/hv-compute'$COUNT'/g'`
+            
+            mkdir -p "$CONFIG_DST_HV/$NAME"
+            COUNT=$(($COUNT + 1))
+
+            for j in `ls -A "$HYPERV_CONFIGS/$i"`
+            do
+                if [ -d "$HYPERV_CONFIGS/$i/$j" ]
+                then
+                    mkdir -p "$CONFIG_DST_HV/$NAME/$j"
+                    for k in `ls -A "$HYPERV_CONFIGS/$i/$j"`
+                    do
+                        if [ -d "$HYPERV_CONFIGS/$i/$j/$k" ]
+                        then
+                            $TAR cvzf "$CONFIG_DST_HV/$NAME/$j/$k.tar.gz" "$HYPERV_CONFIGS/$i/$j/$k"
+                        else
+                            $GZIP -c "$HYPERV_CONFIGS/$i/$j/$k" > "$CONFIG_DST_HV/$NAME/$j/$k.gz" || emit_warning "Failed to archive $HYPERV_CONFIGS/$i/$j"
+                        fi
+                    done
+                else
+                    $GZIP -c "$HYPERV_CONFIGS/$i/$j" > "$CONFIG_DST_HV/$NAME/$j.gz" || emit_warning "Failed to archive $HYPERV_CONFIGS/$i/$j"
+                fi
+            done
+        else
+            $GZIP -c "$HYPERV_CONFIGS/$i" > "$CONFIG_DST_HV/$i.gz" || emit_warning "Failed to archive $HYPERV_CONFIGS/$i"
+        fi
+    done
+}
+
 function archive_hyperv_logs() {
     if [ ! -d "$LOG_DST_HV" ]
     then
@@ -87,12 +127,6 @@ function archive_hyperv_logs() {
         fi
     done
 }
-
-#To archive Hyper-V config files after the run,
-# from C:\OpenStack\etc\
-#Also save logs locally and copy them over in the end,
-#together with the config files
-
 function archive_tempest_files() {
     for i in `ls -A $TEMPEST_LOGS`
     do
@@ -105,6 +139,7 @@ function archive_tempest_files() {
 mkdir -p "$LOG_DST"
 
 archive_devstack
+archive_hyperv_configs
 archive_hyperv_logs
 archive_tempest_files
 
