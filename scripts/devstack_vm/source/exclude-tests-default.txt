@@ -1,0 +1,32 @@
+# Rescue (to be removed when the feature is added)
+tempest.api.compute.servers.test_server_rescue.ServerRescueTestJSON.
+tempest.api.compute.servers.test_server_rescue.ServerRescueTestXML.
+tempest.api.compute.servers.test_server_rescue_negative.ServerRescueNegativeTestJSON.
+tempest.api.compute.servers.test_server_rescue_negative.ServerRescueNegativeTestXML.
+tempest.api.compute.v3.servers.test_server_rescue.ServerRescueV3Test.
+tempest.api.compute.v3.servers.test_server_rescue_negative.ServerRescueNegativeV3Test.
+
+# Hyper-V does not support attaching vNics to a running instance 
+tempest.api.compute.servers.test_attach_interfaces.AttachInterfacesTestJSON.test_create_list_show_delete_interfaces
+tempest.api.compute.servers.test_attach_interfaces.AttachInterfacesTestXML.test_create_list_show_delete_interfaces
+tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_hotplug_nic
+
+# Unsupported consoles (Hyper-V uses RDP, not VNC or SPICE)
+tempest.api.compute.v3.servers.test_server_actions.ServerActionsV3Test.test_get_spice_console
+tempest.api.compute.v3.servers.test_server_actions.ServerActionsV3Test.test_get_vnc_console
+
+# See Neutron bug https://bugs.launchpad.net/neutron/+bug/1277285
+# Note that corresponding JSON tests pass
+tempest.api.network.admin.test_dhcp_agent_scheduler.DHCPAgentSchedulersTestXML.test_add_remove_network_from_dhcp_agent
+tempest.api.network.admin.test_l3_agent_scheduler.L3AgentSchedulerTestXML.
+tempest.api.network.admin.test_agent_management.AgentManagementTestXML.
+
+# See Tempest bug: https://bugs.launchpad.net/tempest/+bug/1363986
+tempest.scenario.test_security_groups_basic_ops.TestSecurityGroupsBasicOps.test_cross_tenant_traffic
+
+# Fails on DevStack. Not related to Hyper-V
+tempest.scenario.test_load_balancer_basic.TestLoadBalancerBasic.test_load_balancer_basic
+
+# Fails on DevStack. requires investigation.
+tempest.scenario.test_network_advanced_server_ops.TestNetworkAdvancedServerOps.test_server_connectivity_rebuild
+
