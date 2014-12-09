@@ -39,7 +39,7 @@ devstack_image="devstack"
 echo `date -u +%H:%M:%S` "Image used is: $devstack_image" >> $CONSOLE_LOG 2>&1
 echo `date -u +%H:%M:%S` "Deploying devstack $NAME" >> $CONSOLE_LOG 2>&1
 
-nova boot --availability-zone hyper-v --flavor m1.medium --image $devstack_image --key-name default --security-groups devstack --nic net-id="$NET_ID" "$NAME" --poll >> $CONSOLE_LOG 2>&1
+nova boot --availability-zone sandbox --flavor m1.medium --image $devstack_image --key-name default --security-groups devstack --nic net-id="$NET_ID" "$NAME" --poll >> $CONSOLE_LOG 2>&1
 if [ $? -ne 0 ]
 then
     echo `date -u +%H:%M:%S` "Failed to create devstack VM: $NAME" >> $CONSOLE_LOG 2>&1
