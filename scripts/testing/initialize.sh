@@ -5,14 +5,14 @@ source /home/jenkins-slave/keystonerc_admin
 
 #Import library functions
 source $WORK_DIR/../devstack_vm/bin/library.sh
-source $WORK_DIR/data/creds.txt
-source $WORK_DIR/data/hv_nodes.txt
-source $WORK_DIR/data/patch_info.txt
+source $HOME/octavian/data/creds.txt
+source $HOME/octavian/data/hv_nodes.txt
+source $HOME/octavian/data/patch_info.txt
 
 #UUID=$(python -c "import uuid; print uuid.uuid4().hex")
 export NAME="devstack-test-octavian"
-echo NAME=$NAME > $WORK_DIR/run_params.txt
-CONSOLE_LOG = "$WORK_DIR/console-$NAME.log"
+echo NAME=$NAME > $HOME/octavian/data/run_params.txt
+CONSOLE_LOG = "$HOME/octavian/data/console-$NAME.log"
 echo NAME=$NAME > $CONSOLE_LOG 2>&1
 
 echo WORK_DIR=$WORK_DIR >> $CONSOLE_LOG 2>&1
@@ -22,11 +22,11 @@ if [ -z "$FLOATING_IP" ]
 then
    exit 1
 fi
-echo FLOATING_IP=$FLOATING_IP >> $WORK_DIR/run_params.txt
+echo FLOATING_IP=$FLOATING_IP >> $HOME/octavian/data/run_params.txt
 echo FLOATING_IP=$FLOATING_IP >> $CONSOLE_LOG 2>&1
 
 NET_ID=$(nova net-list | grep private| awk '{print $2}')
-echo NET_ID=$NET_ID >> $WORK_DIR/run_params.txt
+echo NET_ID=$NET_ID >> $HOME/octavian/data/run_params.txt
 echo NET_ID=$NET_ID >> $CONSOLE_LOG 2>&1
 
 echo `date -u +%H:%M:%S` FLOATING_IP=$FLOATING_IP > $CONSOLE_LOG 2>&1
@@ -50,7 +50,7 @@ fi
 nova show "$NAME" >> $CONSOLE_LOG 2>&1
 
 export VMID=`nova show $NAME | awk '{if (NR == 20) {print $4}}'`
-echo VM_ID=$VMID >> $WORK_DIR/run_params.txt
+echo VM_ID=$VMID >> $HOME/octavian/data/run_params.txt
 echo VM_ID=$VMID >> $CONSOLE_LOG 2>&1
 
 echo `date -u +%H:%M:%S` VM_ID=$VMID >> $CONSOLE_LOG 2>&1
@@ -78,7 +78,7 @@ do
     COUNT=$(($COUNT + 1))
 done
 
-echo FIXED_IP=$FIXED_IP >> $WORK_DIR/run_params.txt
+echo FIXED_IP=$FIXED_IP >> $HOME/octavian/data/run_params.txt
 echo `date -u +%H:%M:%S` "FIXED_IP=$FIXED_IP" >> $CONSOLE_LOG 2>&1
 
 exec_with_retry "nova add-floating-ip $NAME $FLOATING_IP" 15 5 >> $CONSOLE_LOG 2>&1
@@ -124,7 +124,7 @@ echo "Copying required devstack config files to the devstack VM" >> $CONSOLE_LOG
 scp -v -r -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" -i /home/jenkins-slave/admin-msft.pem ../scripts/devstack_vm/devstack/* ubuntu@$FLOATING_IP:/home/ubuntu/devstack >> $CONSOLE_LOG 2>&1
 
 ZUUL_SITE=`echo "$ZUUL_URL" |sed 's/.\{2\}$//'`
-echo ZUUL_SITE=$ZUUL_SITE >> $WORK_DIR/run_params.txt
+echo ZUUL_SITE=$ZUUL_SITE >> $HOME/octavian/data/run_params.txt
 echo ZUUL_SITE=$ZUUL_SITE >> $CONSOLE_LOG 2>&1
 
 echo "Run gerrit-git-prep.sh" >> $CONSOLE_LOG 2>&1

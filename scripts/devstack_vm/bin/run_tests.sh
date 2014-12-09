@@ -1,12 +1,12 @@
 #!/bin/bash
 
 WORK_DIR = `dirname $0`
-source $WORK_DIR/run_params.txt
-CONSOLE_LOG = "$WORK_DIR/console-$NAME.log"
+source $HOME/octavian/data/run_params.txt
+CONSOLE_LOG = "$HOME/octavian/data/console-$NAME.log"
 
 #Import library functions
 source $WORK_DIR/../devstack_vm/bin/library.sh
-source $WORK_DIR/data/creds.txt
+source $HOME/octavian/data/creds.txt
 
 PROJECT="openstack/nova"
 
