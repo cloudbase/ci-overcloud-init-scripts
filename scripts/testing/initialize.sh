@@ -121,7 +121,7 @@ echo "Updating devstack git repos to latest." >> $CONSOLE_LOG 2>&1
 run_ssh_cmd_with_retry ubuntu@$FLOATING_IP /home/jenkins-slave/admin-msft.pem "/home/ubuntu/bin/update_devstack_repos.sh --branch $ZUUL_BRANCH --build-for $ZUUL_PROJECT" 1 >> $CONSOLE_LOG 2>&1
 
 echo "Copying required devstack config files to the devstack VM" >> $CONSOLE_LOG 2>&1
-scp -v -r -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" -i /home/jenkins-slave/admin-msft.pem ../scripts/devstack_vm/devstack/* ubuntu@$FLOATING_IP:/home/ubuntu/devstack >> $CONSOLE_LOG 2>&1
+scp -v -r -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" -i /home/jenkins-slave/admin-msft.pem ../devstack_vm/devstack/* ubuntu@$FLOATING_IP:/home/ubuntu/devstack >> $CONSOLE_LOG 2>&1
 
 ZUUL_SITE=`echo "$ZUUL_URL" |sed 's/.\{2\}$//'`
 echo ZUUL_SITE=$ZUUL_SITE >> $HOME/octavian/data/run_params.txt
