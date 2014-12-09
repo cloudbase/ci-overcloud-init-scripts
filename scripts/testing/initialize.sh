@@ -1,4 +1,4 @@
-WORK_DIR = `dirname $0`
+WORK_DIR=`dirname $0`
 
 #Import openstack credentials
 source /home/jenkins-slave/keystonerc_admin
@@ -12,7 +12,7 @@ source $HOME/octavian/data/patch_info.txt
 #UUID=$(python -c "import uuid; print uuid.uuid4().hex")
 export NAME="devstack-test-octavian"
 echo NAME=$NAME > $HOME/octavian/data/run_params.txt
-CONSOLE_LOG = "$HOME/octavian/data/console-$NAME.log"
+CONSOLE_LOG="$HOME/octavian/data/console-$NAME.log"
 echo NAME=$NAME > $CONSOLE_LOG 2>&1
 
 echo WORK_DIR=$WORK_DIR >> $CONSOLE_LOG 2>&1
@@ -106,7 +106,7 @@ then
   run_ssh_cmd_with_retry ubuntu@$FLOATING_IP /home/jenkins-slave/admin-msft.pem "sed -i 's/TENANT_VLAN_RANGE.*/TENANT_VLAN_RANGE='$VLAN_RANGE'/g' /home/ubuntu/devstack/localrc /home/ubuntu/devstack/local.conf" 1  >> $CONSOLE_LOG 2>&1
 fi
 echo "Reserving VLAN range for VM. Result:" >> $CONSOLE_LOG 2>&1
-echo "VLAN_RANGE = $VLAN_RANGE" >> $CONSOLE_LOG 2>&1
+echo "VLAN_RANGE=$VLAN_RANGE" >> $CONSOLE_LOG 2>&1
 set -e
 
 echo "Set keystonerc values on devstack VM." >> $CONSOLE_LOG 2>&1

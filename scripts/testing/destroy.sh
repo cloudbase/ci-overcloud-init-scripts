@@ -1,6 +1,6 @@
 #Get required predefined functions
-WORK_DIR = `dirname $0`
-CONSOLE_LOG = "$HOME/octavian/data/console-$NAME.log"
+WORK_DIR=`dirname $0`
+CONSOLE_LOG="$HOME/octavian/data/console-$NAME.log"
 
 source $WORK_DIR/../devstack_vm/bin/library.sh
 source $HOME/octavian/data/creds.txt
