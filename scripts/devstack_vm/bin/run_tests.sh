@@ -57,7 +57,9 @@ test_for_neutron () {
     # Run tests list
     echo '# Under investigation' >> "$EXCLUDED_TESTS"
     testr list-tests tempest.api.network | grep "test_fwaas_extensions" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
-    testr list-tests tempest.api.network | grep -v "test_fwaas_extensions" > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
+    #excluded due to neutron project split - temporary
+    testr list-tests tempest.api.network | grep "test_lbaas_agent_scheduler\|test_load_balancer_admin_actions\|test_load_balancer\|test_metering_extensions\|network.test_vpnaas_extensions\|test_lbaas_quotas" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
+    testr list-tests tempest.api.network | grep -v "test_fwaas_extensions\|test_lbaas_agent_scheduler\|test_load_balancer_admin_actions\|test_load_balancer\|test_metering_extensions\|network.test_vpnaas_extensions\|test_lbaas_quotas" > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
 #    testr list-tests tempest.api.network > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
 }
 
