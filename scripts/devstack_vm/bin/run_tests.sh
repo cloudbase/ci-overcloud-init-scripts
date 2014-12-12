@@ -46,8 +46,8 @@ test_for_nova (){
     # Run tests list
 #    testr list-tests tempest | grep -v "scenario\|rescue\|_uptime\|_console_\|AttachInterfaces\|test_metering_extensions\|test_neutron_meter_label" > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
 #    testr list-tests tempest | grep -v "scenario\|rescue\|_uptime\|_console_\|AttachInterfaces\|test_metering_extensions\|VolumesBackupsTest\|tempest.thirdparty.boto.test_ec2_instance_run\|test_live_block_migration\|test_resize_server\|verify_resize_state\|test_get_hypervisor_show_details\|test_fwaas_extensions\|test_delete_server_while_in_attached_volume\|test_list_migrations_in_flavor_resize_situation\|test_delete_server_while_in_attached_volume\|tempest.api.orchestration.stacks\|test_list_servers_by_changes_since\|tempest.api.telemetry.test_telemetry_notification_api\|tempest.cli.simple_read_only.test_heat.SimpleReadOnlyHeatClientTest\|tempest.api.compute.floating_ips.test_floating_ips_actions_negative.FloatingIPsNegativeTest\|tempest.api.compute.floating_ips.test_list_floating_ips.FloatingIPDetailsTestJSON\|test_list_get_volume_attachments" > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
-    if [ -f "$isolated_tests_file" ]; then
-        isolated_tests=(`awk 'NF && $1!~/^#/' $isolated_tests_file`)
+    if [ -f "$EXCLUDED_TESTS" ]; then
+        exclude_tests=(`awk 'NF && $1!~/^#/' $EXCLUDED_TESTS`)
     fi
     exclude_regex=$(array_to_regex ${exclude_tests[@]})
     testr list-tests | grep -v $exclude_regex > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
