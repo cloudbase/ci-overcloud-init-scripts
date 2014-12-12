@@ -4,6 +4,7 @@ TAR=$(which tar)
 GZIP=$(which gzip)
 
 DEVSTACK_LOGS="/opt/stack/logs/screen"
+DEVSTACK_BUILD_LOG="/opt/stack/logs/stack.sh.log"
 HYPERV_LOGS="/openstack/logs"
 TEMPEST_LOGS="/home/ubuntu/tempest"
 HYPERV_CONFIGS="/openstack/config"
@@ -35,9 +36,10 @@ function archive_devstack() {
         if [ -h "$DEVSTACK_LOGS/$i" ]
         then
                 REAL=$(readlink "$DEVSTACK_LOGS/$i")
-                $GZIP -c "$REAL" > "$LOG_DST_DEVSTACK/$i.gz" || emit_warning "L38: Failed to archive devstack logs"
+                $GZIP -c "$REAL" > "$LOG_DST_DEVSTACK/$i.gz" || emit_warning "Failed to archive devstack logs"
         fi
     done
+    $GZIP -c "$DEVSTACK_BUILD_LOG" > "$LOG_DST_DEVSTACK/stack.sh.log.gz" || emit_warning "Failed to archive devstack log"
     for i in ceilometer cinder glance keystone neutron nova swift openvswitch openvswitch-switch
     do
         mkdir -p $CONFIG_DST_DEVSTACK/$i
@@ -90,15 +92,15 @@ function archive_hyperv_configs() {
                         then
                             $TAR cvzf "$CONFIG_DST_HV/$NAME/$j/$k.tar.gz" "$HYPERV_CONFIGS/$i/$j/$k"
                         else
-                            $GZIP -c "$HYPERV_CONFIGS/$i/$j/$k" > "$CONFIG_DST_HV/$NAME/$j/$k.gz" || emit_warning "L93: Failed to archive $HYPERV_CONFIGS/$i/$j/$k"
+                            $GZIP -c "$HYPERV_CONFIGS/$i/$j/$k" > "$CONFIG_DST_HV/$NAME/$j/$k.gz" || emit_warning "Failed to archive $HYPERV_CONFIGS/$i/$j/$k"
                         fi
                     done
                 else
-                    $GZIP -c "$HYPERV_CONFIGS/$i/$j" > "$CONFIG_DST_HV/$NAME/$j.gz" || emit_warning "L97: Failed to archive $HYPERV_CONFIGS/$i/$j"
+                    $GZIP -c "$HYPERV_CONFIGS/$i/$j" > "$CONFIG_DST_HV/$NAME/$j.gz" || emit_warning "Failed to archive $HYPERV_CONFIGS/$i/$j"
                 fi
             done
         else
-            $GZIP -c "$HYPERV_CONFIGS/$i" > "$CONFIG_DST_HV/$i.gz" || emit_warning "L101: Failed to archive $HYPERV_CONFIGS/$i"
+            $GZIP -c "$HYPERV_CONFIGS/$i" > "$CONFIG_DST_HV/$i.gz" || emit_warning "Failed to archive $HYPERV_CONFIGS/$i"
         fi
     done
 }
@@ -120,17 +122,17 @@ function archive_hyperv_logs() {
 
             for j in `ls -A "$HYPERV_LOGS/$i"`;
             do
-                $GZIP -c "$HYPERV_LOGS/$i/$j" > "$LOG_DST_HV/$NAME/$j.gz" || emit_warning "L123: Failed to archive $HYPERV_LOGS/$i/$j"
+                $GZIP -c "$HYPERV_LOGS/$i/$j" > "$LOG_DST_HV/$NAME/$j.gz" || emit_warning "Failed to archive $HYPERV_LOGS/$i/$j"
             done
         else
-            $GZIP -c "$HYPERV_LOGS/$i" > "$LOG_DST_HV/$i.gz" || emit_warning "L126: Failed to archive $HYPERV_LOGS/$i"
+            $GZIP -c "$HYPERV_LOGS/$i" > "$LOG_DST_HV/$i.gz" || emit_warning "Failed to archive $HYPERV_LOGS/$i"
         fi
     done
 }
 function archive_tempest_files() {
     for i in `ls -A $TEMPEST_LOGS`
     do
-        $GZIP "$TEMPEST_LOGS/$i" -c > "$LOG_DST/$i.gz" || emit_error "L133: Failed to archive tempest logs"
+        $GZIP "$TEMPEST_LOGS/$i" -c > "$LOG_DST/$i.gz" || emit_error "Failed to archive tempest logs"
     done
 }
 
@@ -144,7 +146,7 @@ archive_hyperv_logs
 archive_tempest_files
 
 pushd "$LOG_DST"
-$TAR -czf "$LOG_DST.tar.gz" . || emit_error "L147: Failed to archive aggregate logs"
+$TAR -czf "$LOG_DST.tar.gz" . || emit_error "Failed to archive aggregate logs"
 popd
 
 exit 0
