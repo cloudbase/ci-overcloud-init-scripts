@@ -10,6 +10,11 @@ source $HOME/octavian/data/run_params.txt
 source /home/jenkins-slave/keystonerc_admin
 
 set +e
+echo "Detaching and cleaning Hyper-V node 1" >> $CONSOLE_LOG 2>&1
+teardown_hyperv $WINDOWS_USER $WINDOWS_PASSWORD $hyperv01 >> $CONSOLE_LOG 2>&1
+echo "Detaching and cleaning Hyper-V node 2" >> $CONSOLE_LOG 2>&1
+teardown_hyperv $WINDOWS_USER $WINDOWS_PASSWORD $hyperv02 >> $CONSOLE_LOG 2>&1
+
 echo "Releasing devstack floating IP" >> $CONSOLE_LOG 2>&1
 nova remove-floating-ip "$NAME" "$FLOATING_IP" >> $CONSOLE_LOG 2>&1
 echo "Removing devstack VM" >> $CONSOLE_LOG 2>&1
