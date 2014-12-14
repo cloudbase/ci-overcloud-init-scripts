@@ -40,8 +40,8 @@ enable_service q-fwaas
 #disable_service q-fwaas
 enable_service q-metering
 #disable_service q-metering
-#enable_service q-vpn
-disable_service q-vpn
+enable_service q-vpn
+#disable_service q-vpn
 
 disable_service horizon
 
