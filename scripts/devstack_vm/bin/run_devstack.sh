@@ -20,11 +20,16 @@ PBR_LOC="/opt/stack/pbr"
 rm -f "$DEVSTACK_LOGS/*"
 rm -rf "$PBR_LOC"
 
+MYIP=$(/sbin/ifconfig eth0 2>/dev/null| grep "inet addr:" 2>/dev/null| sed 's/.*inet addr://g;s/ .*//g' 2>/dev/null)
 if [ -e "$LOCALRC" ]
 then
-        MYIP=$(/sbin/ifconfig eth0 2>/dev/null| grep "inet addr:" 2>/dev/null| sed 's/.*inet addr://g;s/ .*//g' 2>/dev/null)
         [ -z "$MYIP" ] && exit 1
         sed -i 's/^HOST_IP=.*/HOST_IP='$MYIP'/g' "$LOCALRC"
+fi
+
+if [ -e "$LOCALCONF" ]
+then
+        [ -z "$MYIP" ] && exit 1
         sed -i 's/^HOST_IP=.*/HOST_IP='$MYIP'/g' "$LOCALCONF"
 fi
 
