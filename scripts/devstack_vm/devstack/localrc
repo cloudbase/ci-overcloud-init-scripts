@@ -68,6 +68,7 @@ enable_service h-eng
 enable_service ceilometer-acentral
 enable_service ceilometer-collector
 enable_service ceilometer-api
+enable_service ceilometer-anotification
 disable_service ceilometer-acompute
 
 enable_service tempest
