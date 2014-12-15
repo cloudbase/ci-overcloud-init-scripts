@@ -35,3 +35,11 @@ tempest.scenario.test_network_advanced_server_ops.TestNetworkAdvancedServerOps.t
 tempest.api.compute.admin.test_simple_tenant_usage.TenantUsagesTestJSON.test_get_usage_tenant
 tempest.api.compute.admin.test_simple_tenant_usage.TenantUsagesTestJSON.test_get_usage_tenant_with_non_admin_user
 
+#Bug in tempest looking for image including extension (.vhdx)
+tempest.api.orchestration.stacks.test_neutron_resources
+tempest.api.orchestration.stacks.test_non_empty_stack
+
+# Fix to be implemented: running nova and neutron as local services
+# Remote launched processed can not access the network share
+tempest.api.compute.admin.test_migrations.MigrationsAdminTest.test_list_migrations_in_flavor_resize_situation
+tempest.api.compute.servers.test_server_actions.ServerActionsTestJSON.test_resize_server_confirm_from_stopped
