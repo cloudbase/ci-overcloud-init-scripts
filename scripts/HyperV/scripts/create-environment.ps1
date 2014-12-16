@@ -52,7 +52,7 @@ Stop-Process -Name python -Force -ErrorAction $ErrorActionPreference
 
 $ErrorActionPreference = "Stop"
 
-if ($hasVirtualenv -eq true){
+if ($hasVirtualenv -eq $true){
     Try
     {
         Remove-Item -Recurse -Force $virtualenv -ErrorAction $ErrorActionPreference
