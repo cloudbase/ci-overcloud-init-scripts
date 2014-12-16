@@ -39,23 +39,60 @@ $hasConfigDir = Test-Path $configDir
 $hasBinDir = Test-Path $binDir
 $hasMkisoFs = Test-Path $binDir\mkisofs.exe
 $hasQemuImg = Test-Path $binDir\qemu-img.exe
+$hasLogDir = Test-Path $remoteLogs\$hostname
+$hasRemoteConfigDir = Test-Path $remoteConfigs\$hostname
 
 $ErrorActionPreference = "SilentlyContinue"
 
 # Do a selective teardown
-Stop-Process -Name nova-compute -Force -ErrorAction $ErrorActionPreference
-Stop-Process -Name neutron-hyperv-agent -Force -ErrorAction $ErrorActionPreference
-Stop-Process -Name quantum-hyperv-agent -Force -ErrorAction $ErrorActionPreference
+Stop-Service -Name nova-compute -Force -ErrorAction $ErrorActionPreference
+Stop-Service -Name neutron-hyperv-agent -Force -ErrorAction $ErrorActionPreference
+
 Stop-Process -Name python -Force -ErrorAction $ErrorActionPreference
-Remove-Item -Recurse -Force $virtualenv -ErrorAction $ErrorActionPreference
+
+$ErrorActionPreference = "Stop"
+
+if ($hasVirtualenv -eq true){
+    Try
+    {
+        Remove-Item -Recurse -Force $virtualenv -ErrorAction $ErrorActionPreference
+    }
+    Catch
+    {
+        Throw "Vrtualenv already exists. Environment not clean."
+    }
+}
 
 if ($hasConfigDir -eq $false) {
     mkdir $configDir
+}else{
+    Try
+    {
+        Remove-Item -Recurse -Force $configDir\* -ErrorAction $ErrorActionPreference
+    }
+    Catch
+    {
+        Throw "Can not clean the config folder"
+    }
 }
 
-$novaIsRunning = Get-Process -Name nova-compute -ErrorAction $ErrorActionPreference
-$neutronIsRunning = Get-Process -Name neutron-hyperv-agent -ErrorAction $ErrorActionPreference
-$quantumIsRunning = Get-Process -Name quantum-hyperv-agent -ErrorAction $ErrorActionPreference
+Try
+{
+    $novaIsRunning = Get-Process -Name nova-compute -ErrorAction $ErrorActionPreference
+}
+Catch
+{
+    Throw "Nova is still running on this host"
+}
+
+Try
+{
+    $neutronIsRunning = Get-Process -Name neutron-hyperv-agent -ErrorAction $ErrorActionPreference
+}
+Catch
+{
+    Throw "Neutron is still running on this host"
+}
 
 if ($hasProject -eq $false){
     Throw "$projectName repository was not found. Please run gerrit-git-pref for this project first"
@@ -69,14 +106,6 @@ if (($hasMkisoFs -eq $false) -or ($hasQemuImg -eq $false)){
     Throw "Required binary files (mkisofs, qemuimg etc.)  are missing"
 }
 
-if ($novaIsRunning -or $neutronIsRunning -or $quantumIsRunning){
-    Throw "Nova or Neutron is still running on this host"
-}
-
-if ($hasVirtualenv -eq $true){
-    Throw "Vrtualenv already exists. Environment not clean."
-}
-
 if ($hasNovaTemplate -eq $false){
     Throw "Nova template not found"
 }
@@ -85,26 +114,24 @@ if ($hasNeutronTemplate -eq $false){
     Throw "Neutron template not found"
 }
 
+if ($hasLogDir -eq $false){
+    mkdir $remoteLogs\$hostname
+}
+
+if ($hasRemoteConfigDir -eq $false){
+    mkdir $remoteConfigs\$hostname
+}
+
 if ($buildFor -eq "openstack/nova"){
     ExecRetry {
         GitClonePull "$buildDir\neutron" "https://github.com/openstack/neutron.git" $branchName
     }
-}elseif ($buildFor -eq "openstack/neutron" -or $buildFor -eq "openstack/quantum"){
+}elseif ($buildFor -eq "openstack/neutron"){
     ExecRetry {
         GitClonePull "$buildDir\nova" "https://github.com/openstack/nova.git" $branchName
     }
 }else{
     Throw "Cannot build for project: $buildFor"
-}
-
-$hasLogDir = Test-Path $remoteLogs\$hostname
-if ($hasLogDir -eq $false){
-    mkdir $remoteLogs\$hostname
-}
-
-$hasConfigDir = Test-Path $remoteConfigs\$hostname
-if ($hasConfigDir -eq $false){
-    mkdir $remoteConfigs\$hostname
 }
 
 cmd.exe /C virtualenv --system-site-packages $virtualenv
@@ -131,42 +158,70 @@ ExecRetry {
     if ($LastExitCode) { Throw "Failed to install nova fom repo" }
 }
 
-$novaConfig = (gc "$templateDir\nova.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($remoteLogs)\$($hostname)")
-$neutronConfig = (gc "$templateDir\neutron_hyperv_agent.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($remoteLogs)\$($hostname)")
-
-Set-Content C:\OpenStack\etc\nova.conf $novaConfig
-if ($? -eq $false){
-    Throw "Error writting $templateDir\nova.conf"
+Try
+{
+    Copy-Item -Recurse $buildDir\nova\etc\nova\rootwrap.d $configDir
+    Copy-Item -Recurse $buildDir\nova\etc\nova\api-paste.ini $configDir
+    Copy-Item -Recurse $buildDir\nova\etc\nova\cells.json $configDir
+    Copy-Item -Recurse $buildDir\nova\etc\nova\policy.json $configDir
+    Copy-Item -Recurse $buildDir\nova\etc\nova\rootwrap.conf $configDir    
+    Copy-Item "$templateDir\interfaces.template" "$configDir\"
+}
+Catch
+{
+    Throw "Failed copying the default config files"
 }
 
-Set-Content C:\OpenStack\etc\neutron_hyperv_agent.conf $neutronConfig
-if ($? -eq $false){
-    Throw "Error writting neutron_hyperv_agent.conf"
-}
+Try
+{
+    $novaConfig = (gc "$templateDir\nova.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($remoteLogs)\$($hostname)")
+    $neutronConfig = (gc "$templateDir\neutron_hyperv_agent.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($remoteLogs)\$($hostname)")
 
-cp "$templateDir\policy.json" "$configDir\" 
-cp "$templateDir\interfaces.template" "$configDir\"
+    Set-Content C:\OpenStack\etc\nova.conf $novaConfig
+    if ($? -eq $false){
+        Throw "Error writting $templateDir\nova.conf"
+    }
+
+    Set-Content C:\OpenStack\etc\neutron_hyperv_agent.conf $neutronConfig
+    if ($? -eq $false){
+        Throw "Error writting neutron_hyperv_agent.conf"
+    }
+}
+Catch
+{
+    Throw "Error generating the nova and neutron config files from template."
+}
 
 $hasNovaExec = Test-Path c:\OpenStack\virtualenv\Scripts\nova-compute.exe
 if ($hasNovaExec -eq $false){
-    $novaExec = "C:\Python27\python.exe c:\OpenStack\virtualenv\Scripts\nova-compute-script.py"
+    Throw "No nova exe found"
 }else{
     $novaExec = "c:\OpenStack\virtualenv\Scripts\nova-compute.exe"
 }
 
 $hasNeutronExec = Test-Path "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
-$hasQuantumExec = Test-Path "c:\OpenStack\virtualenv\Scripts\quantum-hyperv-agent.exe"
 if ($hasNeutronExec -eq $false){
-    if ($hasQuantumExec -eq $false){
-        Throw "No neutron exe found"
-    }
-    $neutronExe = "c:\OpenStack\virtualenv\Scripts\quantum-hyperv-agent.exe"
+    Throw "No neutron exe found"
 }else{
     $neutronExe = "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 }
 
 Copy-Item -Recurse $configDir "$remoteConfigs\$hostname"
 
-Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\nova-compute.exe C:\Openstack\etc\nova.conf $remoteLogs\$hostname\nova-console.log"
+Try
+{
+    Start-Service nova-compute -ErrorAction $ErrorActionPreference
+}
+Catch
+{
+    Throw "Can not start the nova service"
+}
 Start-Sleep -s 15
-Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat $neutronExe C:\Openstack\etc\neutron_hyperv_agent.conf $remoteLogs\$hostname\neutron-hyperv-agent-console.log"
+Try
+{
+    Start-Service neutron-hyperv-agent -ErrorAction $ErrorActionPreference
+}
+Catch
+{
+    Throw "Can not start neutron agent service"
+}

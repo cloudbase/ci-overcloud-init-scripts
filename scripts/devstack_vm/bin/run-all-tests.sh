@@ -7,7 +7,10 @@ test_suite=${4:-"default"}
 log_file=${5:-"subunit-output.log"}
 results_html_file=${6:-"results.html"}
 
-BASEDIR=$(dirname $0)
+#BASEDIR=$(dirname $0)
+BASEDIR="$HOME/bin"
+
+pushd $BASEDIR
 
 . $BASEDIR/utils.sh
 
@@ -48,5 +51,8 @@ subunit-stats $log_file > /dev/null
 exit_code=$?
 
 echo "Total execution time: $SECONDS seconds."
+
+popd
+
 exit $exit_code
 

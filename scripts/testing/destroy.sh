@@ -1,6 +1,5 @@
 #Get required predefined functions
 WORK_DIR=`dirname $0`
-CONSOLE_LOG="$HOME/octavian/data/console-$NAME.log"
 
 source $WORK_DIR/../devstack_vm/bin/library.sh
 source $HOME/octavian/data/creds.txt
@@ -8,6 +7,8 @@ source $HOME/octavian/data/hv_nodes.txt
 source $HOME/octavian/data/patch_info.txt
 source $HOME/octavian/data/run_params.txt
 source /home/jenkins-slave/keystonerc_admin
+
+CONSOLE_LOG="$HOME/octavian/data/console-$NAME.log"
 
 set +e
 echo "Detaching and cleaning Hyper-V node 1" >> $CONSOLE_LOG 2>&1
