@@ -132,7 +132,7 @@ ExecRetry {
     if ($LastExitCode) { Throw "Failed to install nova fom repo" }
 }
 
-if (($branch.ToLower().CompareTo($('stable/juno').ToLower()) -eq 0) -or ($branch.ToLower().CompareTo($('stable/icehouse').ToLower()) -eq 0)) {
+if (($branchName.ToLower().CompareTo($('stable/juno').ToLower()) -eq 0) -or ($branchName.ToLower().CompareTo($('stable/icehouse').ToLower()) -eq 0)) {
     $rabbitUser = "guest"
 }
 
