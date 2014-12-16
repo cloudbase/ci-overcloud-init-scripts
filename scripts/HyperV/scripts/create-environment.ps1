@@ -23,6 +23,7 @@ $binDir = "$openstackDir\bin"
 $novaTemplate = "$templateDir\nova.conf"
 $neutronTemplate = "$templateDir\neutron_hyperv_agent.conf"
 $hostname = hostname
+$rabbitUser = "stackrabbit"
 
 $remoteLogs="\\"+$devstackIP+"\openstack\logs"
 $remoteConfigs="\\"+$devstackIP+"\openstack\config"
@@ -41,12 +42,6 @@ $hasMkisoFs = Test-Path $binDir\mkisofs.exe
 $hasQemuImg = Test-Path $binDir\qemu-img.exe
 
 $ErrorActionPreference = "SilentlyContinue"
-
-if (($branch.ToLower().CompareTo($('stable/juno').ToLower()) -eq 0) -or ($branch.ToLower().CompareTo($('stable/icehouse').ToLower()) -eq 0)) {
-    $rabbitUser = "guest"
-}else{
-    $rabbitUser = "stackrabbit"
-}
 
 # Do a selective teardown
 Stop-Process -Name nova-compute -Force -ErrorAction $ErrorActionPreference
@@ -137,8 +132,12 @@ ExecRetry {
     if ($LastExitCode) { Throw "Failed to install nova fom repo" }
 }
 
-$novaConfig = (gc "$templateDir\nova.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($remoteLogs)\$($hostname)").Replace('[RABBITUSER]', "$rabbitUser")
-$neutronConfig = (gc "$templateDir\neutron_hyperv_agent.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($remoteLogs)\$($hostname)").Replace('[RABBITUSER]', "$rabbitUser")
+if (($branch.ToLower().CompareTo($('stable/juno').ToLower()) -eq 0) -or ($branch.ToLower().CompareTo($('stable/icehouse').ToLower()) -eq 0)) {
+    $rabbitUser = "guest"
+}
+
+$novaConfig = (gc "$templateDir\nova.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($remoteLogs)\$($hostname)").Replace('[RABBITUSER]', $rabbitUser)
+$neutronConfig = (gc "$templateDir\neutron_hyperv_agent.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($remoteLogs)\$($hostname)").Replace('[RABBITUSER]', $rabbitUser)
 
 Set-Content C:\OpenStack\etc\nova.conf $novaConfig
 if ($? -eq $false){
