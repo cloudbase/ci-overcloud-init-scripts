@@ -22,6 +22,7 @@ $buildDir = "c:\OpenStack\build\openstack"
 $binDir = "$openstackDir\bin"
 $novaTemplate = "$templateDir\nova.conf"
 $neutronTemplate = "$templateDir\neutron_hyperv_agent.conf"
+$rabbitUser = "stackrabbit"
 $hostname = hostname
 
 $remoteLogs="\\"+$devstackIP+"\openstack\logs"
@@ -176,8 +177,12 @@ Catch
 
 Try
 {
-    $novaConfig = (gc "$templateDir\nova.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($remoteLogs)\$($hostname)")
-    $neutronConfig = (gc "$templateDir\neutron_hyperv_agent.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($remoteLogs)\$($hostname)")
+    if (($branchName.ToLower().CompareTo($('stable/juno').ToLower()) -eq 0) -or ($branchName.ToLower().CompareTo($('stable/icehouse').ToLower()) -eq 0)) {
+        $rabbitUser = "guest"
+    }
+
+    $novaConfig = (gc "$templateDir\nova.conf").Replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($remoteLogs)\$($hostname)").Replace('[RABBITUSER]', $rabbitUser)
+    $neutronConfig = (gc "$templateDir\neutron_hyperv_agent.conf").Replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($remoteLogs)\$($hostname)").Replace('[RABBITUSER]', $rabbitUser)
 
     Set-Content C:\OpenStack\etc\nova.conf $novaConfig
     if ($? -eq $false){
