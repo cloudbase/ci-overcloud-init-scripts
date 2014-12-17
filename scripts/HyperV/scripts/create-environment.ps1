@@ -46,9 +46,11 @@ $hasRemoteConfigDir = Test-Path $remoteConfigs\$hostname
 $ErrorActionPreference = "SilentlyContinue"
 
 # Do a selective teardown
+Write-Host "Ensuring nova and neutron services are stopped."
 Stop-Service -Name nova-compute -Force
 Stop-Service -Name neutron-hyperv-agent -Force
 
+Write-Host "Stopping any possible python processes left."
 Stop-Process -Name python -Force
 
 if (Get-Process -Name nova-compute){
@@ -73,6 +75,7 @@ if ($(Get-Service neutron-hyperv-agent).Status -ne "Stopped"){
     Throw "Neutron service is still running"
 }
 
+Write-Host "Removing any stale virtenv folder."
 if ($hasVirtualenv -eq $true){
     Try
     {
@@ -84,6 +87,7 @@ if ($hasVirtualenv -eq $true){
     }
 }
 
+Write-Host "Cleaning up the config folder."
 if ($hasConfigDir -eq $false) {
     mkdir $configDir
 }else{
@@ -105,6 +109,7 @@ if ($hasBinDir -eq $false){
     mkdir $binDir
 }
 
+Write-Host "Checking that required files and folders are present."
 if (($hasMkisoFs -eq $false) -or ($hasQemuImg -eq $false)){
     Throw "Required binary files (mkisofs, qemuimg etc.)  are missing"
 }
@@ -125,6 +130,7 @@ if ($hasRemoteConfigDir -eq $false){
     mkdir $remoteConfigs\$hostname
 }
 
+Write-Host "Cloning the required git repositories."
 if ($buildFor -eq "openstack/nova"){
     ExecRetry {
         GitClonePull "$buildDir\neutron" "https://github.com/openstack/neutron.git" $branchName
@@ -137,6 +143,7 @@ if ($buildFor -eq "openstack/nova"){
     Throw "Cannot build for project: $buildFor"
 }
 
+Write-Host "Creating the python virtenv."
 cmd.exe /C virtualenv --system-site-packages $virtualenv
 
 if ($? -eq $false){
@@ -151,11 +158,13 @@ if(!(Test-Path -Path $missingPath)){
     new-item -Path $missingPath -Value ' ' –itemtype file
 }
 
+Write-Host "Installing neutron."
 ExecRetry {
     cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\neutron
     if ($LastExitCode) { Throw "Failed to install neutron from repo" }
 }
 
+Write-Host "Installing nova."
 ExecRetry {
     cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\nova
     if ($LastExitCode) { Throw "Failed to install nova fom repo" }
@@ -175,6 +184,7 @@ Catch
     Throw "Failed copying the default config files"
 }
 
+Write-Host "Generating required config files."
 Try
 {
     if (($branchName.ToLower().CompareTo($('stable/juno').ToLower()) -eq 0) -or ($branchName.ToLower().CompareTo($('stable/icehouse').ToLower()) -eq 0)) {
@@ -213,8 +223,10 @@ if ($hasNeutronExec -eq $false){
     $neutronExe = "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 }
 
+Write-Host "Archiving config files for log server."
 Copy-Item -Recurse $configDir "$remoteConfigs\$hostname"
 
+Write-Host "Starting the services"
 Try
 {
     Start-Service nova-compute
@@ -232,3 +244,4 @@ Catch
 {
     Throw "Can not start neutron agent service"
 }
+Write-Host "Environment initialization done."
