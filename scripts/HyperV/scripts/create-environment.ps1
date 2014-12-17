@@ -46,20 +46,20 @@ $hasRemoteConfigDir = Test-Path $remoteConfigs\$hostname
 $ErrorActionPreference = "SilentlyContinue"
 
 # Do a selective teardown
-Stop-Service -Name nova-compute -Force -ErrorAction $ErrorActionPreference
-Stop-Service -Name neutron-hyperv-agent -Force -ErrorAction $ErrorActionPreference
+Stop-Service -Name nova-compute -Force
+Stop-Service -Name neutron-hyperv-agent -Force
 
-Stop-Process -Name python -Force -ErrorAction $ErrorActionPreference
+Stop-Process -Name python -Force
 
-if (Get-Process -Name nova-compute -ErrorAction $ErrorActionPreference){
+if (Get-Process -Name nova-compute){
     Throw "Nova is still running on this host"
 }
 
-if (Get-Process -Name neutron-hyperv-agent -ErrorAction $ErrorActionPreference){
+if (Get-Process -Name neutron-hyperv-agent){
     Throw "Neutron is still running on this host"
 }
 
-if (Get-Process -Name python -ErrorAction $ErrorActionPreference){
+if (Get-Process -Name python){
     Throw "Python processes still running on this host"
 }
 
@@ -76,7 +76,7 @@ if ($(Get-Service neutron-hyperv-agent).Status -ne "Stopped"){
 if ($hasVirtualenv -eq $true){
     Try
     {
-        Remove-Item -Recurse -Force $virtualenv -ErrorAction $ErrorActionPreference
+        Remove-Item -Recurse -Force $virtualenv
     }
     Catch
     {
@@ -89,7 +89,7 @@ if ($hasConfigDir -eq $false) {
 }else{
     Try
     {
-        Remove-Item -Recurse -Force $configDir\* -ErrorAction $ErrorActionPreference
+        Remove-Item -Recurse -Force $configDir\*
     }
     Catch
     {
@@ -217,7 +217,7 @@ Copy-Item -Recurse $configDir "$remoteConfigs\$hostname"
 
 Try
 {
-    Start-Service nova-compute -ErrorAction $ErrorActionPreference
+    Start-Service nova-compute
 }
 Catch
 {
@@ -226,7 +226,7 @@ Catch
 Start-Sleep -s 15
 Try
 {
-    Start-Service neutron-hyperv-agent -ErrorAction $ErrorActionPreference
+    Start-Service neutron-hyperv-agent
 }
 Catch
 {
