@@ -55,9 +55,9 @@ Remove-Item -Recurse -Force $buildDir\openstack\*
 Add-Content $log "Cleaning the virtualenv folder."
 Remove-Item -Recurse -Force $virtualenv
 Add-Content $log "Cleaning the logs folder."
-Remove-Item -Force $baseDir\Log\*
+Remove-Item -Recurse -Force $baseDir\Log\*
 Add-Content $log "Cleaning the config folder."
-Remove-Item -Force $baseDir\etc\*
+Remove-Item -Recurse -Force $baseDir\etc\*
 Add-Content $log "Cleaning the Instances folder."
 Remove-Item -Recurse -Force $baseDir\Instances\*
 Add-Content $log "Cleaning up process finished."
