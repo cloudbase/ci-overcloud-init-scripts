@@ -36,3 +36,7 @@ iniset $TEMPEST_CONFIG boto build_timeout 900
 
 iniset $TEMPEST_CONFIG compute ssh_timeout 900
 iniset $TEMPEST_CONFIG compute allow_tenant_isolation True
+
+nova service-list
+neutron agent-list
+glance image-list
