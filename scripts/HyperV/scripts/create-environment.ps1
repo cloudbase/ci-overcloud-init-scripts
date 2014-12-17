@@ -50,7 +50,27 @@ Stop-Service -Name neutron-hyperv-agent -Force -ErrorAction $ErrorActionPreferen
 
 Stop-Process -Name python -Force -ErrorAction $ErrorActionPreference
 
+if (Get-Process -Name nova-compute -ErrorAction $ErrorActionPreference){
+    Throw "Nova is still running on this host"
+}
+
+if (Get-Process -Name neutron-hyperv-agent -ErrorAction $ErrorActionPreference){
+    Throw "Neutron is still running on this host"
+}
+
+if (Get-Process -Name python -ErrorAction $ErrorActionPreference){
+    Throw "Python processes still running on this host"
+}
+
 $ErrorActionPreference = "Stop"
+
+if ($(Get-Service nova-compute).Status -ne "Stopped"){
+    Throw "Nova service is still running"
+}
+
+if ($(Get-Service neutron-hyperv-agent).Status -ne "Stopped"){
+    Throw "Neutron service is still running"
+}
 
 if ($hasVirtualenv -eq $true){
     Try
@@ -74,24 +94,6 @@ if ($hasConfigDir -eq $false) {
     {
         Throw "Can not clean the config folder"
     }
-}
-
-Try
-{
-    $novaIsRunning = Get-Process -Name nova-compute -ErrorAction $ErrorActionPreference
-}
-Catch
-{
-    Throw "Nova is still running on this host"
-}
-
-Try
-{
-    $neutronIsRunning = Get-Process -Name neutron-hyperv-agent -ErrorAction $ErrorActionPreference
-}
-Catch
-{
-    Throw "Neutron is still running on this host"
 }
 
 if ($hasProject -eq $false){
