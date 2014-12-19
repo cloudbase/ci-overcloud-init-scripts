@@ -37,6 +37,10 @@ iniset $TEMPEST_CONFIG boto build_timeout 900
 iniset $TEMPEST_CONFIG compute ssh_timeout 900
 iniset $TEMPEST_CONFIG compute allow_tenant_isolation True
 
+# Fix bug in tempest adding extension to image_ref
+sed -i 's/.*image_ref = Fedora-x86_64-20-20140618-sda.vhdx.*/image_ref = Fedora-x86_64-20-20140618-sda/' /opt/stack/tempest/etc/tempest.conf
+
+# Get openstack status
 nova service-list
 neutron agent-list
 glance image-list
