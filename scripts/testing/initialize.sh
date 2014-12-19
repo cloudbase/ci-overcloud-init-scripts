@@ -150,10 +150,10 @@ run_ssh_cmd_with_retry ubuntu@$FLOATING_IP /home/jenkins-slave/admin-msft.pem "s
 # join Hyper-V servers
 echo `date -u +%H:%M:%S` "Joining Hyper-V node: $hyperv01"
 echo `date -u +%H:%M:%S` "Joining Hyper-V node: $hyperv01" >> $CONSOLE_LOG 2>&1
-join_hyperv $WINDOWS_USER $WINDOWS_PASSWORD $hyperv01
+join_hyperv $WINDOWS_USER $WINDOWS_PASSWORD $hyperv01 >> $CONSOLE_LOG 2>&1
 echo `date -u +%H:%M:%S` "Joining Hyper-V node: $hyperv02"
 echo `date -u +%H:%M:%S` "Joining Hyper-V node: $hyperv02" >> $CONSOLE_LOG 2>&1
-join_hyperv $WINDOWS_USER $WINDOWS_PASSWORD $hyperv02
+join_hyperv $WINDOWS_USER $WINDOWS_PASSWORD $hyperv02 >> $CONSOLE_LOG 2>&1
 
 #check for nova join (must equal 2)
 #run_ssh_cmd_with_retry ubuntu@$FLOATING_IP /home/jenkins-slave/admin-msft.pem 'source /home/ubuntu/keystonerc; NOVA_COUNT=$(nova service-list | awk "{if (NR > 3) {print \$2 \" \" \$10 }}" | grep -c "nova-compute up"); if [ "$NOVA_COUNT" != 2 ];then nova service-list; exit 1;fi' 12
