@@ -10,7 +10,7 @@ HOSTNAME=$(hostname)
 sudo sed -i '2i127.0.0.1  '$HOSTNAME'' /etc/hosts
 
 #Update six to latest version
-sudo pip install -U six
+#sudo pip install -U six
 
 DEVSTACK_LOGS="/opt/stack/logs/screen"
 LOCALRC="/home/ubuntu/devstack/localrc"
@@ -35,7 +35,7 @@ fi
 
 cd /home/ubuntu/devstack
 git pull
-sudo easy_install -U pip
+#sudo easy_install -U pip
 ./unstack.sh
 
 nohup ./stack.sh > /opt/stack/logs/stack.sh.txt 2>&1 &
