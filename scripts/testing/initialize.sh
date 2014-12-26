@@ -103,7 +103,7 @@ set +e
 VLAN_RANGE=`/usr/local/src/ci-overcloud-init-scripts/vlan_allocation.py -a $NAME`
 if [ ! -z "$VLAN_RANGE" ]
 then
-  run_ssh_cmd_with_retry ubuntu@$FLOATING_IP /home/jenkins-slave/admin-msft.pem "sed -i 's/TENANT_VLAN_RANGE.*/TENANT_VLAN_RANGE='$VLAN_RANGE'/g' /home/ubuntu/devstack/localrc /home/ubuntu/devstack/local.conf" 1  >> $CONSOLE_LOG 2>&1
+  run_ssh_cmd_with_retry ubuntu@$FLOATING_IP /home/jenkins-slave/admin-msft.pem "sed -i 's/TENANT_VLAN_RANGE.*/TENANT_VLAN_RANGE='$VLAN_RANGE'/g' /home/ubuntu/devstack/local.conf" 1  >> $CONSOLE_LOG 2>&1
 fi
 echo "Reserving VLAN range for VM. Result:" >> $CONSOLE_LOG 2>&1
 echo "VLAN_RANGE=$VLAN_RANGE" >> $CONSOLE_LOG 2>&1
