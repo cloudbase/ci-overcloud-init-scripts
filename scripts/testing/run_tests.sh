@@ -32,4 +32,5 @@ scp -o 'PasswordAuthentication no' -o 'StrictHostKeyChecking no' -o 'UserKnownHo
 scp -o 'PasswordAuthentication no' -o 'StrictHostKeyChecking no' -o 'UserKnownHostsFile /dev/null' -i /home/jenkins-slave/admin-msft.pem ubuntu@$FLOATING_IP:/home/ubuntu/bin/subunit-output.log $LOGS_FOLDER
 scp -o 'PasswordAuthentication no' -o 'StrictHostKeyChecking no' -o 'UserKnownHostsFile /dev/null' -i /home/jenkins-slave/admin-msft.pem ubuntu@$FLOATING_IP:/opt/stack/logs/stack.sh.txt $LOGS_FOLDER
 scp -o 'PasswordAuthentication no' -o 'StrictHostKeyChecking no' -o 'UserKnownHostsFile /dev/null' -i /home/jenkins-slave/admin-msft.pem ubuntu@$FLOATING_IP:/opt/stack/logs/screen/* $LOGS_FOLDER
+scp -o 'PasswordAuthentication no' -o 'StrictHostKeyChecking no' -o 'UserKnownHostsFile /dev/null' -i /home/jenkins-slave/admin-msft.pem -r ubuntu@$FLOATING_IP:/openstack/logs/* $LOGS_FOLDER
 rm -rf $LOGS_FOLDER/*`date +%Y-%m`*
