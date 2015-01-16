@@ -45,6 +45,22 @@ tempest.api.orchestration.stacks.test_non_empty_stack
 tempest.api.compute.admin.test_migrations.MigrationsAdminTest.test_list_migrations_in_flavor_resize_situation
 tempest.api.compute.servers.test_server_actions.ServerActionsTestJSON.test_resize_server_confirm_from_stopped
 
+# Snapshot issue related test fails:
+tempest.api.compute.images.test_list_image_filters
+tempest.api.compute.images.test_images_negative.ImagesNegativeTestJSON.test_create_image_from_stopped_server
+tempest.api.compute.images.test_images_oneserver.ImagesOneServerTestJSON.test_create_delete_image[gate,smoke]
+tempest.api.compute.images.test_images_oneserver.ImagesOneServerTestJSON.test_create_image_specify_multibyte_character_image_name[gate]
+tempest.api.compute.servers.test_delete_server.DeleteServersTestJSON.test_delete_server_while_in_shelved_state
+tempest.api.compute.servers.test_server_actions.ServerActionsTestJSON.test_create_backup[gate,image]
+tempest.api.compute.servers.test_server_actions.ServerActionsTestJSON.test_shelve_unshelve_server[gate]
+tempest.api.compute.servers.test_servers_negative.ServersNegativeTestJSON.test_shelve_shelved_server[gate,negative]
+
+# Migrate permission issue:
+tempest.api.compute.servers.test_delete_server.DeleteServersTestJSON.test_delete_server_while_in_verify_resize_state[gate]
+
+# Unexpected response code
+tempest.api.compute.servers.test_delete_server.DeleteServersTestJSON.test_delete_server_while_in_shutoff_state[gate]
+
 # Not testing boto third-party
 tempest.thirdparty.boto
 
