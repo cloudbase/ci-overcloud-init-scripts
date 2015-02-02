@@ -33,6 +33,7 @@ $novaTemplate = "$templateDir\nova.conf"
 $neutronTemplate = "$templateDir\neutron_hyperv_agent.conf"
 $hostname = hostname
 $rabbitUser = "stackrabbit"
+$pythonExec = "C:\Python27\python.exe"
 
 $remoteLogs="\\"+$devstackIP+"\openstack\logs"
 $remoteConfigs="\\"+$devstackIP+"\openstack\config"
@@ -163,12 +164,12 @@ cp "$templateDir\interfaces.template" "$configDir\"
 
 $hasNovaExec = Test-Path c:\OpenStack\virtualenv\Scripts\nova-compute.exe
 if ($hasNovaExec -eq $false){
-    $novaExec = "C:\Python27\python.exe c:\OpenStack\virtualenv\Scripts\nova-compute-script.py"
+    $novaExec = "C:\Python27\python.exe $virtualenv\Scripts\nova-compute-script.py"
 }else{
     $novaExec = "c:\OpenStack\virtualenv\Scripts\nova-compute.exe"
 }
 
-FixExecScript "c:\OpenStack\virtualenv\Scripts\nova-compute-script.py"
+FixExecScript "$virtualenv\Scripts\nova-compute-script.py"
 
 $hasNeutronExec = Test-Path "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 $hasQuantumExec = Test-Path "c:\OpenStack\virtualenv\Scripts\quantum-hyperv-agent.exe"
@@ -181,10 +182,10 @@ if ($hasNeutronExec -eq $false){
     $neutronExe = "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 }
 
-FixExecScript "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent-script.py"
+FixExecScript "$virtualenv\Scripts\neutron-hyperv-agent-script.py"
 
 Copy-Item -Recurse $configDir "$remoteConfigs\$hostname"
 
-Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat c:\OpenStack\virtualenv\Scripts\nova-compute.exe C:\Openstack\etc\nova.conf $remoteLogs\$hostname\nova-console.log"
+Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat $pythonExec $virtualenv\Scripts\nova-compute-script.py C:\Openstack\etc\nova.conf $remoteLogs\$hostname\nova-console.log"
 Start-Sleep -s 15
-Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat $neutronExe C:\Openstack\etc\neutron_hyperv_agent.conf $remoteLogs\$hostname\neutron-hyperv-agent-console.log"
+Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat $pythonExec $virtualenv\Scripts\neutron-hyperv-agent-script.py C:\Openstack\etc\neutron_hyperv_agent.conf $remoteLogs\$hostname\neutron-hyperv-agent-console.log"
