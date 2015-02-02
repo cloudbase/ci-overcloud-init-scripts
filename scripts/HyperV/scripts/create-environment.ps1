@@ -33,7 +33,7 @@ $novaTemplate = "$templateDir\nova.conf"
 $neutronTemplate = "$templateDir\neutron_hyperv_agent.conf"
 $hostname = hostname
 $rabbitUser = "stackrabbit"
-$pythonExec = "C:\Python27\python.exe"
+$pythonExec = "c:\OpenStack\virtualenv\Scripts\python.exe"
 
 $remoteLogs="\\"+$devstackIP+"\openstack\logs"
 $remoteConfigs="\\"+$devstackIP+"\openstack\config"
