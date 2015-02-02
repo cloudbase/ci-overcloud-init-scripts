@@ -4,6 +4,15 @@
     [string]$buildFor='openstack/nova'
 )
 
+function FixExecScript([String] $ExecScriptPath)
+{
+    ############################################################################
+    # temporary fix for pbr bug: https://review.openstack.org/#/c/151595/      #
+    ############################################################################
+    $ExecScript = (gc "$ExecScriptPath").Replace("#!c:OpenStackvirtualenvScriptspython.exe","#!c:\OpenStack\virtualenv\Scripts\python.exe")
+    Set-Content $ExecScriptPath $ExecScript
+}
+
 ############################################################################
 #  virtualenv and pip install must be run via cmd. There is a bug in the   #
 #  activate.ps1 that actually installs packages in the system site package #
@@ -159,6 +168,8 @@ if ($hasNovaExec -eq $false){
     $novaExec = "c:\OpenStack\virtualenv\Scripts\nova-compute.exe"
 }
 
+FixExecScript "c:\OpenStack\virtualenv\Scripts\nova-compute-script.py"
+
 $hasNeutronExec = Test-Path "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 $hasQuantumExec = Test-Path "c:\OpenStack\virtualenv\Scripts\quantum-hyperv-agent.exe"
 if ($hasNeutronExec -eq $false){
@@ -169,6 +180,8 @@ if ($hasNeutronExec -eq $false){
 }else{
     $neutronExe = "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 }
+
+FixExecScript "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent-script.py"
 
 Copy-Item -Recurse $configDir "$remoteConfigs\$hostname"
 
