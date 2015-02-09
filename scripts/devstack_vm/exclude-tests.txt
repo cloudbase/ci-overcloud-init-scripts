@@ -44,6 +44,8 @@ tempest.api.orchestration.stacks.test_non_empty_stack
 # Remote launched processed can not access the network share
 tempest.api.compute.admin.test_migrations.MigrationsAdminTest.test_list_migrations_in_flavor_resize_situation
 tempest.api.compute.servers.test_server_actions.ServerActionsTestJSON.test_resize_server_confirm_from_stopped
+tempest.api.compute.servers.test_disk_config.ServerDiskConfigTestJSON.test_resize_server_from_auto_to_manual
+tempest.api.compute.servers.test_disk_config.ServerDiskConfigTestJSON.test_update_server_from_auto_to_manual
 
 # Snapshot issue related test fails:
 tempest.api.compute.images.test_list_image_filters
