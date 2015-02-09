@@ -81,3 +81,9 @@ tempest.scenario.test_security_groups_basic_ops.TestSecurityGroupsBasicOps
 tempest.scenario.test_shelve_instance.TestShelveInstance
 tempest.scenario.test_snapshot_pattern.TestSnapshotPattern
 tempest.scenario.test_server_advanced_ops.TestServerAdvancedOps.test_resize_server_confirm
+
+#We do not test Swift
+tempest.api.object_storage.test_container_sync_middleware.ContainerSyncMiddlewareTest
+
+#Not relevant for Hyper-V tests
+tempest.api.image.v1.test_images.CreateRegisterImagesTest
