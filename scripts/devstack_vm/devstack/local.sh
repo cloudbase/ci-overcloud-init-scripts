@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-. ./functions-common
+source /home/ubuntu/devstack/functions-common
 
 nova flavor-delete 42
 nova flavor-create m1.nano 42 96 1 1
