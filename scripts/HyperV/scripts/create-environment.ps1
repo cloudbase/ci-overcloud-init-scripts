@@ -132,6 +132,10 @@ if(!(Test-Path -Path $missingPath)){
     new-item -Path $missingPath -Value ' ' –itemtype file
 }
 
+pushd C:\OpenStack\build\openstack\nova
+git fetch https://github.com/bclau/nova wmi-coinit && git cherry-pick FETCH_HEAD
+popd
+
 ExecRetry {
     cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\neutron
     if ($LastExitCode) { Throw "Failed to install neutron from repo" }
