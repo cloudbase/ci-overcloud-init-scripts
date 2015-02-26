@@ -62,6 +62,9 @@ test_for_neutron () {
 
 cd /opt/stack/tempest
 
+#Install tempest_lib
+pip install tempest-lib
+
 testr init
 
 TEMPEST_DIR="/home/ubuntu/tempest"
