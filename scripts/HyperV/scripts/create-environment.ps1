@@ -133,7 +133,8 @@ if(!(Test-Path -Path $missingPath)){
 }
 
 pushd C:\OpenStack\build\openstack\nova
-git fetch https://github.com/bclau/nova wmi-coinit && git cherry-pick FETCH_HEAD
+git fetch https://github.com/bclau/nova wmi-coinit
+git cherry-pick FETCH_HEAD
 popd
 
 ExecRetry {
