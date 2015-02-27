@@ -96,6 +96,10 @@ if ($hasNeutronTemplate -eq $false){
     Throw "Neutron template not found"
 }
 
+git config --global user.email "hyper-v_ci@microsoft.com"
+git config --global user.name "Hyper-V CI"
+
+
 if ($buildFor -eq "openstack/nova"){
     ExecRetry {
         GitClonePull "$buildDir\neutron" "https://github.com/openstack/neutron.git" $branchName
