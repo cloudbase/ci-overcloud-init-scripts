@@ -53,20 +53,63 @@ $hasQemuImg = Test-Path $binDir\qemu-img.exe
 
 $ErrorActionPreference = "SilentlyContinue"
 
-# Do a selective teardown
-Stop-Process -Name nova-compute -Force -ErrorAction $ErrorActionPreference
-Stop-Process -Name neutron-hyperv-agent -Force -ErrorAction $ErrorActionPreference
-Stop-Process -Name quantum-hyperv-agent -Force -ErrorAction $ErrorActionPreference
-Stop-Process -Name python -Force -ErrorAction $ErrorActionPreference
-Remove-Item -Recurse -Force $virtualenv -ErrorAction $ErrorActionPreference
+$ErrorActionPreference = "SilentlyContinue"
 
-if ($hasConfigDir -eq $false) {
-    mkdir $configDir
+# Do a selective teardown
+Write-Host "Ensuring nova and neutron services are stopped."
+Stop-Service -Name nova-compute -Force
+Stop-Service -Name neutron-hyperv-agent -Force
+
+Write-Host "Stopping any possible python processes left."
+Stop-Process -Name python -Force
+
+if (Get-Process -Name nova-compute){
+    Throw "Nova is still running on this host"
 }
 
-$novaIsRunning = Get-Process -Name nova-compute -ErrorAction $ErrorActionPreference
-$neutronIsRunning = Get-Process -Name neutron-hyperv-agent -ErrorAction $ErrorActionPreference
-$quantumIsRunning = Get-Process -Name quantum-hyperv-agent -ErrorAction $ErrorActionPreference
+if (Get-Process -Name neutron-hyperv-agent){
+    Throw "Neutron is still running on this host"
+}
+
+if (Get-Process -Name python){
+    Throw "Python processes still running on this host"
+}
+
+$ErrorActionPreference = "Stop"
+
+if ($(Get-Service nova-compute).Status -ne "Stopped"){
+    Throw "Nova service is still running"
+}
+
+if ($(Get-Service neutron-hyperv-agent).Status -ne "Stopped"){
+    Throw "Neutron service is still running"
+}
+
+Write-Host "Removing any stale virtenv folder."
+if ($hasVirtualenv -eq $true){
+    Try
+    {
+        Remove-Item -Recurse -Force $virtualenv
+    }
+    Catch
+    {
+        Throw "Vrtualenv already exists. Environment not clean."
+    }
+}
+
+Write-Host "Cleaning up the config folder."
+if ($hasConfigDir -eq $false) {
+    mkdir $configDir
+}else{
+    Try
+    {
+        Remove-Item -Recurse -Force $configDir\*
+    }
+    Catch
+    {
+        Throw "Can not clean the config folder"
+    }
+}
 
 if ($hasProject -eq $false){
     Throw "$projectName repository was not found. Please run gerrit-git-pref for this project first"
@@ -78,10 +121,6 @@ if ($hasBinDir -eq $false){
 
 if (($hasMkisoFs -eq $false) -or ($hasQemuImg -eq $false)){
     Throw "Required binary files (mkisofs, qemuimg etc.)  are missing"
-}
-
-if ($novaIsRunning -or $neutronIsRunning -or $quantumIsRunning){
-    Throw "Nova or Neutron is still running on this host"
 }
 
 if ($hasVirtualenv -eq $true){
@@ -136,10 +175,8 @@ if(!(Test-Path -Path $missingPath)){
     new-item -Path $missingPath -Value ' ' –itemtype file
 }
 
-pushd C:\OpenStack\build\openstack\nova
-git fetch https://github.com/bclau/nova wmi-coinit
-git cherry-pick FETCH_HEAD
-popd
+FixExecScript "$virtualenv\Scripts\nova-compute-script.py"
+FixExecScript "$virtualenv\Scripts\neutron-hyperv-agent-script.py"
 
 ExecRetry {
     cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\neutron
@@ -173,28 +210,36 @@ cp "$templateDir\interfaces.template" "$configDir\"
 
 $hasNovaExec = Test-Path c:\OpenStack\virtualenv\Scripts\nova-compute.exe
 if ($hasNovaExec -eq $false){
-    $novaExec = "C:\Python27\python.exe $virtualenv\Scripts\nova-compute-script.py"
+    Throw "No nova exe found"
 }else{
     $novaExec = "c:\OpenStack\virtualenv\Scripts\nova-compute.exe"
 }
 
-FixExecScript "$virtualenv\Scripts\nova-compute-script.py"
-
 $hasNeutronExec = Test-Path "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
-$hasQuantumExec = Test-Path "c:\OpenStack\virtualenv\Scripts\quantum-hyperv-agent.exe"
 if ($hasNeutronExec -eq $false){
-    if ($hasQuantumExec -eq $false){
-        Throw "No neutron exe found"
-    }
-    $neutronExe = "c:\OpenStack\virtualenv\Scripts\quantum-hyperv-agent.exe"
+    Throw "No neutron exe found"
 }else{
     $neutronExe = "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 }
 
-FixExecScript "$virtualenv\Scripts\neutron-hyperv-agent-script.py"
-
 Copy-Item -Recurse $configDir "$remoteConfigs\$hostname"
 
-Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat $pythonExec $virtualenv\Scripts\nova-compute-script.py C:\Openstack\etc\nova.conf $remoteLogs\$hostname\nova-console.log"
+Write-Host "Starting the services"
+Try
+{
+    Start-Service nova-compute
+}
+Catch
+{
+    Throw "Can not start the nova service"
+}
 Start-Sleep -s 15
-Invoke-WMIMethod -path win32_process -name create -argumentlist "C:\OpenStack\devstack\scripts\run_openstack_service.bat $pythonExec $virtualenv\Scripts\neutron-hyperv-agent-script.py C:\Openstack\etc\neutron_hyperv_agent.conf $remoteLogs\$hostname\neutron-hyperv-agent-console.log"
+Try
+{
+    Start-Service neutron-hyperv-agent
+}
+Catch
+{
+    Throw "Can not start neutron agent service"
+}
+Write-Host "Environment initialization done."
