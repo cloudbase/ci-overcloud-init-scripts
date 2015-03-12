@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+source /home/ubuntu/devstack/functions
 source /home/ubuntu/devstack/functions-common
 
 nova flavor-delete 42
