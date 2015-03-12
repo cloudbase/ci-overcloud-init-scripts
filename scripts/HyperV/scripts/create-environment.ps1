@@ -143,9 +143,22 @@ if ($buildFor -eq "openstack/nova"){
     ExecRetry {
         GitClonePull "$buildDir\neutron" "https://github.com/openstack/neutron.git" $branchName
     }
+    ExecRetry {
+        GitClonePull "$buildDir\networking-hyperv" "https://github.com/stackforge/networking-hyperv.git" "master"
+    }
 }elseif ($buildFor -eq "openstack/neutron" -or $buildFor -eq "openstack/quantum"){
     ExecRetry {
         GitClonePull "$buildDir\nova" "https://github.com/openstack/nova.git" $branchName
+    }
+    ExecRetry {
+        GitClonePull "$buildDir\networking-hyperv" "https://github.com/stackforge/networking-hyperv.git" "master"
+    }
+}elseif ($buildFor -eq "stackforge/networking-hyperv"){
+    ExecRetry {
+        GitClonePull "$buildDir\nova" "https://github.com/openstack/nova.git" $branchName
+    }
+    ExecRetry {
+        GitClonePull "$buildDir\neutron" "https://github.com/openstack/neutron.git" $branchName
     }
 }else{
     Throw "Cannot build for project: $buildFor"
@@ -179,6 +192,11 @@ FixExecScript "$virtualenv\Scripts\nova-compute-script.py"
 FixExecScript "$virtualenv\Scripts\neutron-hyperv-agent-script.py"
 
 ExecRetry {
+    cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\networking-hyperv
+    if ($LastExitCode) { Throw "Failed to install networking-hyperv from repo" }
+}
+
+ExecRetry {
     cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\neutron
     if ($LastExitCode) { Throw "Failed to install neutron from repo" }
 }
@@ -205,7 +223,7 @@ if ($? -eq $false){
     Throw "Error writting neutron_hyperv_agent.conf"
 }
 
-cp "$templateDir\policy.json" "$configDir\" 
+cp "$templateDir\policy.json" "$configDir\"
 cp "$templateDir\interfaces.template" "$configDir\"
 
 $hasNovaExec = Test-Path c:\OpenStack\virtualenv\Scripts\nova-compute.exe
