@@ -77,7 +77,7 @@ Function Check-Service
 
     if(!$hasService)
     {
-        New-Service -name "$serviceName" -binaryPathName "`"$serviceFileLocation\$serviceFileName`" $serviceName `"$serviceExecutable`" --config-file `"$serviceParameters`"" -displayName "$serviceName" -description "$serviceDescription" -startupType $serviceStartMode
+        New-Service -name "$serviceName" -binaryPathName "`"$serviceFileLocation\$serviceFileName`" $serviceName `"$serviceExecutable`" `"$serviceParameters`"" -displayName "$serviceName" -description "$serviceDescription" -startupType $serviceStartMode
     }
 
     if((Get-Service -Name $serviceName).Status -eq "Running")
