@@ -43,7 +43,7 @@ Function Set-ServiceAcctCreds
         $hostname = hostname
     }
 
-    $service.Change($null,$null,$null,$null,$null,$null,"$host\$serviceUsername",$servicePassword)
+    $service.Change($null,$null,$null,$null,$null,$null,"$hostname\$serviceUsername",$servicePassword)
 }
 
 Function Check-Service
