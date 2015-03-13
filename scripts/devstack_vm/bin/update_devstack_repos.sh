@@ -61,7 +61,10 @@ do
 		echo "Git branch output:"
 		git branch
 		echo "Git Log output:"
-		git log -10 --pretty=format:"%h - %an, %ae,  %ar : %s"
+		if ! [[ $i =~ .*noVNC.* ]]
+		then
+			git log -10 --pretty=format:"%h - %an, %ae,  %ar : %s"
+		fi
 		popd
 	fi
 done
