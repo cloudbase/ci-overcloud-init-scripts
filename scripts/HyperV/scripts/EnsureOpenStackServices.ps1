@@ -13,12 +13,12 @@ $downloadLocation = "http://dl.openstack.tld/"
 $novaServiceName = "nova-compute"
 $novaServiceDescription = "OpenStack nova Compute Service"
 $novaServiceExecutable = "$virtualenv\Scripts\nova-compute.exe"
-$novaServiceParameters = "--config-file $configDir\nova.conf"
+$novaServiceConfig = "$configDir\nova.conf"
 
 $neutronServiceName = "neutron-hyperv-agent"
 $neutronServiceDescription = "OpenStack Neutron Hyper-V Agent Service"
 $neutronServiceExecutable = "$virtualenv\Scripts\neutron-hyperv-agent.exe"
-$neutronServiceParameters = "--config-file $configDir\neutron_hyperv_agent.conf"
+$neutronServiceConfig = "$configDir\neutron_hyperv_agent.conf"
 
 
 Function Set-ServiceAcctCreds
@@ -52,7 +52,7 @@ Function Check-Service
         [string]$serviceName,
         [string]$serviceDescription,
         [string]$serviceExecutable,
-        [string]$serviceParameters
+        [string]$serviceConfig
     )
 
     $serviceFileLocation = "$openstackDir\service"
@@ -84,7 +84,7 @@ Function Check-Service
 
     if(!$hasService)
     {
-        New-Service -name "$serviceName" -binaryPathName "`"$serviceFileLocation\$serviceFileName`" $serviceName `"$serviceExecutable`" `"$serviceParameters`"" -displayName "$serviceName" -description "$serviceDescription" -startupType $serviceStartMode
+        New-Service -name "$serviceName" -binaryPathName "`"$serviceFileLocation\$serviceFileName`" $serviceName `"$serviceExecutable`" --config-file `"$serviceConfig`"" -displayName "$serviceName" -description "$serviceDescription" -startupType $serviceStartMode
     }
 
     if((Get-Service -Name $serviceName).Status -eq "Running")
@@ -98,6 +98,6 @@ Function Check-Service
     }
 }
 
-Check-Service $novaServiceName $novaServiceDescription $novaServiceExecutable $novaServiceParameters
+Check-Service $novaServiceName $novaServiceDescription $novaServiceExecutable $novaServiceConfig
 
-Check-Service $neutronServiceName $neutronServiceDescription $neutronServiceExecutable $neutronServiceParameters
+Check-Service $neutronServiceName $neutronServiceDescription $neutronServiceExecutable $neutronServiceConfig
