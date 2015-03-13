@@ -90,6 +90,7 @@ if ($hasVirtualenv -eq $true){
     Try
     {
         Remove-Item -Recurse -Force $virtualenv
+        $hasVirtualenv = Test-Path $virtualenv
     }
     Catch
     {
