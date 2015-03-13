@@ -223,6 +223,7 @@ if ($hasNeutronExec -eq $false){
     $neutronExe = "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 }
 
+Remove-Item -Recurse -Force "$remoteConfigs\$hostname\*"
 Copy-Item -Recurse $configDir "$remoteConfigs\$hostname"
 
 Write-Host "Starting the services"
