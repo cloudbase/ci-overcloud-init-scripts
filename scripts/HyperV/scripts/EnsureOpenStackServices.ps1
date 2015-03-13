@@ -60,6 +60,13 @@ Function Check-Service
     $serviceStartMode = "Manual"
     $filter='Name=' + "'" + $serviceName + "'"
 
+    #Temporary hack
+    $service=Get-WmiObject -namespace "root\cimv2" -Class Win32_Service -Filter $filter
+    if($service)
+    {
+        $service.delete()
+    }
+
     $hasServiceFileFolder = Test-Path $serviceFileLocation
     $hasServiceFile = Test-Path "$serviceFileLocation\$serviceFileName"
     $hasService = Get-Service $serviceName -ErrorAction SilentlyContinue
