@@ -176,8 +176,8 @@ if(!(Test-Path -Path $missingPath)){
     new-item -Path $missingPath -Value ' ' –itemtype file
 }
 
-FixExecScript "$virtualenv\Scripts\nova-compute-script.py"
-FixExecScript "$virtualenv\Scripts\neutron-hyperv-agent-script.py"
+#FixExecScript "$virtualenv\Scripts\nova-compute-script.py"
+#FixExecScript "$virtualenv\Scripts\neutron-hyperv-agent-script.py"
 
 ExecRetry {
     cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\neutron
