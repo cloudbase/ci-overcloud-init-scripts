@@ -216,12 +216,16 @@ if ($hasNovaExec -eq $false){
     $novaExec = "c:\OpenStack\virtualenv\Scripts\nova-compute.exe"
 }
 
+FixExecScript "$virtualenv\Scripts\nova-compute-script.py"
+
 $hasNeutronExec = Test-Path "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 if ($hasNeutronExec -eq $false){
     Throw "No neutron exe found"
 }else{
     $neutronExe = "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 }
+
+FixExecScript "$virtualenv\Scripts\neutron-hyperv-agent-script.py"
 
 Remove-Item -Recurse -Force "$remoteConfigs\$hostname\*"
 Copy-Item -Recurse $configDir "$remoteConfigs\$hostname"
