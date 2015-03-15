@@ -121,7 +121,16 @@ if ($hasBinDir -eq $false){
 }
 
 if (($hasMkisoFs -eq $false) -or ($hasQemuImg -eq $false)){
-    Throw "Required binary files (mkisofs, qemuimg etc.)  are missing"
+    Inwoke-WebRequest -Uri "http://dl.openstack.tld/openstack_bin.zip" -OutFile "$bindir\openstack_bin.zip"
+    if (Test-Path "C:\Program Files\7-Zip\7z.exe')
+    {
+        pushd $bindir
+        & "C:\Program Files\7-Zip\7z.exe" x -y "$bindir\openstack_bin.zip"
+        Remove-Item -Force "$bindir\openstack_bin.zip"
+        popd
+    } else {
+        Throw "Required binary files (mkisofs, qemuimg etc.)  are missing"
+    }
 }
 
 if ($hasVirtualenv -eq $true){
