@@ -14,7 +14,7 @@ nova flavor-delete 451
 nova flavor-create m1.heat 451 512 5 1
 
 # Add DNS config to the private network
-subnet_id=`neutron net-show private | awk '{if (NR == 13) { print $4}}'`
+subnet_id=`neutron net-show private | grep subnets | awk '{print $4}'`
 neutron subnet-update $subnet_id --dns_nameservers list=true 8.8.8.8 8.8.4.4
 
 TEMPEST_CONFIG=/opt/stack/tempest/etc/tempest.conf
