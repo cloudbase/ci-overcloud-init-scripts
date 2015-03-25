@@ -29,12 +29,8 @@ then
         sed -i 's/^HOST_IP=.*/HOST_IP='$MYIP'/g' "$LOCALCONF"
 fi
 
-if [ -e "$LOCALRC" ]
-then
-    	[ -z "$MYIP" ] && exit 1
-        sed -i 's/^HOST_IP=.*/HOST_IP='$MYIP'/g' "$LOCALRC"
-fi
-
+LASTBITS=${MYIP##*.}
+sudo ifconfig eth2 192.168.250.$LASTBITS netmask 255.255.255.0 promisc up
 
 cd /home/ubuntu/devstack
 git pull
