@@ -11,6 +11,7 @@ sudo sed -i '2i127.0.0.1  '$HOSTNAME'' /etc/hosts
 
 #Update six to latest version
 sudo pip install -U six
+sudo pip install -U kombu
 
 DEVSTACK_LOGS="/opt/stack/logs/screen"
 LOCALRC="/home/ubuntu/devstack/localrc"
