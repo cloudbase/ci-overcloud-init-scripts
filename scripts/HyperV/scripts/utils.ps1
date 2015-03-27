@@ -55,6 +55,7 @@ function GitClonePull($path, $url, $branch="master")
                 ExecRetry {
                     git fetch --all
                     if ($LastExitCode) { throw "git fetch failed" }
+                }
             }
             ExecRetry {
                 git checkout $branch
