@@ -27,8 +27,9 @@ pushd "$DEVSTACK_DIR"
 find . -name *pyc -print0 | xargs -0 rm -f
 git reset --hard
 git clean -f -d
-git pull
+git fetch --all
 git checkout "$BRANCH" || echo "Failed to switch branch"
+git pull
 echo "Devstack final branch:"
 git branch
 echo "Devstack git log:"
