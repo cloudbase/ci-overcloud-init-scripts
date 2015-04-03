@@ -86,6 +86,9 @@ tempest.scenario.test_server_advanced_ops.TestServerAdvancedOps.test_resize_serv
 #Need investigation - recently enabled in tempest
 tempest.scenario.test_network_advanced_server_ops.TestNetworkAdvancedServerOps.test_server_connectivity_resize
 tempest.scenario.test_network_advanced_server_ops.TestNetworkAdvancedServerOps.test_server_connectivity_stop_start
+#Need investigation - were failing on cinder ci as well
+tempest.scenario.test_volume_boot_pattern.TestVolumeBootPattern.test_volume_boot_pattern
+tempest.scenario.test_volume_boot_pattern.TestVolumeBootPatternV2.test_volume_boot_pattern
 
 #We do not test Swift
 tempest.api.object_storage.test_container_sync_middleware.ContainerSyncMiddlewareTest
