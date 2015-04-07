@@ -71,3 +71,11 @@ do
 done
 
 popd
+
+# Apply fix for bug https://bugs.launchpad.net/tempest/+bug/1440984 in order to avoid global requirements issue caused
+# by the latest version of pip.
+# TODO: Remove this after this patch merges.
+pushd $BASEDIR/requirements
+git fetch https://review.openstack.org/openstack/requirements refs/changes/60/171060/3 && git cherry-pick FETCH_HEAD
+popd
+
