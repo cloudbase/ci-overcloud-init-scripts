@@ -27,8 +27,8 @@ pushd "$DEVSTACK_DIR"
 find . -name *pyc -print0 | xargs -0 rm -f
 git reset --hard
 git clean -f -d
-git fetch --all
-git checkout "$BRANCH" || echo "Failed to switch branch"
+git fetch
+git checkout "$BRANCH" || echo "Failed to switch branch $BRANCH"
 git pull
 echo "Devstack final branch:"
 git branch
@@ -55,8 +55,9 @@ do
         	then
         		git reset --hard
         		git clean -f -d
-        		git pull
-        		git checkout "$BRANCH" || echo "Failed to switch branch"
+        		git fetch
+        		git checkout "$BRANCH" || echo "Failed to switch branch $BRANCH"
+			git pull
         	fi
 		echo "Folder: $BASEDIR/$i"
 		echo "Git branch output:"
@@ -64,6 +65,7 @@ do
 		echo "Git Log output:"
 		if ! [[ $i =~ .*noVNC.* ]]
 		then
+			git status
 			git log -10 --pretty=format:"%h - %an, %ae,  %ar : %s"
 		fi
 		popd
