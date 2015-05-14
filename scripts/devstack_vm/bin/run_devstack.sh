@@ -35,7 +35,7 @@ then
         sed -i 's/^HOST_IP=.*/HOST_IP='$MYIP'/g' "$LOCALRC"
 fi
 
-
+read test
 cd /home/ubuntu/devstack
 git pull
 sudo easy_install -U pip
