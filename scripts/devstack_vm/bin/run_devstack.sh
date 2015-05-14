@@ -9,6 +9,8 @@ HOSTNAME=$(hostname)
 
 sudo sed -i '2i127.0.0.1  '$HOSTNAME'' /etc/hosts
 
+sudo easy_install -U pip
+
 #Update six to latest version
 sudo pip install -U six
 sudo pip install -U kombu
@@ -35,11 +37,9 @@ then
         sed -i 's/^HOST_IP=.*/HOST_IP='$MYIP'/g' "$LOCALRC"
 fi
 
-read test
 cd /home/ubuntu/devstack
-git pull
-sudo easy_install -U pip
-./unstack.sh
+#git pull
+#./unstack.sh
 
 nohup ./stack.sh > /opt/stack/logs/stack.sh.txt 2>&1 &
 pid=$!
