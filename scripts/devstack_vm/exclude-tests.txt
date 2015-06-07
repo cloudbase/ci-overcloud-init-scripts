@@ -16,12 +16,6 @@ tempest.scenario.test_network_basic_ops.TestNetworkBasicOps.test_hotplug_nic
 tempest.api.compute.v3.servers.test_server_actions.ServerActionsV3Test.test_get_spice_console
 tempest.api.compute.v3.servers.test_server_actions.ServerActionsV3Test.test_get_vnc_console
 
-# See Neutron bug https://bugs.launchpad.net/neutron/+bug/1277285
-# Note that corresponding JSON tests pass
-tempest.api.network.admin.test_dhcp_agent_scheduler.DHCPAgentSchedulersTestXML.test_add_remove_network_from_dhcp_agent
-tempest.api.network.admin.test_l3_agent_scheduler.L3AgentSchedulerTestXML.
-tempest.api.network.admin.test_agent_management.AgentManagementTestXML.
-
 # See Tempest bug: https://bugs.launchpad.net/tempest/+bug/1363986
 tempest.scenario.test_security_groups_basic_ops.TestSecurityGroupsBasicOps.test_cross_tenant_traffic
 
@@ -39,13 +33,6 @@ tempest.api.compute.admin.test_simple_tenant_usage.TenantUsagesTestJSON.test_get
 #Bug in tempest looking for image including extension (.vhdx)
 tempest.api.orchestration.stacks.test_neutron_resources
 tempest.api.orchestration.stacks.test_non_empty_stack
-
-# Fix to be implemented: running nova and neutron as local services
-# Remote launched processed can not access the network share
-tempest.api.compute.admin.test_migrations.MigrationsAdminTest.test_list_migrations_in_flavor_resize_situation
-tempest.api.compute.servers.test_server_actions.ServerActionsTestJSON.test_resize_server_confirm_from_stopped
-tempest.api.compute.servers.test_disk_config.ServerDiskConfigTestJSON.test_resize_server_from_auto_to_manual
-tempest.api.compute.servers.test_disk_config.ServerDiskConfigTestJSON.test_update_server_from_auto_to_manual
 
 # Snapshot issue related test fails:
 tempest.api.compute.images.test_list_image_filters
@@ -73,13 +60,9 @@ tempest.api.compute.servers.test_server_actions.ServerActionsTestJSON.test_resiz
 tempest.api.compute.servers.test_server_actions.ServerActionsTestJSON.test_resize_server_confirm
 tempest.api.compute.volumes.test_attach_volume.AttachVolumeTestJSON.test_list_get_volume_attachments
 tempest.scenario.test_encrypted_cinder_volumes.TestEncryptedCinderVolumes
-tempest.scenario.test_minimum_basic.TestMinimumBasicScenario
 tempest.scenario.test_network_advanced_server_ops.TestNetworkAdvancedServerOps.test_server_connectivity_pause_unpause
 tempest.scenario.test_network_advanced_server_ops.TestNetworkAdvancedServerOps.test_server_connectivity_reboot
 tempest.scenario.test_network_advanced_server_ops.TestNetworkAdvancedServerOps.test_server_connectivity_suspend_resume
-tempest.scenario.test_network_basic_ops.TestNetworkBasicOps
-tempest.scenario.test_network_v6.TestGettingAddress
-tempest.scenario.test_security_groups_basic_ops.TestSecurityGroupsBasicOps
 tempest.scenario.test_shelve_instance.TestShelveInstance
 tempest.scenario.test_snapshot_pattern.TestSnapshotPattern
 tempest.scenario.test_server_advanced_ops.TestServerAdvancedOps.test_resize_server_confirm
