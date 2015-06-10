@@ -51,7 +51,14 @@ $hasBinDir = Test-Path $binDir
 $hasMkisoFs = Test-Path $binDir\mkisofs.exe
 $hasQemuImg = Test-Path $binDir\qemu-img.exe
 
-$ErrorActionPreference = "SilentlyContinue"
+$pip_conf_content = @"
+[global]
+index-url = http://dl.openstack.tld:8080/root/pypi/+simple/
+[install]
+trusted-host = dl.openstack.tld
+find-links = 
+    http://dl.openstack.tld/wheels
+"@
 
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -184,6 +191,7 @@ if ($hasConfigDir -eq $false){
 }
 
 cmd.exe /C virtualenv --system-site-packages $virtualenv
+Add-Content $virtualenv\pip.ini $pip_conf_content
 
 if ($? -eq $false){
     Throw "Failed to create virtualenv"
