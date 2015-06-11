@@ -157,14 +157,21 @@ if ($hasConfigDir -eq $false){
     mkdir $remoteConfigs\$hostname
 }
 
-cd \
-Remove-Item -Force python27new.tar.gz
-Start-BitsTransfer -Source http://dl.openstack.tld/python27new.tar.gz -Destination python27new.tar.gz
-Remove-Item -Recurse -Force .\Python27
+pushd \
+if (Test-Path "C:\python27new.tar.gz")
+{
+    Remove-Item -Force "C:\python27new.tar.gz"
+}
+Start-BitsTransfer -Source http://dl.openstack.tld/python27new.tar.gz -Destination C:\python27new.tar.gz
+if (Test-Path "C:\Python27")
+{
+    Remove-Item -Recurse -Force .\Python27
+}
 & C:\mingw-get\msys\1.0\bin\tar.exe -xvzf python27new.tar.gz
 & easy_install pip
 & pip install -U setuptools
 & pip install -U pbr==0.11.0
+popd
 
 $hasPipConf = Test-Path "$env:APPDATA\pip"
 if ($hasPipConf -eq $false){
