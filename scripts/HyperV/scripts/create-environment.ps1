@@ -162,7 +162,7 @@ if (Test-Path "C:\python27new.tar.gz")
 {
     Remove-Item -Force "C:\python27new.tar.gz"
 }
-Start-BitsTransfer -Source http://dl.openstack.tld/python27new.tar.gz -Destination C:\python27new.tar.gz
+Invoke-WebRequest -Uri http://dl.openstack.tld/python27new.tar.gz -OutFile C:\python27new.tar.gz
 if (Test-Path "C:\Python27")
 {
     Remove-Item -Recurse -Force .\Python27
