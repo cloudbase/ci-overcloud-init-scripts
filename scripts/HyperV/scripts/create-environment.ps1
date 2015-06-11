@@ -170,6 +170,7 @@ if (Test-Path "C:\Python27")
 & C:\mingw-get\msys\1.0\bin\tar.exe -xvzf python27new.tar.gz
 & easy_install pip
 & pip install -U setuptools
+& pip install -U wmi
 & pip install -U pbr==0.11.0
 popd
 
