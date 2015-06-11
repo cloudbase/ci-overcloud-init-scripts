@@ -1,27 +1,12 @@
-﻿Param(
+Param(
     [Parameter(Mandatory=$true)][string]$devstackIP,
     [string]$branchName='master',
     [string]$buildFor='openstack/nova'
 )
 
-function FixExecScript([String] $ExecScriptPath)
-{
-    ############################################################################
-    # temporary fix for pbr bug: https://review.openstack.org/#/c/151595/      #
-    ############################################################################
-    $ExecScript = (gc "$ExecScriptPath").Replace("#!c:OpenStackvirtualenvScriptspython.exe","#!c:\OpenStack\virtualenv\Scripts\python.exe")
-    Set-Content $ExecScriptPath $ExecScript
-}
-
-############################################################################
-#  virtualenv and pip install must be run via cmd. There is a bug in the   #
-#  activate.ps1 that actually installs packages in the system site package #
-#  folder                                                                  #
-############################################################################
-
 $projectName = $buildFor.split('/')[-1]
 
-$virtualenv = "c:\OpenStack\virtualenv"
+#$virtualenv = "c:\OpenStack\virtualenv"
 $openstackDir = "C:\OpenStack"
 $baseDir = "$openstackDir\devstack"
 $scriptdir = "$baseDir\scripts"
@@ -33,7 +18,7 @@ $novaTemplate = "$templateDir\nova.conf"
 $neutronTemplate = "$templateDir\neutron_hyperv_agent.conf"
 $hostname = hostname
 $rabbitUser = "stackrabbit"
-$pythonExec = "c:\OpenStack\virtualenv\Scripts\python.exe"
+$pythonExec = "c:\Python27\python.exe"
 
 $remoteLogs="\\"+$devstackIP+"\openstack\logs"
 $remoteConfigs="\\"+$devstackIP+"\openstack\config"
@@ -41,7 +26,6 @@ $remoteConfigs="\\"+$devstackIP+"\openstack\config"
 . "$scriptdir\utils.ps1"
 
 $hasProject = Test-Path $buildDir\$projectName
-$hasVirtualenv = Test-Path $virtualenv
 $hasNova = Test-Path $buildDir\nova
 $hasNeutron = Test-Path $buildDir\neutron
 $hasNeutronTemplate = Test-Path $neutronTemplate
@@ -51,14 +35,14 @@ $hasBinDir = Test-Path $binDir
 $hasMkisoFs = Test-Path $binDir\mkisofs.exe
 $hasQemuImg = Test-Path $binDir\qemu-img.exe
 
-#$pip_conf_content = @"
-#[global]
-#index-url = http://dl.openstack.tld:8080/root/pypi/+simple/
-#[install]
-#trusted-host = dl.openstack.tld
-#find-links = 
-#    http://dl.openstack.tld/wheels
-#"@
+$pip_conf_content = @"
+[global]
+index-url = http://dl.openstack.tld:8080/root/pypi/+simple/
+[install]
+trusted-host = dl.openstack.tld
+find-links = 
+    http://dl.openstack.tld/wheels
+"@
 
 $ErrorActionPreference = "SilentlyContinue"
 
@@ -90,19 +74,6 @@ if ($(Get-Service nova-compute).Status -ne "Stopped"){
 
 if ($(Get-Service neutron-hyperv-agent).Status -ne "Stopped"){
     Throw "Neutron service is still running"
-}
-
-Write-Host "Removing any stale virtenv folder."
-if ($hasVirtualenv -eq $true){
-    Try
-    {
-        Remove-Item -Recurse -Force $virtualenv
-        $hasVirtualenv = Test-Path $virtualenv
-    }
-    Catch
-    {
-        Throw "Vrtualenv already exists. Environment not clean."
-    }
 }
 
 Write-Host "Cleaning up the config folder."
@@ -137,10 +108,6 @@ if (($hasMkisoFs -eq $false) -or ($hasQemuImg -eq $false)){
     } else {
         Throw "Required binary files (mkisofs, qemuimg etc.)  are missing"
     }
-}
-
-if ($hasVirtualenv -eq $true){
-    Throw "Vrtualenv already exists. Environment not clean."
 }
 
 if ($hasNovaTemplate -eq $false){
@@ -190,37 +157,53 @@ if ($hasConfigDir -eq $false){
     mkdir $remoteConfigs\$hostname
 }
 
-cmd.exe /C virtualenv --system-site-packages $virtualenv
-#Add-Content $virtualenv\pip.ini $pip_conf_content
+cd \
+Remove-Item -Force python27new.tar.gz
+Start-BitsTransfer -Source http://dl.openstack.tld/python27new.tar.gz -Destination python27new.tar.gz
+Remove-Item -Recurse -Force .\Python27
+& C:\mingw-get\msys\1.0\bin\tar.exe -xvzf python27new.tar.gz
+& easy_install pip
+& pip install -U setuptools
+& pip install -U pbr==0.11.0
 
-if ($? -eq $false){
-    Throw "Failed to create virtualenv"
+$hasPipConf = Test-Path "$env:APPDATA\pip"
+if ($hasPipConf -eq $false){
+    mkdir "$env:APPDATA\pip"
 }
+else 
+{
+    Remove-Item -Force "$env:APPDATA\pip\*"
+}
+Add-Content "$env:APPDATA\pip\pip.ini" $pip_conf_content
 
-cp $templateDir\distutils.cfg $virtualenv\Lib\distutils\distutils.cfg
+
+cp $templateDir\distutils.cfg C:\Python27\Lib\distutils\distutils.cfg
 
 # Hack due to cicso patch problem:
-$missingPath="C:\Openstack\build\openstack\neutron\etc\neutron\plugins\cisco\cisco_cfg_agent.ini"
-if(!(Test-Path -Path $missingPath)){
-    new-item -Path $missingPath -Value ' ' –itemtype file
-}
-
-#FixExecScript "$virtualenv\Scripts\nova-compute-script.py"
-#FixExecScript "$virtualenv\Scripts\neutron-hyperv-agent-script.py"
+#$missingPath="C:\Openstack\build\openstack\neutron\etc\neutron\plugins\cisco\cisco_cfg_agent.ini"
+#if(!(Test-Path -Path $missingPath)){
+#    new-item -Path $missingPath -Value ' ' –itemtype file
+#}
 
 ExecRetry {
-    cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\networking-hyperv
+    pushd C:\OpenStack\build\openstack\networking-hyperv
+    & python setup.py install
     if ($LastExitCode) { Throw "Failed to install networking-hyperv from repo" }
+    popd
 }
 
 ExecRetry {
-    cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\neutron
+    pushd C:\OpenStack\build\openstack\neutron
+    & python setup.py install
     if ($LastExitCode) { Throw "Failed to install neutron from repo" }
+    popd
 }
 
 ExecRetry {
-    cmd.exe /C $scriptdir\install_openstack_from_repo.bat C:\OpenStack\build\openstack\nova
+    pushd C:\OpenStack\build\openstack\nova
+    & python setup.py install
     if ($LastExitCode) { Throw "Failed to install nova fom repo" }
+    popd
 }
 
 if (($branchName.ToLower().CompareTo($('stable/juno').ToLower()) -eq 0) -or ($branchName.ToLower().CompareTo($('stable/icehouse').ToLower()) -eq 0)) {
@@ -243,23 +226,16 @@ if ($? -eq $false){
 cp "$templateDir\policy.json" "$configDir\"
 cp "$templateDir\interfaces.template" "$configDir\"
 
-$hasNovaExec = Test-Path c:\OpenStack\virtualenv\Scripts\nova-compute.exe
+$hasNovaExec = Test-Path c:\Python27\Scripts\nova-compute.exe
 if ($hasNovaExec -eq $false){
     Throw "No nova exe found"
-}else{
-    $novaExec = "c:\OpenStack\virtualenv\Scripts\nova-compute.exe"
 }
 
-FixExecScript "$virtualenv\Scripts\nova-compute-script.py"
-
-$hasNeutronExec = Test-Path "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
+$hasNeutronExec = Test-Path "c:\Python27\Scripts\neutron-hyperv-agent.exe"
 if ($hasNeutronExec -eq $false){
     Throw "No neutron exe found"
-}else{
-    $neutronExe = "c:\OpenStack\virtualenv\Scripts\neutron-hyperv-agent.exe"
 }
 
-FixExecScript "$virtualenv\Scripts\neutron-hyperv-agent-script.py"
 
 Remove-Item -Recurse -Force "$remoteConfigs\$hostname\*"
 Copy-Item -Recurse $configDir "$remoteConfigs\$hostname"
@@ -283,3 +259,4 @@ Catch
     Throw "Can not start neutron agent service"
 }
 Write-Host "Environment initialization done."
+

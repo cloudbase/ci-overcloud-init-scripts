@@ -342,7 +342,7 @@ $ServiceChangeErrors.Add(23, "Status Service Exists")
 $ServiceChangeErrors.Add(24, "Service Already Paused")
 
 $openstackDir = "C:\OpenStack"
-$virtualenv = "$openstackDir\virtualenv"
+$virtualenv = "C:\Python27"
 $configDir = "$openstackDir\etc"
 $downloadLocation = "http://dl.openstack.tld/"
 
