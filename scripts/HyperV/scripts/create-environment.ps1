@@ -25,11 +25,6 @@ $remoteConfigs="\\"+$devstackIP+"\openstack\config"
 
 . "$scriptdir\utils.ps1"
 
-if ($branchName.Contains("feature"))
-{
-    $branchName = "master"
-}
-
 $hasProject = Test-Path $buildDir\$projectName
 $hasNova = Test-Path $buildDir\nova
 $hasNeutron = Test-Path $buildDir\neutron
