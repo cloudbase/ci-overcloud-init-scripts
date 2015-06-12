@@ -257,7 +257,7 @@ Catch
 {
     Throw "Can not start the nova service"
 }
-Start-Sleep -s 15
+Start-Sleep -s 5
 Try
 {
     Start-Service neutron-hyperv-agent
@@ -266,5 +266,32 @@ Catch
 {
     Throw "Can not start neutron agent service"
 }
-Write-Host "Environment initialization done."
 
+Start-Sleep -s 30
+
+if ((Get-Service nova-compute).Status -ne "Running")
+{
+    Write-Host 
+    $novaJob = Start-Job -ScriptBlock {& c:\Python27\Scripts\nova-compute.exe --config-file C:\OpenStack\etc\nova.conf}
+    Start-Sleep -s 30
+    Receive-Job -job $novaJob
+    Stop-Job -job $novaJob
+    Receive-Job -job $novaJob
+} 
+else
+{
+    Write-Host "Nova service running ok"
+}
+
+if ((Get-Service neutron-hyperv-agent).Status -ne "Running")
+{
+    $neutronJob = Start-Job -ScriptBlock {& c:\Python27\Scripts\neutron-hyperv-agent.exe --config-file C:\OpenStack\etc\neutron_hyperv_agent.conf}
+    Start-Sleep -s 30
+    Receive-Job -job $neutronJob
+    Stop-Job -job $neutronJob
+    Receive-Job -job $neutronJob
+}
+else
+{
+    Write-Host "Neutron Hyper-V Agent Plugin running ok"
+}
