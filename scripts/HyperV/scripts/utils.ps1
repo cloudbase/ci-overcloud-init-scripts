@@ -38,7 +38,7 @@ function GitClonePull($path, $url, $branch="master")
             git clone $url $path
             if ($LastExitCode) { throw "git clone failed" }
         }
-        git checkout $branch
+        (git checkout $branch) -Or (git checkout master)
         if ($LastExitCode) { throw "git checkout failed" }
     }else{
         pushd $path
@@ -50,7 +50,7 @@ function GitClonePull($path, $url, $branch="master")
                 if ($LastExitCode) { throw "git clone failed" }
             }
             ExecRetry {
-                git checkout $branch
+                (git checkout $branch) -Or (git checkout master)
                 if ($LastExitCode) { throw "git checkout failed" }
             }
 
