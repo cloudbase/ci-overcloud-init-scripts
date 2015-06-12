@@ -44,18 +44,10 @@ function GitClonePull($path, $url, $branch="master")
         pushd $path
         try
         {
-            if (!(Test-Path -path "$path\.git"))
-            {
-                Remove-Item -Recurse -Force *
-                ExecRetry {
-                    git clone $url $path
-                    if ($LastExitCode) { throw "git clone failed" }
-                }
-            } else {
-                ExecRetry {
-                    git fetch --all
-                    if ($LastExitCode) { throw "git fetch failed" }
-                }
+            Remove-Item -Force -Recurse -ErrorAction SilentlyContinue "$path\*"
+            ExecRetry {
+                git clone $url $path
+                if ($LastExitCode) { throw "git clone failed" }
             }
             ExecRetry {
                 git checkout $branch
