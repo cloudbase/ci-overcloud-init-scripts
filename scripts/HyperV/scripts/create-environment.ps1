@@ -6,7 +6,6 @@ Param(
 
 $projectName = $buildFor.split('/')[-1]
 
-#$virtualenv = "c:\OpenStack\virtualenv"
 $openstackDir = "C:\OpenStack"
 $baseDir = "$openstackDir\devstack"
 $scriptdir = "$baseDir\scripts"
@@ -20,7 +19,8 @@ $hostname = hostname
 $rabbitUser = "stackrabbit"
 $pythonExec = "c:\Python27\python.exe"
 
-$remoteLogs="\\"+$devstackIP+"\openstack\logs"
+#$remoteLogs="\\"+$devstackIP+"\openstack\logs"
+$openstackLogs="$openstackDir\Log"
 $remoteConfigs="\\"+$devstackIP+"\openstack\config"
 
 . "$scriptdir\utils.ps1"
@@ -67,6 +67,16 @@ if (Get-Process -Name python){
 }
 
 $ErrorActionPreference = "Stop"
+
+if (-not (Get-Service neutron-hyperv-agent -ErrorAction SilentlyContinue))
+{
+    Throw "Neutron Hyper-V Agent Service not registered"
+}
+
+if (-not (get-service nova-compute -ErrorAction SilentlyContinue))
+{
+    Throw "Nova Compute Service not registered"
+}
 
 if ($(Get-Service nova-compute).Status -ne "Stopped"){
     Throw "Nova service is still running"
@@ -147,9 +157,9 @@ if ($buildFor -eq "openstack/nova"){
     Throw "Cannot build for project: $buildFor"
 }
 
-$hasLogDir = Test-Path $remoteLogs\$hostname
+$hasLogDir = Test-Path $openstackLogs
 if ($hasLogDir -eq $false){
-    mkdir $remoteLogs\$hostname
+    mkdir $openstackLogs
 }
 
 $hasConfigDir = Test-Path $remoteConfigs\$hostname
@@ -218,8 +228,8 @@ if (($branchName.ToLower().CompareTo($('stable/juno').ToLower()) -eq 0) -or ($br
     $rabbitUser = "guest"
 }
 
-$novaConfig = (gc "$templateDir\nova.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($remoteLogs)\$($hostname)").Replace('[RABBITUSER]', $rabbitUser)
-$neutronConfig = (gc "$templateDir\neutron_hyperv_agent.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$($remoteLogs)\$($hostname)").Replace('[RABBITUSER]', $rabbitUser)
+$novaConfig = (gc "$templateDir\nova.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$openstackLogs").Replace('[RABBITUSER]', $rabbitUser)
+$neutronConfig = (gc "$templateDir\neutron_hyperv_agent.conf").replace('[DEVSTACK_IP]', "$devstackIP").Replace('[LOGDIR]', "$openstackLogs").Replace('[RABBITUSER]', $rabbitUser)
 
 Set-Content C:\OpenStack\etc\nova.conf $novaConfig
 if ($? -eq $false){

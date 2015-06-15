@@ -1,5 +1,4 @@
 $baseDir = "c:\OpenStack"
-$virtualenv = "$baseDir\virtualenv"
 $buildDir = "$baseDir\build"
 
 $ErrorActionPreference = "SilentlyContinue"
@@ -50,8 +49,6 @@ Remove-VM * -Force
 
 Write-Host "Cleaning the build folder."
 Remove-Item -Recurse -Force $buildDir\openstack\*
-Write-Host "Cleaning the virtualenv folder."
-Remove-Item -Recurse -Force $virtualenv
 Write-Host "Cleaning the logs folder."
 Remove-Item -Recurse -Force $baseDir\Log\*
 Write-Host "Cleaning the config folder."

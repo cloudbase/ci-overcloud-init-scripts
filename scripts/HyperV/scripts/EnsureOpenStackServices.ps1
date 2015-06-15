@@ -418,19 +418,46 @@ Function Check-Service
     $hasService = Get-Service $serviceName -ErrorAction SilentlyContinue
     $hasCorrectUser = (Get-WmiObject -namespace "root\cimv2" -class Win32_Service -Filter $filter).StartName -like "*$serviceUsername*"
 
+    Write-Host "Initial status for $serviceName:"
+    Write-Host "hasServiceFileFolder: $hasServiceFileFolder"
+    Write-Host "hasServiceFile: $hasServiceFile"
+    Write-Host "hasService: $hasService"
+    Write-Host "hasCorrectUser: $hasCorrectUser"
+
     if(!$hasServiceFileFolder)
     {
-        New-Item -Path $serviceFileLocation -ItemType directory
+        Try
+        {
+            New-Item -Path $serviceFileLocation -ItemType directory
+        }
+        Catch
+        {
+            Throw "Can't create service file folder"
+        }
     }
 
     if(!$hasServiceFile)
     {
-        Invoke-WebRequest -Uri "$downloadLocation/$serviceFileName" -OutFile "$serviceFileLocation\$serviceFileName"
+        Try
+        {
+            Invoke-WebRequest -Uri "$downloadLocation/$serviceFileName" -OutFile "$serviceFileLocation\$serviceFileName"
+        }
+        Catch
+        {
+            Throw "Error downloading the service file executable."
+        }
     }
 
     if(!$hasService)
     {
-        New-Service -name "$serviceName" -binaryPathName "`"$serviceFileLocation\$serviceFileName`" $serviceName `"$serviceExecutable`" --config-file `"$serviceConfig`"" -displayName "$serviceName" -description "$serviceDescription" -startupType $serviceStartMode
+        Try
+        {
+            New-Service -name "$serviceName" -binaryPathName "`"$serviceFileLocation\$serviceFileName`" $serviceName `"$serviceExecutable`" --config-file `"$serviceConfig`"" -displayName "$serviceName" -description "$serviceDescription" -startupType $serviceStartMode
+        }
+        Catch
+        {
+            Throw "Error creating the service $serviceName"
+        }
     }
 
     if((Get-Service -Name $serviceName).Status -eq "Running")
@@ -440,7 +467,14 @@ Function Check-Service
 
     if(!$hasCorrectUser)
     {
-        Set-ServiceAcctCreds $serviceName
+        Try
+        {
+            Set-ServiceAcctCreds $serviceName
+        }
+        Catch
+        {
+            Throw "Error setting service account credentials for $serviceName"
+        }
     }
 }
 
