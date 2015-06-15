@@ -435,6 +435,10 @@ Function Check-Service
             Throw "Can't create service file folder"
         }
     }
+    else 
+    {
+        Write-Host "Service File folder exists"
+    }
 
     if(!$hasServiceFile)
     {
@@ -446,6 +450,10 @@ Function Check-Service
         {
             Throw "Error downloading the service file executable."
         }
+    }
+    else 
+    {
+        Write-Host "Service file executable exists"
     }
 
     if(!$hasService)
@@ -459,10 +467,16 @@ Function Check-Service
             Throw "Error creating the service $serviceName"
         }
     }
+    else 
+    {
+        Write-Host "Service $serviceName already registered"
+    }
 
     if((Get-Service -Name $serviceName).Status -eq "Running")
     {
         Stop-Service $serviceName
+        Write-Host "Service $serviceName was found in Running state."
+        Write-Host "Current $serviceName state is: $((Get-Service -Name $serviceName).Status)"
     }
 
     if(!$hasCorrectUser)
@@ -475,6 +489,10 @@ Function Check-Service
         {
             Throw "Error setting service account credentials for $serviceName"
         }
+    }
+    else 
+    {
+        Write-Host "Service $serviceName already has correct user credentials."
     }
 }
 
