@@ -418,7 +418,7 @@ Function Check-Service
     $hasService = Get-Service $serviceName -ErrorAction SilentlyContinue
     $hasCorrectUser = (Get-WmiObject -namespace "root\cimv2" -class Win32_Service -Filter $filter).StartName -like "*$serviceUsername*"
 
-    Write-Host "Initial status for $serviceName:"
+    Write-Host "Initial status for $serviceName is:"
     Write-Host "hasServiceFileFolder: $hasServiceFileFolder"
     Write-Host "hasServiceFile: $hasServiceFile"
     Write-Host "hasService: $hasService"
