@@ -9,10 +9,13 @@ log_file=${6:-"/home/ubuntu/tempest/subunit-output.log"}
 results_html_file=${7:-"/home/ubuntu/tempest/results.html"}
 tempest_output_file="/home/ubuntu/tempest/tempest-output.log"
 subunit_stats_file="/home/ubuntu/tempest/subunit_stats.log"
+TEMPEST_DIR="/home/ubuntu/tempest"
 
 basedir="$HOME/bin"
 
 project_name=$(basename $project)
+
+mkdir -p $TEMPEST_DIR
 
 pushd $basedir
 
@@ -52,7 +55,7 @@ rm $tests_file
 echo "Generating HTML report..."
 $basedir/get-results-html.sh $log_file $results_html_file
 
-cat log_file | /opt/stack/tempest/tools/colorizer.py > $tempest_output_file 2>&1 || true
+cat $log_file | /opt/stack/tempest/tools/colorizer.py > $tempest_output_file 2>&1 || true
 
 subunit-stats $log_file > $subunit_stats_file
 exit_code=$?
