@@ -259,49 +259,77 @@ Remove-Item -Recurse -Force "$remoteConfigs\$hostname\*"
 Copy-Item -Recurse $configDir "$remoteConfigs\$hostname"
 
 Write-Host "Starting the services"
+
+Write-Host "Starting nova-compute service"
 Try
 {
     Start-Service nova-compute
 }
 Catch
 {
-    Throw "Can not start the nova service"
+    $proc = Start-Process -PassThru -RedirectStandardError "$openstackLogs\process_error.txt" -RedirectStandardOutput "$openstackLogs\process_output.txt" -FilePath "$pythonDir\Scripts\nova-compute.exe" -ArgumentList "--config-file $configDir\nova.conf"
+    Start-Sleep -s 30
+    if (! $proc.HasExited) {Stop-Process -Id $proc.Id -Force}
+    Throw "Can not start the nova-compute service"
 }
-Start-Sleep -s 5
+Start-Sleep -s 30
+if ($(get-service nova-compute).Status -eq "Stopped")
+{
+    Write-Host "We try to start:"
+    Write-Host Start-Process -PassThru -RedirectStandardError "$openstackLogs\process_error.txt" -RedirectStandardOutput "$openstackLogs\process_output.txt" -FilePath "$pythonDir\Scripts\nova-compute.exe" -ArgumentList "--config-file $configDir\nova.conf"
+    Try
+    {
+    	$proc = Start-Process -PassThru -RedirectStandardError "$openstackLogs\process_error.txt" -RedirectStandardOutput "$openstackLogs\process_output.txt" -FilePath "$pythonDir\Scripts\nova-compute.exe" -ArgumentList "--config-file $configDir\nova.conf"
+    }
+    Catch
+    {
+    	Throw "Could not start the process manually"
+    }
+    Start-Sleep -s 30
+    if (! $proc.HasExited)
+    {
+    	Stop-Process -Id $proc.Id -Force
+    	Throw "Process started fine when run manually."
+    }
+    else
+    {
+    	Throw "Can not start the nova-compute service. The manual run failed as well."
+    }
+}
+
+Write-Host "Starting neutron-hyperv-agent service"
 Try
 {
     Start-Service neutron-hyperv-agent
 }
 Catch
 {
-    Throw "Can not start neutron agent service"
+    $proc = Start-Process -PassThru -RedirectStandardError "$openstackLogs\process_error.txt" -RedirectStandardOutput "$openstackLogs\process_output.txt" -FilePath "$pythonDir\Scripts\neutron-hyperv-agent.exe" -ArgumentList "--config-file $configDir\neutron_hyperv_agent.conf"
+    Start-Sleep -s 30
+    if (! $proc.HasExited) {Stop-Process -Id $proc.Id -Force}
+    Throw "Can not start the neutron-hyperv-agent service"
 }
-
 Start-Sleep -s 30
-
-if ((Get-Service nova-compute).Status -ne "Running")
+if ($(get-service neutron-hyperv-agent).Status -eq "Stopped")
 {
-    Write-Host 
-    $novaJob = Start-Job -ScriptBlock {& c:\Python27\Scripts\nova-compute.exe --config-file C:\OpenStack\etc\nova.conf}
+    Write-Host "We try to start:"
+    Write-Host Start-Process -PassThru -RedirectStandardError "$openstackLogs\process_error.txt" -RedirectStandardOutput "$openstackLogs\process_output.txt" -FilePath "$pythonDir\Scripts\neutron-hyperv-agent.exe" -ArgumentList "--config-file $configDir\neutron_hyperv_agent.conf"
+    Try
+    {
+    	$proc = Start-Process -PassThru -RedirectStandardError "$openstackLogs\process_error.txt" -RedirectStandardOutput "$openstackLogs\process_output.txt" -FilePath "$pythonDir\Scripts\neutron-hyperv-agent.exe" -ArgumentList "--config-file $configDir\neutron_hyperv_agent.conf"
+    }
+    Catch
+    {
+    	Throw "Could not start the process manually"
+    }
     Start-Sleep -s 30
-    Receive-Job -job $novaJob
-    Stop-Job -job $novaJob
-    Receive-Job -job $novaJob
-} 
-else
-{
-    Write-Host "Nova service running ok"
-}
-
-if ((Get-Service neutron-hyperv-agent).Status -ne "Running")
-{
-    $neutronJob = Start-Job -ScriptBlock {& c:\Python27\Scripts\neutron-hyperv-agent.exe --config-file C:\OpenStack\etc\neutron_hyperv_agent.conf}
-    Start-Sleep -s 30
-    Receive-Job -job $neutronJob
-    Stop-Job -job $neutronJob
-    Receive-Job -job $neutronJob
-}
-else
-{
-    Write-Host "Neutron Hyper-V Agent Plugin running ok"
+    if (! $proc.HasExited)
+    {
+    	Stop-Process -Id $proc.Id -Force
+    	Throw "Process started fine when run manually."
+    }
+    else
+    {
+    	Throw "Can not start the neutron-hyperv-agent service. The manual run failed as well."
+    }
 }
