@@ -259,6 +259,8 @@ if ($hasNeutronExec -eq $false){
 Remove-Item -Recurse -Force "$remoteConfigs\$hostname\*"
 Copy-Item -Recurse $configDir "$remoteConfigs\$hostname"
 
+pip install oslo.log==1.1.0
+
 Write-Host "Starting the services"
 
 Write-Host "Starting nova-compute service"
