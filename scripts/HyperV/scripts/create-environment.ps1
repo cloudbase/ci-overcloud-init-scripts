@@ -181,6 +181,7 @@ if (Test-Path "C:\Python27")
 & easy_install pip
 & pip install -U setuptools
 & pip install -U wmi
+& pip install SQLAlchemy==0.9.8
 & pip install -U pbr==0.11.0
 popd
 
