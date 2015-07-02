@@ -207,22 +207,25 @@ cp $templateDir\distutils.cfg C:\Python27\Lib\distutils\distutils.cfg
 #}
 
 ExecRetry {
-    pushd C:\OpenStack\build\openstack\networking-hyperv
-    & python setup.py install
+    #pushd C:\OpenStack\build\openstack\networking-hyperv
+    #& python setup.py install
+    & pip install -e C:\OpenStack\build\openstack\networking-hyperv
     if ($LastExitCode) { Throw "Failed to install networking-hyperv from repo" }
     popd
 }
 
 ExecRetry {
-    pushd C:\OpenStack\build\openstack\neutron
-    & python setup.py install
+    #pushd C:\OpenStack\build\openstack\neutron
+    #& python setup.py install
+    pip install -e C:\OpenStack\build\openstack\neutron
     if ($LastExitCode) { Throw "Failed to install neutron from repo" }
     popd
 }
 
 ExecRetry {
-    pushd C:\OpenStack\build\openstack\nova
-    & python setup.py install
+    #pushd C:\OpenStack\build\openstack\nova
+    #& python setup.py install
+    piip install -e C:\OpenStack\build\openstack\nova
     if ($LastExitCode) { Throw "Failed to install nova fom repo" }
     popd
 }
