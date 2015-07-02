@@ -225,7 +225,7 @@ ExecRetry {
 ExecRetry {
     #pushd C:\OpenStack\build\openstack\nova
     #& python setup.py install
-    piip install -e C:\OpenStack\build\openstack\nova
+    pip install -e C:\OpenStack\build\openstack\nova
     if ($LastExitCode) { Throw "Failed to install nova fom repo" }
     popd
 }
@@ -263,6 +263,9 @@ if ($hasNeutronExec -eq $false){
 
 Remove-Item -Recurse -Force "$remoteConfigs\$hostname\*"
 Copy-Item -Recurse $configDir "$remoteConfigs\$hostname"
+
+#pbr hack:
+& pip install -U pbr==0.11.0
 
 Write-Host "Starting the services"
 
