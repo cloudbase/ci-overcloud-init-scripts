@@ -81,3 +81,6 @@ tempest.api.object_storage.test_container_sync_middleware.ContainerSyncMiddlewar
 
 #Not relevant for Hyper-V tests
 tempest.api.image.v1.test_images.CreateRegisterImagesTest
+
+#Bug in "nova migrations-list"
+tempest.api.compute.admin.test_migrations.MigrationsAdminTest
