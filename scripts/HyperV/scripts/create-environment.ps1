@@ -182,9 +182,6 @@ if (Test-Path "C:\Python27")
 & easy_install pip
 & pip install -U setuptools
 & pip install -U wmi
-& pip install SQLAlchemy==0.9.8
-& pip install oslo.i18n==1.7.0
-& pip install -U pbr
 popd
 
 $hasPipConf = Test-Path "$env:APPDATA\pip"
