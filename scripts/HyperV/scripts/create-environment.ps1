@@ -261,9 +261,6 @@ if ($hasNeutronExec -eq $false){
 Remove-Item -Recurse -Force "$remoteConfigs\$hostname\*"
 Copy-Item -Recurse $configDir "$remoteConfigs\$hostname"
 
-#pbr hack:
-& pip install -U pbr==0.11.0
-
 Write-Host "Starting the services"
 
 Write-Host "Starting nova-compute service"
