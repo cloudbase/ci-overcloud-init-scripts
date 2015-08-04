@@ -182,6 +182,7 @@ if (Test-Path "C:\Python27")
 & easy_install pip
 & pip install -U setuptools
 & pip install -U wmi
+& pip install oslo.service==0.5.0
 popd
 
 $hasPipConf = Test-Path "$env:APPDATA\pip"
