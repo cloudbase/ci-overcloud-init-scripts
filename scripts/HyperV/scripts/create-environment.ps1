@@ -182,6 +182,8 @@ if (Test-Path "C:\Python27")
 & easy_install pip
 & pip install -U setuptools
 & pip install -U wmi
+& pip install oslo.config==2.1.0
+& pip install oslo.utils==2.1.0
 & pip install oslo.service==0.5.0
 popd
 
