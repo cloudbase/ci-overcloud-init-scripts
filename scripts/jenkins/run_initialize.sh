@@ -75,7 +75,7 @@ set +e
 VLAN_RANGE=`/usr/local/src/ci-overcloud-init-scripts/vlan_allocation.py -a $NAME`
 if [ ! -z "$VLAN_RANGE" ]
 then
-  run_ssh_cmd_with_retry ubuntu@$FLOATING_IP $DEVSTACK_SSH_KEY "sed -i 's/TENANT_VLAN_RANGE.*/TENANT_VLAN_RANGE='$VLAN_RANGE'/g' /home/ubuntu/devstack/localrc /home/ubuntu/devstack/local.conf" 1
+  run_ssh_cmd_with_retry ubuntu@$FLOATING_IP $DEVSTACK_SSH_KEY "sed -i 's/TENANT_VLAN_RANGE.*/TENANT_VLAN_RANGE='$VLAN_RANGE'/g' /home/ubuntu/devstack/local.conf" 1
 fi
 set -e
 
