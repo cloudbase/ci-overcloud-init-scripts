@@ -181,6 +181,7 @@ if (Test-Path "C:\Python27")
 & easy_install pip
 & pip install -U setuptools
 & pip install -U wmi
+& pip install --use-wheel --no-index --find-links=https://dl.openstack.tld/wheels cffi
 popd
 
 $hasPipConf = Test-Path "$env:APPDATA\pip"
