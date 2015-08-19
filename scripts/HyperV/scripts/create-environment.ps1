@@ -20,7 +20,6 @@ $rabbitUser = "stackrabbit"
 $pythonDir = "c:\Python27"
 $pythonExec = "$pythonDir\python.exe"
 
-#$remoteLogs="\\"+$devstackIP+"\openstack\logs"
 $openstackLogs="$openstackDir\Log"
 $remoteConfigs="\\"+$devstackIP+"\openstack\config"
 
@@ -182,7 +181,6 @@ if (Test-Path "C:\Python27")
 & easy_install pip
 & pip install -U setuptools
 & pip install -U wmi
-& pip install -e git+http://github.com/openstack/oslo.service.git#egg=master
 popd
 
 $hasPipConf = Test-Path "$env:APPDATA\pip"
