@@ -39,8 +39,15 @@ then
 fi
 
 cd /home/ubuntu/devstack
-#git pull
+git pull
 #./unstack.sh
+
+if [ -d "/home/ubuntu/.cache/pip/wheels" ]
+then
+        sudo chown -R ubuntu.ubuntu /home/ubuntu/.cache/pip/wheels
+else
+        echo "Folder /home/ubuntu/.cache/pip/wheels not found!"
+fi
 
 nohup ./stack.sh > /opt/stack/logs/stack.sh.txt 2>&1 &
 pid=$!
