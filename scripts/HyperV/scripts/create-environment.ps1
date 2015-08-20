@@ -17,7 +17,8 @@ $novaTemplate = "$templateDir\nova.conf"
 $neutronTemplate = "$templateDir\neutron_hyperv_agent.conf"
 $hostname = hostname
 $rabbitUser = "stackrabbit"
-$pythonDir = "c:\Python27"
+$pythonDir = "C:\Python27"
+$pythonArchive = "python27new.tar.gz"
 $pythonExec = "$pythonDir\python.exe"
 
 $openstackLogs="$openstackDir\Log"
@@ -167,21 +168,33 @@ if ($hasConfigDir -eq $false){
     mkdir $remoteConfigs\$hostname
 }
 
-pushd \
-if (Test-Path "C:\python27new.tar.gz")
+pushd C:\
+if (Test-Path $pythonArchive)
 {
-    Remove-Item -Force "C:\python27new.tar.gz"
+    Remove-Item -Force $pythonArchive
 }
-Invoke-WebRequest -Uri http://dl.openstack.tld/python27new.tar.gz -OutFile C:\python27new.tar.gz
-if (Test-Path "C:\Python27")
+Invoke-WebRequest -Uri http://dl.openstack.tld/python27new.tar.gz -OutFile $pythonArchive
+if (Test-Path $pythonDir)
 {
-    Remove-Item -Recurse -Force .\Python27
+    Remove-Item -Recurse -Force $pythonDir
 }
-& C:\mingw-get\msys\1.0\bin\tar.exe -xvzf python27new.tar.gz
+Write-Host "Ensure Python folder is up to date"
+& C:\mingw-get\msys\1.0\bin\tar.exe -xvzf "$pythonArchive"
+
+$hasPipConf = Test-Path "$env:APPDATA\pip"
+if ($hasPipConf -eq $false){
+    mkdir "$env:APPDATA\pip"
+}
+else 
+{
+    Remove-Item -Force "$env:APPDATA\pip\*"
+}
+Add-Content "$env:APPDATA\pip\pip.ini" $pip_conf_content
+
 & easy_install pip
 & pip install -U setuptools
 & pip install -U wmi
-& pip install --use-wheel --no-index --trusted-host dl.openstack.tld --find-links=http://dl.openstack.tld/wheels cffi
+& pip install --use-wheel --no-index --find-links=http://dl.openstack.tld/wheels cffi
 popd
 
 $hasPipConf = Test-Path "$env:APPDATA\pip"
