@@ -191,7 +191,7 @@ else
 }
 Add-Content "$env:APPDATA\pip\pip.ini" $pip_conf_content
 
-& easy_install pip
+& easy_install -U pip
 & pip install -U setuptools
 & pip install -U wmi
 & pip install --use-wheel --no-index --find-links=http://dl.openstack.tld/wheels cffi
@@ -207,14 +207,17 @@ else
 }
 Add-Content "$env:APPDATA\pip\pip.ini" $pip_conf_content
 
-
 cp $templateDir\distutils.cfg C:\Python27\Lib\distutils\distutils.cfg
 
-# Hack due to cicso patch problem:
-#$missingPath="C:\Openstack\build\openstack\neutron\etc\neutron\plugins\cisco\cisco_cfg_agent.ini"
-#if(!(Test-Path -Path $missingPath)){
-#    new-item -Path $missingPath -Value ' ' –itemtype file
-#}
+function cherry_pick($commit){
+    $ErrorActionPreference = "Continue"
+    git cherry-pick $commit
+
+    if ($LastExitCode) {
+        echo "Ignoring failed git cherry-pick $commit"
+        git checkout --force
+    }
+}
 
 ExecRetry {
     #pushd C:\OpenStack\build\openstack\networking-hyperv
@@ -235,6 +238,13 @@ ExecRetry {
 ExecRetry {
     #pushd C:\OpenStack\build\openstack\nova
     #& python setup.py install
+    # 20 Aug # cherry-pick for Claudiu's fixed until they are merged
+    pushd C:\OpenStack\build\openstack\nova
+    git fetch https://review.openstack.org/openstack/nova refs/changes/60/214560/2
+    git cherry-pick FETCH_HEAD
+    git fetch https://review.openstack.org/openstack/nova refs/changes/93/214493/5
+    git cherry-pick FETCH_HEAD
+    # end of cherry-pick
     pip install -e C:\OpenStack\build\openstack\nova
     if ($LastExitCode) { Throw "Failed to install nova fom repo" }
     popd
