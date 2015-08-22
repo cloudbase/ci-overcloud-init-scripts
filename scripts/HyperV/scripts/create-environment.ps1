@@ -240,9 +240,9 @@ ExecRetry {
     #& python setup.py install
     # 20 Aug # cherry-pick for Claudiu's fixed until they are merged
     pushd C:\OpenStack\build\openstack\nova
-    git fetch https://review.openstack.org/openstack/nova refs/changes/60/214560/2
-    git cherry-pick FETCH_HEAD
     git fetch https://review.openstack.org/openstack/nova refs/changes/93/214493/5
+    git cherry-pick FETCH_HEAD
+    git fetch https://review.openstack.org/openstack/nova refs/changes/60/214560/5
     git cherry-pick FETCH_HEAD
     # end of cherry-pick
     pip install -e C:\OpenStack\build\openstack\nova
