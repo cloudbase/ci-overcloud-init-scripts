@@ -14,9 +14,7 @@ sudo easy_install -U pip
 #Update six to latest version
 sudo pip install -U six
 sudo pip install -U kombu
-set +e
-sudo pip uninstall PasteDeploy -y
-set -e
+
 DEVSTACK_LOGS="/opt/stack/logs/screen"
 LOCALRC="/home/ubuntu/devstack/localrc"
 LOCALCONF="/home/ubuntu/devstack/local.conf"
