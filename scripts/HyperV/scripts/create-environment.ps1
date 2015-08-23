@@ -179,7 +179,8 @@ if (Test-Path $pythonDir)
     Remove-Item -Recurse -Force $pythonDir
 }
 Write-Host "Ensure Python folder is up to date"
-& C:\mingw-get\msys\1.0\bin\tar.exe -xvzf "$pythonArchive"
+Write-Host "Extracting archive.."
+& C:\mingw-get\msys\1.0\bin\tar.exe -xzf "$pythonArchive"
 
 $hasPipConf = Test-Path "$env:APPDATA\pip"
 if ($hasPipConf -eq $false){
