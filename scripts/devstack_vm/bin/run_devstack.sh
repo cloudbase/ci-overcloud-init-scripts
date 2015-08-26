@@ -3,7 +3,6 @@
 set -x
 set -e
 sudo ifconfig eth1 promisc up
-sudo ifconfig eth2 promisc up
 
 HOSTNAME=$(hostname)
 
