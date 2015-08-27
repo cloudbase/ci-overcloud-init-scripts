@@ -53,6 +53,15 @@ tempest.api.compute.servers.test_delete_server.DeleteServersTestJSON.test_delete
 # Not testing boto third-party
 tempest.thirdparty.boto
 
+#We do not test Swift
+tempest.api.object_storage.test_container_sync_middleware.ContainerSyncMiddlewareTest
+
+#Not relevant for Hyper-V tests
+tempest.api.image.v1.test_images.CreateRegisterImagesTest
+
+#Bug in "nova migrations-list"
+tempest.api.compute.admin.test_migrations.MigrationsAdminTest
+
 # Tests needing further investigation:
 tempest.api.compute.servers.test_delete_server.DeleteServersTestJSON.test_delete_server_while_in_attached_volume
 tempest.api.compute.servers.test_disk_config.ServerDiskConfigTestJSON.test_resize_server_from_manual_to_auto
@@ -75,12 +84,4 @@ tempest.scenario.test_security_groups_basic_ops.TestSecurityGroupsBasicOps
 #Need investigation - were failing on cinder ci as well
 tempest.scenario.test_volume_boot_pattern.TestVolumeBootPattern.test_volume_boot_pattern
 tempest.scenario.test_volume_boot_pattern.TestVolumeBootPatternV2.test_volume_boot_pattern
-
-#We do not test Swift
-tempest.api.object_storage.test_container_sync_middleware.ContainerSyncMiddlewareTest
-
-#Not relevant for Hyper-V tests
-tempest.api.image.v1.test_images.CreateRegisterImagesTest
-
-#Bug in "nova migrations-list"
-tempest.api.compute.admin.test_migrations.MigrationsAdminTest
+tempest.api.compute.admin.test_live_migration.LiveBlockMigration
