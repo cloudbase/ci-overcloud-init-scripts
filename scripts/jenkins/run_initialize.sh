@@ -6,15 +6,15 @@ if [ -z "$FLOATING_IP" ]
 then
    exit 1
 fi
-echo FLOATING_IP=$FLOATING_IP > devstack_params.txt
+echo FLOATING_IP=$FLOATING_IP > /home/jenkins-slave/runs/devstack_params.$ZUUL_UUID.$JOB_TYPE.txt
 
 UUID=$(python -c "import uuid; print uuid.uuid4().hex")
 export NAME="devstack-$UUID"
-echo NAME=$NAME >> devstack_params.txt
+echo NAME=$NAME >> /home/jenkins-slave/runs/devstack_params.$ZUUL_UUID.$JOB_TYPE.txt
 echo NAME=$NAME
 
 NET_ID=$(nova net-list | grep net1| awk '{print $2}')
-echo NET_ID=$NET_ID >> devstack_params.txt
+echo NET_ID=$NET_ID >> /home/jenkins-slave/runs/devstack_params.$ZUUL_UUID.$JOB_TYPE.txt
 
 echo FLOATING_IP=$FLOATING_IP > /home/jenkins-slave/console-$NAME.log 2>&1
 echo NAME=$NAME >> /home/jenkins-slave/console-$NAME.log 2>&1
@@ -31,7 +31,7 @@ then
 fi
 
 export VMID=`nova show $NAME | awk '{if (NR == 16) {print $4}}'`
-echo VM_ID=$VMID >> devstack_params.txt
+echo VM_ID=$VMID >> /home/jenkins-slave/runs/devstack_params.$ZUUL_UUID.$JOB_TYPE.txt
 echo VM_ID=$VMID >> /home/jenkins-slave/console-$NAME.log 2>&1
 
 echo "Fetching devstack VM fixed IP address" >> /home/jenkins-slave/console-$NAME.log 2>&1
@@ -58,7 +58,7 @@ do
    COUNT=$(($COUNT + 1))
 done
 
-echo FIXED_IP=$FIXED_IP >> devstack_params.txt
+echo FIXED_IP=$FIXED_IP >> /home/jenkins-slave/runs/devstack_params.$ZUUL_UUID.$JOB_TYPE.txt
 
 exec_with_retry "nova add-floating-ip $NAME $FLOATING_IP" 15 5
 
@@ -88,7 +88,7 @@ run_ssh_cmd_with_retry ubuntu@$FLOATING_IP $DEVSTACK_SSH_KEY "/home/ubuntu/bin/u
 scp -v -r -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" -i $DEVSTACK_SSH_KEY /usr/local/src/ci-overcloud-init-scripts/scripts/devstack_vm/devstack/* ubuntu@$FLOATING_IP:/home/ubuntu/devstack >> /home/jenkins-slave/console-$NAME.log 2>&1
 
 ZUUL_SITE=`echo "$ZUUL_URL" |sed 's/.\{2\}$//'`
-echo ZUUL_SITE=$ZUUL_SITE >> devstack_params.txt
+echo ZUUL_SITE=$ZUUL_SITE >> /home/jenkins-slave/runs/devstack_params.$ZUUL_UUID.$JOB_TYPE.txt
 
 run_ssh_cmd_with_retry ubuntu@$FLOATING_IP $DEVSTACK_SSH_KEY  "/home/ubuntu/bin/gerrit-git-prep.sh --zuul-site $ZUUL_SITE --gerrit-site $ZUUL_SITE --zuul-ref $ZUUL_REF --zuul-change $ZUUL_CHANGE --zuul-project $ZUUL_PROJECT" 1
 
