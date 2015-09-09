@@ -40,6 +40,19 @@ function archive_devstack() {
         fi
     done
     $GZIP -c "$DEVSTACK_BUILD_LOG" > "$LOG_DST_DEVSTACK/stack.sh.log.gz" || emit_warning "Failed to archive devstack log"
+    mkdir -p "$LOG_DST_DEVSTACK/rabbitmq"
+    cp /var/log/rabbitmq/* "$LOG_DST_DEVSTACK/rabbitmq"
+    gzip -9 "$LOG_DST_DEVSTACK/rabbitmq/*"
+    mkdir -p "$LOG_DST_DEVSTACK/openvswitch"
+    cp /var/log/rabbitmq/* "$LOG_DST_DEVSTACK/openvswitch"
+    gzip -9 "$LOG_DST_DEVSTACK/openvswitch/*"
+    $GZIP -c /var/log/mysql/error.log > "$LOG_DST_DEVSTACK/mysql_error.log.gz"
+    $GZIP -c /var/log/cloud-init.log > "$LOG_DST_DEVSTACK/cloud-init.log.gz"
+    $GZIP -c /var/log/cloud-init-output.log > "$LOG_DST_DEVSTACK/cloud-init-output.log.gz"
+    $GZIP -c /var/log/dmesg > "$LOG_DST_DEVSTACK/dmesg.log.gz"
+    $GZIP -c /var/log/kern.log > "$LOG_DST_DEVSTACK/kern.log.gz"
+    $GZIP -c /var/log/kern.log > "$LOG_DST_DEVSTACK/kern.log.gz"
+    $GZIP -c /var/log/syslog > "$LOG_DST_DEVSTACK/syslog.log.gz"
     for i in ceilometer cinder glance keystone neutron nova swift openvswitch openvswitch-switch
     do
         mkdir -p $CONFIG_DST_DEVSTACK/$i
