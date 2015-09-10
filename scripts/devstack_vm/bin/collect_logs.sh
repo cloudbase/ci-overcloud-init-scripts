@@ -42,10 +42,10 @@ function archive_devstack() {
     $GZIP -c "$DEVSTACK_BUILD_LOG" > "$LOG_DST_DEVSTACK/stack.sh.log.gz" || emit_warning "Failed to archive devstack log"
     mkdir -p "$LOG_DST_DEVSTACK/rabbitmq"
     cp /var/log/rabbitmq/* "$LOG_DST_DEVSTACK/rabbitmq"
-    gzip -9 "$LOG_DST_DEVSTACK/rabbitmq/*"
     mkdir -p "$LOG_DST_DEVSTACK/openvswitch"
-    cp /var/log/rabbitmq/* "$LOG_DST_DEVSTACK/openvswitch"
-    gzip -9 "$LOG_DST_DEVSTACK/openvswitch/*"
+    cp /var/log/openvswitch/* "$LOG_DST_DEVSTACK/openvswitch"
+    $GZIP $LOG_DST_DEVSTACK/rabbitmq/*
+    $GZIP $LOG_DST_DEVSTACK/openvswitch/*
     $GZIP -c /var/log/mysql/error.log > "$LOG_DST_DEVSTACK/mysql_error.log.gz"
     $GZIP -c /var/log/cloud-init.log > "$LOG_DST_DEVSTACK/cloud-init.log.gz"
     $GZIP -c /var/log/cloud-init-output.log > "$LOG_DST_DEVSTACK/cloud-init-output.log.gz"
