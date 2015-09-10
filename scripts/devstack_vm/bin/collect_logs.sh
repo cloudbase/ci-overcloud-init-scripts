@@ -51,7 +51,6 @@ function archive_devstack() {
     $GZIP -c /var/log/cloud-init-output.log > "$LOG_DST_DEVSTACK/cloud-init-output.log.gz"
     $GZIP -c /var/log/dmesg > "$LOG_DST_DEVSTACK/dmesg.log.gz"
     $GZIP -c /var/log/kern.log > "$LOG_DST_DEVSTACK/kern.log.gz"
-    $GZIP -c /var/log/kern.log > "$LOG_DST_DEVSTACK/kern.log.gz"
     $GZIP -c /var/log/syslog > "$LOG_DST_DEVSTACK/syslog.log.gz"
     for i in ceilometer cinder glance keystone neutron nova swift openvswitch openvswitch-switch
     do
@@ -73,9 +72,8 @@ function archive_devstack() {
     dpkg-query -l > "$CONFIG_DST_DEVSTACK/dpkg-l.txt" 2>&1 && $GZIP "$CONFIG_DST_DEVSTACK/dpkg-l.txt"
     pip freeze > "$CONFIG_DST_DEVSTACK/pip-freeze.txt" 2>&1 && $GZIP "$CONFIG_DST_DEVSTACK/pip-freeze.txt"
     ps axwu > "$CONFIG_DST_DEVSTACK/pidstat.txt" 2>&1 && $GZIP "$CONFIG_DST_DEVSTACK/pidstat.txt"
-    #/var/log/kern.log
-    #/var/log/rabbitmq/
-    #/var/log/syslog
+    ifconfig -a -v > "$CONFIG_DST_DEVSTACK/ifconfig.txt" 2>&1 && $GZIP "$CONFIG_DST_DEVSTACK/ifconfig.txt"
+    sudo ovs-vsctl -v show > "$CONFIG_DST_DEVSTACK/ovs_bridges.txt" 2>&1 && $GZIP "$CONFIG_DST_DEVSTACK/ovs_bridges.txt"
 }
 
 function archive_hyperv_configs() {
