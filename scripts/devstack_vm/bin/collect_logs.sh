@@ -42,6 +42,7 @@ function archive_devstack() {
     $GZIP -c "$DEVSTACK_BUILD_LOG" > "$LOG_DST_DEVSTACK/stack.sh.log.gz" || emit_warning "Failed to archive devstack log"
     mkdir -p "$LOG_DST_DEVSTACK/rabbitmq"
     cp /var/log/rabbitmq/* "$LOG_DST_DEVSTACK/rabbitmq"
+    sudo rabbitmqctl status > "$LOG_DST_DEVSTACK/rabbitmq/status.txt" 2>&1
     mkdir -p "$LOG_DST_DEVSTACK/openvswitch"
     cp /var/log/openvswitch/* "$LOG_DST_DEVSTACK/openvswitch"
     $GZIP $LOG_DST_DEVSTACK/rabbitmq/*
