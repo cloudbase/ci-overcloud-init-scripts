@@ -34,14 +34,29 @@ test_for_nova (){
         exclude_tests=(`awk 'NF && $1!~/^#/' $EXCLUDED_TESTS`)
     fi
     exclude_regex=$(array_to_regex ${exclude_tests[@]})
-    testr list-tests | grep -v $exclude_regex > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
+    testr list-tests | grep -v $exclude_regex > "$RUN_TESTS_LIST"
+    res=$?
+    if [ $res -ne 0 ]; then
+        echo "failed to generate list of tests"
+        exit $res
+    fi
 }
 
 test_for_neutron () {
     # Run tests list
     echo '# Due to neutron project split:' >> "$EXCLUDED_TESTS"
-    testr list-tests tempest.api.network | grep "network.test_vpnaas_extensions" >> "$EXCLUDED_TESTS" || echo "failed to generate exclude list"
-    testr list-tests tempest.api.network | grep -v "network.test_vpnaas_extensions" > "$RUN_TESTS_LIST" || echo "failed to generate list of tests"
+    testr list-tests tempest.api.network | grep "network.test_vpnaas_extensions" >> "$EXCLUDED_TESTS"
+    res=$?
+    if [ $res -ne 0 ]; then
+        echo "failed to generate list of tests"
+        exit $res
+    fi
+    testr list-tests tempest.api.network | grep -v "network.test_vpnaas_extensions" > "$RUN_TESTS_LIST"
+    res=$?
+    if [ $res -ne 0 ]; then
+        echo "failed to generate list of tests"
+        exit $res
+    fi
 }
 
 cd /opt/stack/tempest
